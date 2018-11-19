@@ -1,0 +1,18 @@
+{
+    "extends": [
+        "tslint:latest",
+        "tslint-react"
+    ],
+    "rules": {
+        "whitespace": [
+            true,
+            "check-module"
+        ],
+        "member-ordering": [
+            true,
+            {
+                "order": "fields-first"
+            }
+        ]
+    }
+}

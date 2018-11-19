@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        ".firebaserc": "jsonc",
+        "firestore.indexes.json": "jsonc",
+        "tslint.json": "jsonc"
+    },
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "web/**/manifest.json"
+            ],
+            "url": "http://json.schemastore.org/web-manifest"
+        }
+    ]
+}

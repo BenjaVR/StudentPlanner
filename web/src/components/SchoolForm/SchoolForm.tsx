@@ -1,0 +1,99 @@
+import Promise from "bluebird";
+import React from "react";
+import { ISchool } from "../../services/interfaces/ISchool";
+
+interface ISchoolFormProps {
+    addSchool: (school: ISchool) => Promise<void>;
+}
+
+interface ISchoolFormState {
+    isLoading: boolean;
+    school: ISchool;
+}
+
+export default class SchoolForm extends React.Component<ISchoolFormProps, ISchoolFormState> {
+
+    private readonly emptySchool: ISchool = {
+        name: "",
+    };
+
+    constructor(props: ISchoolFormProps) {
+        super(props);
+
+        this.state = {
+            isLoading: false,
+            school: this.emptySchool,
+        };
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    public render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <div className="field">
+                    <label className="label">School naam</label>
+                    <div className="control">
+                        <input
+                            className="input"
+                            type="text"
+                            placeholder="Mijn School"
+                            name="name"
+                            onChange={this.handleChange}
+                            value={this.state.school.name}
+                            disabled={this.state.isLoading}
+                        />
+                    </div>
+                </div>
+                <div className="field">
+                    <div className="control">
+                        <button
+                            type="submit"
+                            className={`button is-primary ${this.state.isLoading ? "is-loading" : ""}`}
+                        >
+                            Voeg school toe
+                        </button>
+                    </div>
+                </div>
+            </form>
+        );
+    }
+
+    private handleSubmit(event: React.FormEvent) {
+        event.preventDefault();
+
+        this.setState({isLoading: true});
+
+        // TODO: validate here? or rely on firebase validation rules?
+        this.props.addSchool(this.state.school)
+            .then(() => {
+                this.resetForm();
+            })
+            .catch(() => {
+                // TODO: add form validation styles (red input field, ...?)
+            })
+            .finally(() => {
+                this.setState({isLoading: false});
+            });
+    }
+
+    private handleChange(event: React.FormEvent<HTMLInputElement>) {
+        const target = event.currentTarget;
+
+        switch (target.name) {
+            case "name":
+                this.setState({
+                    school: {
+                        ...this.state.school,
+                        name: target.value,
+                    },
+                });
+                break;
+        }
+    }
+
+    private resetForm() {
+        this.setState({school: this.emptySchool});
+    }
+}
