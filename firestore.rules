@@ -4,8 +4,14 @@ service cloud.firestore {
             allow read, write;
         }
 
-        match /schools/{schoolId} {
-            allow write: if request.resource.data.name.size() > 0
+        match /schools/{school} {
+            allow write: if hasFields(['name'])
+                         && request.resource.data.name.size() > 0;
         }
+    }
+    
+
+    function hasFields(fieldNames) {
+        return request.resource.data.keys().hasAll(fieldNames);
     }
 }
