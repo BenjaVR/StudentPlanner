@@ -1,4 +1,4 @@
-import Promise from "bluebird";
+import { notification } from "antd";
 import React from "react";
 import { ISchool } from "../../services/interfaces/ISchool";
 
@@ -72,6 +72,7 @@ export default class SchoolForm extends React.Component<ISchoolFormProps, ISchoo
             })
             .catch(() => {
                 // TODO: add form validation styles (red input field, ...?)
+                return;
             })
             .finally(() => {
                 this.setState({isLoading: false});

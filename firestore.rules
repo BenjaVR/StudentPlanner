@@ -8,12 +8,15 @@ service cloud.firestore {
         match /schools/{school} {
             allow read;
             allow write: if hasFields(['name'])
-                         && request.resource.data.name.size() > 0;
+                         && isNotEmpty('name');
         }
     }
-    
 
     function hasFields(fieldNames) {
         return request.resource.data.keys().hasAll(fieldNames);
+    }
+
+    function isNotEmpty(fieldName) {
+        return request.resource.data[fieldName].size() > 0;
     }
 }

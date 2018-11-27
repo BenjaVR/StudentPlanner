@@ -1,8 +1,8 @@
-import Promise from "bluebird";
-import { ISchool } from "../../interfaces/ISchool";
-import { FirestoreServiceBase } from "./FirestoreServiceBase";
+import { FirestoreServiceBase } from "../firebase/FirestoreServiceBase";
+import { ISchool } from "../interfaces/ISchool";
+import { ISchoolsService } from "../ISchoolsService";
 
-export class SchoolsService extends FirestoreServiceBase {
+export class SchoolsService extends FirestoreServiceBase implements ISchoolsService {
 
     private readonly schoolsCollection = "schools";
     private readonly schoolsRef = this.firestore.collection(this.schoolsCollection);

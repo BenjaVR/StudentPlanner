@@ -13,6 +13,11 @@
             {
                 "order": "fields-first"
             }
+        ],
+        "no-submodule-imports": [
+            true,
+            "moment/locale",
+            "antd/lib/locale-provider"
         ]
     }
 }
