@@ -5,7 +5,7 @@ export abstract class FirestoreServiceBase {
 
     constructor() {
         if (process.env.NODE_ENV === "development") {
-            Firebase.firestore.setLogLevel("debug");
+            Firebase.firestore.setLogLevel("error");
         } else {
             Firebase.firestore.setLogLevel("silent");
         }

@@ -17,7 +17,17 @@
         "no-submodule-imports": [
             true,
             "moment/locale",
-            "antd/lib/locale-provider"
-        ]
+            "antd/lib",
+            "firebase"
+        ],
+        "max-line-length": false,
+        "object-literal-sort-keys": false,
+        "no-empty-interface": false,
+        "typedef": [
+            true,
+            "call-signature"
+        ],
+        "jsx-no-multiline-js": false,
+        "no-implicit-dependencies": [true, "dev"]
     }
 }

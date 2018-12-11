@@ -1,4 +1,3 @@
-import { notification } from "antd";
 import React from "react";
 import { ISchool } from "../../services/interfaces/ISchool";
 
@@ -29,7 +28,7 @@ export default class SchoolForm extends React.Component<ISchoolFormProps, ISchoo
         this.handleChange = this.handleChange.bind(this);
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <form onSubmit={this.handleSubmit}>
                 <div className="field">
@@ -60,7 +59,7 @@ export default class SchoolForm extends React.Component<ISchoolFormProps, ISchoo
         );
     }
 
-    private handleSubmit(event: React.FormEvent) {
+    private handleSubmit(event: React.FormEvent): void {
         event.preventDefault();
 
         this.setState({isLoading: true});
@@ -79,7 +78,7 @@ export default class SchoolForm extends React.Component<ISchoolFormProps, ISchoo
             });
     }
 
-    private handleChange(event: React.FormEvent<HTMLInputElement>) {
+    private handleChange(event: React.FormEvent<HTMLInputElement>): void {
         const target = event.currentTarget;
 
         switch (target.name) {
@@ -94,7 +93,7 @@ export default class SchoolForm extends React.Component<ISchoolFormProps, ISchoo
         }
     }
 
-    private resetForm() {
+    private resetForm(): void {
         this.setState({school: this.emptySchool});
     }
 }

@@ -1,14 +1,11 @@
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+import "firebase/functions";
 import firebaseConfig from "./firebaseConfig";
 
-// tslint:disable-next-line:no-submodule-imports
-import firebase from "firebase/app";
-// tslint:disable-next-line:no-submodule-imports
-import "firebase/firestore";
-// tslint:disable-next-line:no-submodule-imports
-import "firebase/functions";
-
 export class FirebaseInitializer {
-    public static initialize() {
+    public static initialize(): void {
         firebase.initializeApp(firebaseConfig);
         firebase.firestore().settings({timestampsInSnapshots: true});
     }

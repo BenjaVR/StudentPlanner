@@ -1,12 +1,13 @@
 import { notification } from "antd";
 import React from "react";
-import { RouteComponentProps } from "react-router";
 import { SchoolForm } from "../../components/SchoolForm";
 import { SchoolList } from "../../components/SchoolList";
+import { RoutePageComponentProps } from "../../routes";
 import { SchoolsService } from "../../services/firestore/SchoolsService";
 import { ISchool } from "../../services/interfaces/ISchool";
+import { SignedInLayout } from "../../components/Layout/SignedInLayout/SignedInLayout";
 
-interface ISchoolsPageProps extends RouteComponentProps<any> {
+interface ISchoolsPageProps extends RoutePageComponentProps {
 }
 
 interface ISchoolsPageState {
@@ -27,28 +28,27 @@ export default class SchoolsPage extends React.Component<ISchoolsPageProps, ISch
         this.addSchool = this.addSchool.bind(this);
     }
 
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.fetchSchools();
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
-            <div>
+            <SignedInLayout>
                 <SchoolList schools={this.state.schools} />
                 <SchoolForm addSchool={this.addSchool} />
-            </div>
+            </SignedInLayout>
         );
     }
 
-    private fetchSchools() {
+    private fetchSchools(): void {
         this.schoolsService.listSchools()
             .then((schools: ISchool[]) => {
                 this.setState({ schools });
             })
             .catch((error: Error) => {
                 notification.error({
-                    message: error.message, // TODO: show this message or choose a different one?
-                    placement: "bottomRight", // TODO: global config?
+                    message: error.message // TODO: show this message or choose a different one?
                 });
             });
     }
@@ -69,13 +69,11 @@ export default class SchoolsPage extends React.Component<ISchoolsPageProps, ISch
                 this.fetchSchools();
                 notification.success({
                     message: "School successfully added!",
-                    placement: "bottomRight", // TODO: global config?
                 });
             })
             .catch(() => {
                 notification.error({
                     message: "School could not be added!",
-                    placement: "bottomRight", // TODO: global config?
                 });
             });
 
