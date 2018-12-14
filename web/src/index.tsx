@@ -13,7 +13,8 @@ import store from "./stores";
 
 // Polyfills
 es6promise.polyfill();
-import "whatwg-fetch"; // Will automatically polyfill window.fetch
+import "whatwg-fetch";
+import { AuthChecker } from "./components/AuthChecker"; // Will automatically polyfill window.fetch
 
 // Firebase initialization
 FirebaseInitializer.initialize();
@@ -25,7 +26,9 @@ moment.locale("nl-be");
 ReactDOM.render(
     <LocaleProvider locale={enabledLocale}>
         <Provider store={store}>
-            <App />
+            <AuthChecker>
+                <App/>
+            </AuthChecker>
         </Provider>
     </LocaleProvider>,
     document.getElementById("root"),

@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { IRoute, routes } from "../../routes";
 import withAuthentication from "../HOC/withAuthentication";
-import LoginForm from "../LoginForm";
+import { LoginForm } from "../LoginForm";
 
 interface IMenuItem {
     route: IRoute;

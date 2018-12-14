@@ -8,7 +8,7 @@ type AuthAction =
     LogoutAction |
     CheckLoggedInAction ;
 
-type AuthStatus =
+export type AuthStatus =
     "INITIAL_AUTH_CHECKING" |
     "NOT_AUTHENTICATED" |
     "AUTHENTICATING" |

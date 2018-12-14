@@ -73,10 +73,6 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                 {this.props.auth.status === "AUTHENTICATED" &&
                 <Button type="dashed" onClick={this.handleLogout} htmlType="button">Log out</Button>
                 }
-
-                {this.props.auth.status === "INITIAL_AUTH_CHECKING" &&
-                <Spin size="large"/>
-                }
             </React.Fragment>
         );
     }
@@ -128,4 +124,4 @@ const ConnectedLoginForm = connect<IStateProps, IDispatchProps, ILoginFormProps,
     mapStateToProps, mapDispatchToProps)(LoginForm);
 const WrappedLoginForm = Form.create<ILoginFormProps>()(ConnectedLoginForm);
 
-export default WrappedLoginForm;
+export { WrappedLoginForm as LoginForm };
