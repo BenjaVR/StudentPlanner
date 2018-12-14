@@ -21,10 +21,15 @@ interface ILoginFailureAction extends Action {
     };
 }
 
+interface ILoginIgnoredAction extends Action {
+    type: "LOGIN_IGNORED";
+}
+
 export type LoginAction =
     ILoginStartedAction |
     ILoginSuccessAction |
-    ILoginFailureAction;
+    ILoginFailureAction |
+    ILoginIgnoredAction;
 
 function actionLoginStarted(): ILoginStartedAction {
     return {
@@ -51,8 +56,19 @@ function actionLoginFailure(error: firebase.FirebaseError): ILoginFailureAction 
     };
 }
 
+function actionLoginIgnored(): ILoginIgnoredAction {
+    return {
+        type: "LOGIN_IGNORED",
+    };
+}
+
 export function login(username: string, password: string): (d: Dispatch) => void {
     return (dispatch: Dispatch) => {
+        // Do not attempt to log in if the user is already logged in.
+        if (Firebase.auth().currentUser != null) {
+            return dispatch(actionLoginIgnored());
+        }
+
         dispatch(actionLoginStarted());
 
         Firebase.auth().signInWithEmailAndPassword(username, password)

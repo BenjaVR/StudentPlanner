@@ -27,10 +27,6 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
         this.handleLogout = this.handleLogout.bind(this);
     }
 
-    public componentDidMount(): void {
-        this.props.checkLoggedIn();
-    }
-
     public render(): React.ReactNode {
         const { getFieldDecorator } = this.props.form;
 
@@ -109,14 +105,12 @@ function mapStateToProps(state: IApplicationState): IStateProps {
 interface IDispatchProps {
     login: (username: string, password: string) => void;
     logout: () => void;
-    checkLoggedIn: () => void;
 }
 
 function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
     return {
         login: bindActionCreators(login, dispatch),
         logout: bindActionCreators(logout, dispatch),
-        checkLoggedIn: bindActionCreators(checkLoggedIn, dispatch),
     };
 }
 

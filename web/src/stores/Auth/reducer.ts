@@ -56,6 +56,7 @@ export function authReducer(state: IAuthState = initialState, action: AuthAction
                 user: undefined,
             };
 
+        case "LOGIN_IGNORED":
         case "LOGOUT_STARTED":
         default:
             return state;
