@@ -28,14 +28,12 @@ export function authReducer(state: IAuthState = initialState, action: AuthAction
                 ...state,
                 status: "AUTHENTICATING",
             };
-
         case "LOGIN_SUCCESS":
             return {
                 ...state,
                 status: "AUTHENTICATED",
                 user: action.payload.user,
             };
-
         case "LOGIN_FAILURE":
             return {
                 ...state,
@@ -45,14 +43,7 @@ export function authReducer(state: IAuthState = initialState, action: AuthAction
 
         case "LOGOUT_STARTED":
             return state;
-
         case "LOGOUT_SUCCESS":
-            return {
-                ...state,
-                status: "NOT_AUTHENTICATED",
-                user: undefined,
-            };
-
         case "LOGOUT_FAILURE":
             return {
                 ...state,
