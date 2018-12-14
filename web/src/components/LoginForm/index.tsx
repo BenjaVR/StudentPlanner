@@ -1,10 +1,11 @@
-import { Button, Form, Icon, Input } from "antd";
+import { Button, Form, Icon, Input, Spin } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { IApplicationState } from "../../stores";
+import { checkLoggedIn } from "../../stores/Auth/checkLoggedInAction";
 import { login } from "../../stores/Auth/loginActions";
 import { logout } from "../../stores/Auth/logoutActions";
 import { IAuthState } from "../../stores/Auth/reducer";
@@ -24,6 +25,10 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+    }
+
+    public componentDidMount(): void {
+        this.props.checkLoggedIn();
     }
 
     public render(): React.ReactNode {
@@ -62,11 +67,15 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
 
                 <p>STATUS: {this.props.auth.status}</p>
                 {this.props.auth.user && this.props.auth.status === "AUTHENTICATED" &&
-                    <h1>Welcome, {this.props.auth.user.email}!</h1>
+                <h1>Welcome, {this.props.auth.user.email}!</h1>
                 }
 
                 {this.props.auth.status === "AUTHENTICATED" &&
-                    <Button type="dashed" onClick={this.handleLogout}>Log out</Button>
+                <Button type="dashed" onClick={this.handleLogout} htmlType="button">Log out</Button>
+                }
+
+                {this.props.auth.status === "INITIAL_AUTH_CHECKING" &&
+                <Spin size="large"/>
                 }
             </React.Fragment>
         );
@@ -104,12 +113,14 @@ function mapStateToProps(state: IApplicationState): IStateProps {
 interface IDispatchProps {
     login: (username: string, password: string) => void;
     logout: () => void;
+    checkLoggedIn: () => void;
 }
 
 function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
     return {
         login: bindActionCreators(login, dispatch),
         logout: bindActionCreators(logout, dispatch),
+        checkLoggedIn: bindActionCreators(checkLoggedIn, dispatch),
     };
 }
 

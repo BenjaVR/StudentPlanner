@@ -1,12 +1,15 @@
 import firebase from "firebase";
+import { CheckLoggedInAction } from "./checkLoggedInAction";
 import { LoginAction } from "./loginActions";
 import { LogoutAction } from "./logoutActions";
 
 type AuthAction =
     LoginAction |
-    LogoutAction;
+    LogoutAction |
+    CheckLoggedInAction ;
 
 type AuthStatus =
+    "INITIAL_AUTH_CHECKING" |
     "NOT_AUTHENTICATED" |
     "AUTHENTICATING" |
     "AUTHENTICATED";
@@ -22,13 +25,20 @@ const initialState: IAuthState = {
 };
 
 export function authReducer(state: IAuthState = initialState, action: AuthAction): IAuthState {
-    switch(action.type) {
+    switch (action.type) {
+        case "CHECKLOGGEDIN_INITIAL":
+            return {
+                ...state,
+                status: "INITIAL_AUTH_CHECKING",
+            };
+
         case "LOGIN_STARTED":
             return {
                 ...state,
                 status: "AUTHENTICATING",
             };
 
+        case "CHECKLOGGEDIN_LOGGEDIN":
         case "LOGIN_SUCCESS":
             return {
                 ...state,
@@ -36,6 +46,7 @@ export function authReducer(state: IAuthState = initialState, action: AuthAction
                 user: action.payload.user,
             };
 
+        case "CHECKLOGGEDIN_LOGGEDOUT":
         case "LOGIN_FAILURE":
         case "LOGOUT_SUCCESS":
         case "LOGOUT_FAILURE":
