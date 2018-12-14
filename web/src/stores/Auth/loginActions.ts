@@ -1,4 +1,4 @@
-import * as firebase from "firebase";
+import firebase from "firebase";
 import { Action, Dispatch } from "redux";
 import { Firebase } from "../../services/firebase/FirebaseInitializer";
 

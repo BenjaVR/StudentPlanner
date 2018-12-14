@@ -22,7 +22,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public render(): React.ReactNode {
         return (
-            <LoginForm/>
+            <LoginForm />
             // <BrowserRouter>
             //     <Switch>
             //         <Route exact={true} path={routes.logInRoute.url} component={routes.logInRoute.component}/>

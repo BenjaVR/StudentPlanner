@@ -3,7 +3,7 @@ import firebase from "firebase";
 import React from "react";
 import { connect, MapStateToProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { login } from "../../stores/Auth/actions";
+import { login } from "../../stores/Auth/loginActions";
 
 interface IAuthCheckerProps {
 }

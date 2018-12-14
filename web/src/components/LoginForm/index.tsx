@@ -5,7 +5,8 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { IApplicationState } from "../../stores";
-import { login } from "../../stores/Auth/actions";
+import { login } from "../../stores/Auth/loginActions";
+import { logout } from "../../stores/Auth/logoutActions";
 import { IAuthState } from "../../stores/Auth/reducer";
 
 interface ILoginFormProps {
@@ -22,6 +23,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
         super(props);
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     public render(): React.ReactNode {
@@ -62,6 +64,10 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                 {this.props.auth.user && this.props.auth.status === "AUTHENTICATED" &&
                     <h1>Welcome, {this.props.auth.user.email}!</h1>
                 }
+
+                {this.props.auth.status === "AUTHENTICATED" &&
+                    <Button type="dashed" onClick={this.handleLogout}>Log out</Button>
+                }
             </React.Fragment>
         );
     }
@@ -77,6 +83,12 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
             }
         });
     }
+
+    private handleLogout(event: React.FormEvent): void {
+        event.preventDefault();
+
+        this.props.logout();
+    }
 }
 
 interface IStateProps {
@@ -91,11 +103,13 @@ function mapStateToProps(state: IApplicationState): IStateProps {
 
 interface IDispatchProps {
     login: (username: string, password: string) => void;
+    logout: () => void;
 }
 
 function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
     return {
         login: bindActionCreators(login, dispatch),
+        logout: bindActionCreators(logout, dispatch),
     };
 }
 

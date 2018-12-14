@@ -25,7 +25,7 @@ moment.locale("nl-be");
 ReactDOM.render(
     <LocaleProvider locale={enabledLocale}>
         <Provider store={store}>
-            <App/>
+            <App />
         </Provider>
     </LocaleProvider>,
     document.getElementById("root"),

@@ -1,5 +1,10 @@
 import firebase from "firebase";
-import { LoginAction } from "./actions";
+import { LoginAction } from "./loginActions";
+import { LogoutAction } from "./logoutActions";
+
+type AuthAction =
+    LoginAction |
+    LogoutAction;
 
 type AuthStatus =
     "NOT_AUTHENTICATED" |
@@ -16,7 +21,7 @@ const initialState: IAuthState = {
     user: undefined,
 };
 
-export function authReducer(state: IAuthState = initialState, action: LoginAction): IAuthState {
+export function authReducer(state: IAuthState = initialState, action: AuthAction): IAuthState {
     switch(action.type) {
         case "LOGIN_STARTED":
             return {
@@ -32,6 +37,23 @@ export function authReducer(state: IAuthState = initialState, action: LoginActio
             };
 
         case "LOGIN_FAILURE":
+            return {
+                ...state,
+                status: "NOT_AUTHENTICATED",
+                user: undefined,
+            };
+
+        case "LOGOUT_STARTED":
+            return state;
+
+        case "LOGOUT_SUCCESS":
+            return {
+                ...state,
+                status: "NOT_AUTHENTICATED",
+                user: undefined,
+            };
+
+        case "LOGOUT_FAILURE":
             return {
                 ...state,
                 status: "NOT_AUTHENTICATED",
