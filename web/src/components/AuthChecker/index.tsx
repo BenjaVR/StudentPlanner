@@ -3,8 +3,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { IApplicationState } from "../../stores";
-import { checkLoggedIn } from "../../stores/Auth/checkLoggedInAction";
-import { AuthStatus } from "../../stores/Auth/reducer";
+import { checkLoggedIn } from "../../stores/auth/checkLoggedInAction";
+import { AuthStatus } from "../../stores/auth/reducer";
 
 interface IAuthCheckerProps {
 }

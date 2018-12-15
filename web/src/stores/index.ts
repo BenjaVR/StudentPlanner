@@ -1,7 +1,7 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
-import { authReducer, IAuthState } from "./Auth/reducer";
+import { authReducer, IAuthState } from "./auth/reducer";
 
 export interface IApplicationState {
     auth: IAuthState;

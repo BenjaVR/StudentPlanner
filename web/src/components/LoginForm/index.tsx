@@ -5,10 +5,10 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { IApplicationState } from "../../stores";
-import { checkLoggedIn } from "../../stores/Auth/checkLoggedInAction";
-import { login } from "../../stores/Auth/loginActions";
-import { logout } from "../../stores/Auth/logoutActions";
-import { IAuthState } from "../../stores/Auth/reducer";
+import { checkLoggedIn } from "../../stores/auth/checkLoggedInAction";
+import { login } from "../../stores/auth/loginActions";
+import { logout } from "../../stores/auth/logoutActions";
+import { IAuthState } from "../../stores/auth/reducer";
 
 interface ILoginFormProps {
 }
