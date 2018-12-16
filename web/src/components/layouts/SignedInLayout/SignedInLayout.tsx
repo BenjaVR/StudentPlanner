@@ -16,7 +16,7 @@ interface IMenuItem {
     iconType: string;
 }
 
-export class SignedInLayout extends React.Component<ISignedInLayoutProps, ISignedInLayoutState> {
+class SignedInLayout extends React.Component<ISignedInLayoutProps, ISignedInLayoutState> {
 
     private menuItems: IMenuItem[] = [
         { route: routes.studentsRoute, iconType: "team" },
@@ -87,3 +87,5 @@ export class SignedInLayout extends React.Component<ISignedInLayoutProps, ISigne
         }
     }
 }
+
+export default SignedInLayout;

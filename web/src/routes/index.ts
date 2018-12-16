@@ -1,11 +1,9 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { IWithAuthenticationState } from "../components/HOC/withAuthentication";
-import { LogInPage } from "../pages/LogInPage";
+import { LogInPage } from "../components/auth/LogInPage";
 import { SchoolsPage } from "../pages/SchoolsPage";
-import { SignUpPage } from "../pages/SignUpPage";
 
-export type RoutePageComponentProps = RouteComponentProps<any> & IWithAuthenticationState;
+export type RoutePageComponentProps = RouteComponentProps<any>;
 
 export interface IRoute {
     title: string;
@@ -19,12 +17,6 @@ const logInRoute: IRoute = {
     title: "Log In",
     url: "/login",
     component: LogInPage,
-};
-
-const signUpRoute: IRoute = {
-    title: "Sign Up",
-    url: "/signup",
-    component: SignUpPage,
 };
 
 const schoolsRoute: IRoute = {
@@ -41,7 +33,6 @@ const studentsRoute: IRoute = {
 
 export const routes = {
     logInRoute,
-    signUpRoute,
     schoolsRoute,
     studentsRoute,
 };

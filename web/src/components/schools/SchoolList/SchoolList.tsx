@@ -1,13 +1,13 @@
 import React from "react";
-import { ISchool } from "../../services/interfaces/ISchool";
+import { ISchool } from "../../../services/interfaces/ISchool";
 
 interface ISchoolListProps {
     schools: ISchool[];
 }
 
-export default class SchoolList extends React.Component<ISchoolListProps> {
+class SchoolList extends React.Component<ISchoolListProps> {
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <table className="table">
                 <thead>
@@ -22,7 +22,7 @@ export default class SchoolList extends React.Component<ISchoolListProps> {
         );
     }
 
-    private renderSchoolRow(school: ISchool) {
+    private renderSchoolRow(school: ISchool): React.ReactNode {
         return (
             <tr key={school.id}>
                 <td>{school.name}</td>
@@ -30,3 +30,5 @@ export default class SchoolList extends React.Component<ISchoolListProps> {
         );
     }
 }
+
+export default SchoolList;

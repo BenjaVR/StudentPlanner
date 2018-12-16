@@ -1,5 +1,5 @@
 import { Action, Dispatch } from "redux";
-import { Firebase } from "../../services/firebase/FirebaseInitializer";
+import { Firebase } from "../../../services/firebase/FirebaseInitializer";
 
 interface ILogoutStartedAction extends Action {
     type: "LOGOUT_STARTED";

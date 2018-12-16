@@ -1,5 +1,5 @@
 import React from "react";
-import { ISchool } from "../../services/interfaces/ISchool";
+import { ISchool } from "../../../services/interfaces/ISchool";
 
 interface ISchoolFormProps {
     addSchool: (school: ISchool) => Promise<void>;
@@ -10,7 +10,7 @@ interface ISchoolFormState {
     school: ISchool;
 }
 
-export default class SchoolForm extends React.Component<ISchoolFormProps, ISchoolFormState> {
+class SchoolForm extends React.Component<ISchoolFormProps, ISchoolFormState> {
 
     private readonly emptySchool: ISchool = {
         name: "",
@@ -97,3 +97,5 @@ export default class SchoolForm extends React.Component<ISchoolFormProps, ISchoo
         this.setState({school: this.emptySchool});
     }
 }
+
+export default SchoolForm;

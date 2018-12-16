@@ -6,15 +6,16 @@ import "moment/locale/nl-be";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import "whatwg-fetch";
 import App from "./components/App/App";
+import { AuthChecker } from "./components/auth/AuthChecker";
 import "./index.scss";
 import { FirebaseInitializer } from "./services/firebase/FirebaseInitializer";
 import store from "./stores";
 
 // Polyfills
 es6promise.polyfill();
-import "whatwg-fetch";
-import { AuthChecker } from "./components/AuthChecker"; // Will automatically polyfill window.fetch
+/* the "whatwg-fetch" import will automatically polyfill window.fetch */
 
 // Firebase initialization
 FirebaseInitializer.initialize();

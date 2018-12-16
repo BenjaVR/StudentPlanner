@@ -1,12 +1,5 @@
 import firebase from "firebase";
-import { CheckLoggedInAction } from "./checkLoggedInAction";
-import { LoginAction } from "./loginActions";
-import { LogoutAction } from "./logoutActions";
-
-type AuthAction =
-    LoginAction |
-    LogoutAction |
-    CheckLoggedInAction ;
+import { AuthAction } from "./actions";
 
 export type AuthStatus =
     "INITIAL_AUTH_CHECKING" |

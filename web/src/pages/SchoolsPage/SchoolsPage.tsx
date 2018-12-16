@@ -1,11 +1,11 @@
 import { notification } from "antd";
 import React from "react";
-import { SchoolForm } from "../../components/SchoolForm";
-import { SchoolList } from "../../components/SchoolList";
+import { SignedInLayout } from "../../components/layouts/SignedInLayout";
+import { SchoolForm } from "../../components/schools/SchoolForm";
+import { SchoolList } from "../../components/schools/SchoolList";
 import { RoutePageComponentProps } from "../../routes";
 import { SchoolsService } from "../../services/firestore/SchoolsService";
 import { ISchool } from "../../services/interfaces/ISchool";
-import { SignedInLayout } from "../../components/Layout/SignedInLayout/SignedInLayout";
 
 interface ISchoolsPageProps extends RoutePageComponentProps {
 }
@@ -48,7 +48,7 @@ export default class SchoolsPage extends React.Component<ISchoolsPageProps, ISch
             })
             .catch((error: Error) => {
                 notification.error({
-                    message: error.message // TODO: show this message or choose a different one?
+                    message: error.message, // TODO: show this message or choose a different one?
                 });
             });
     }

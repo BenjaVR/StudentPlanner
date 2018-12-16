@@ -4,11 +4,11 @@ import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { IApplicationState } from "../../stores";
-import { checkLoggedIn } from "../../stores/auth/checkLoggedInAction";
-import { login } from "../../stores/auth/loginActions";
-import { logout } from "../../stores/auth/logoutActions";
-import { IAuthState } from "../../stores/auth/reducer";
+import { IApplicationState } from "../../../stores";
+import { checkLoggedIn } from "../../../stores/auth/actions/checkLoggedInAction";
+import { login } from "../../../stores/auth/actions/loginActions";
+import { logout } from "../../../stores/auth/actions/logoutActions";
+import { IAuthState } from "../../../stores/auth/reducer";
 
 interface ILoginFormProps {
 }
@@ -118,4 +118,4 @@ const ConnectedLoginForm = connect<IStateProps, IDispatchProps, ILoginFormProps,
     mapStateToProps, mapDispatchToProps)(LoginForm);
 const WrappedLoginForm = Form.create<ILoginFormProps>()(ConnectedLoginForm);
 
-export { WrappedLoginForm as LoginForm };
+export default WrappedLoginForm;

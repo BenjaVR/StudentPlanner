@@ -2,9 +2,9 @@ import { Spin } from "antd";
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { IApplicationState } from "../../stores";
-import { checkLoggedIn } from "../../stores/auth/checkLoggedInAction";
-import { AuthStatus } from "../../stores/auth/reducer";
+import { IApplicationState } from "../../../stores";
+import { checkLoggedIn } from "../../../stores/auth/actions/checkLoggedInAction";
+import { AuthStatus } from "../../../stores/auth/reducer";
 
 interface IAuthCheckerProps {
 }
@@ -52,4 +52,4 @@ function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
 const ConnectedAuthChecker = connect<IStateProps, IDispatchProps, IAuthCheckerProps, IApplicationState>(
     mapStateToProps, mapDispatchToProps)(AuthChecker);
 
-export { ConnectedAuthChecker as AuthChecker };
+export default ConnectedAuthChecker;
