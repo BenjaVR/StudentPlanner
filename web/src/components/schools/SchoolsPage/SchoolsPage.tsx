@@ -35,7 +35,7 @@ export default class SchoolsPage extends React.Component<ISchoolsPageProps, ISch
     public render(): React.ReactNode {
         return (
             <SignedInLayout>
-                <SchoolList schools={this.state.schools} />
+                <SchoolList />
                 <SchoolForm addSchool={this.addSchool} />
             </SignedInLayout>
         );

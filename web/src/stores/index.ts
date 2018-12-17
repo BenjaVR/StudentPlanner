@@ -2,13 +2,16 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 import { authReducer, IAuthState } from "./auth/reducer";
+import { ISchoolsState, schoolsReducer } from "./schools/reducer";
 
 export interface IApplicationState {
     auth: IAuthState;
+    schools: ISchoolsState;
 }
 
 const rootReducer = combineReducers<IApplicationState>({
     auth: authReducer,
+    schools: schoolsReducer,
 });
 
 const store = createStore(

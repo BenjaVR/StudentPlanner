@@ -53,7 +53,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                             <Input
                                 prefix={<Icon type="user"/>}
                                 placeholder="Username"
-                                disabled={this.props.auth.status === "LOGGING_IN"}
+                                disabled={this.props.authStore.status === "LOGGING_IN"}
                             />,
                         )}
                     </FormItem>
@@ -66,24 +66,24 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                             <Input
                                 prefix={<Icon type="lock"/>}
                                 placeholder="Password"
-                                disabled={this.props.auth.status === "LOGGING_IN"}
+                                disabled={this.props.authStore.status === "LOGGING_IN"}
                             />,
                         )}
                     </FormItem>
 
                     <FormItem>
-                        <Button type="primary" htmlType="submit" loading={this.props.auth.status === "LOGGING_IN"}>
+                        <Button type="primary" htmlType="submit" loading={this.props.authStore.status === "LOGGING_IN"}>
                             Log in
                         </Button>
                     </FormItem>
                 </Form>
 
-                <p>STATUS: {this.props.auth.status}</p>
-                {this.props.auth.user &&
-                <h1>Welcome, {this.props.auth.user.email}!</h1>
+                <p>STATUS: {this.props.authStore.status}</p>
+                {this.props.authStore.user &&
+                <h1>Welcome, {this.props.authStore.user.email}!</h1>
                 }
 
-                {this.props.auth.status === "LOGGED_IN" &&
+                {this.props.authStore.status === "LOGGED_IN" &&
                 <Button type="dashed" onClick={this.handleLogout} htmlType="button">Log out</Button>
                 }
             </React.Fragment>
@@ -132,12 +132,12 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
 }
 
 interface IStateProps {
-    auth: IAuthState;
+    authStore: IAuthState;
 }
 
 function mapStateToProps(state: IApplicationState): IStateProps {
     return {
-        auth: state.auth,
+        authStore: state.auth,
     };
 }
 

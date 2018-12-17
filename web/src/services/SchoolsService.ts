@@ -1,10 +1,20 @@
 import { ISchool } from "shared/dist/models/School";
 import { FirestoreServiceBase } from "./firestore/FirestoreServiceBase";
+import { FirebaseFunctions } from "./functions/FirebaseFunctions";
 
 export class SchoolsService extends FirestoreServiceBase {
 
+    private static instance: SchoolsService;
+
     private readonly schoolsCollection = "schools";
     private readonly schoolsRef = this.firestore.collection(this.schoolsCollection);
+
+    public static getInstance(): SchoolsService {
+        if (this.instance === undefined) {
+            this.instance = new SchoolsService();
+        }
+        return this.instance;
+    }
 
     public listSchools(): Promise<ISchool[]> {
         return new Promise<ISchool[]>((resolve, reject) => {
@@ -26,13 +36,11 @@ export class SchoolsService extends FirestoreServiceBase {
 
     public addSchool(school: ISchool): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.schoolsRef.add(school)
+            FirebaseFunctions.addSchoolFunction({ school })
                 .then(() => {
-                    return resolve();
+                    resolve();
                 })
-                .catch((error) => {
-                    return reject(error);
-                });
+                .catch(reject);
         });
     }
 }

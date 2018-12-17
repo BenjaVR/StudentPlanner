@@ -1,10 +1,7 @@
 import firebase from "firebase";
 import { Action, Dispatch } from "redux";
-import { ILoginDetails, validateLoginDetails } from "shared/dist/models/LoginDetails";
+import { ILoginDetails } from "shared/dist/models/LoginDetails";
 import { Firebase } from "../../../config/FirebaseInitializer";
-import { notification } from "antd";
-import i18next from "i18next";
-import { ITranslations } from "shared/dist/translations/types";
 
 interface ILoginStartedAction extends Action {
     type: "LOGIN_STARTED";

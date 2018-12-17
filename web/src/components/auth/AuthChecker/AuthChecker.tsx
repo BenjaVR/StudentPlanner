@@ -25,20 +25,20 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
     public componentDidUpdate(prevProps: AuthCheckerProps): void {
         const { t } = this.props;
 
-        if (prevProps.auth.status === "LOGGING_IN" && this.props.auth.status === "LOGGED_IN") {
+        if (prevProps.authStore.status === "LOGGING_IN" && this.props.authStore.status === "LOGGED_IN") {
             const message: keyof ITranslations = "auth.logged_in_successfully";
             notification.success({ message: t(message) });
         }
 
-        if (prevProps.auth.status === "LOGGING_IN" && this.props.auth.status === "LOGGED_OUT") {
+        if (prevProps.authStore.status === "LOGGING_IN" && this.props.authStore.status === "LOGGED_OUT") {
             const message: keyof ITranslations = "auth.logging_in_failed";
             notification.error({ message: t(message) });
         }
 
         // performance.navigation.type === 1 means a page refresh, and we do not show the "welcome back" message in that case.
-        if (prevProps.auth.status === "CHECKING_LOGGED_IN" && this.props.auth.status === "LOGGED_IN" && performance.navigation.type !== 1) {
+        if (prevProps.authStore.status === "CHECKING_LOGGED_IN" && this.props.authStore.status === "LOGGED_IN" && performance.navigation.type !== 1) {
             const message: keyof ITranslations = "auth.welcome_back{{username}}";
-            const user = this.props.auth.user as firebase.User;
+            const user = this.props.authStore.user as firebase.User;
             notification.success({
                 message: t(message, {
                     username: user.displayName !== null ? user.displayName : user.email,
@@ -46,7 +46,7 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
             });
         }
 
-        if (prevProps.auth.status === "LOGGING_OUT" && this.props.auth.status === "LOGGED_OUT") {
+        if (prevProps.authStore.status === "LOGGING_OUT" && this.props.authStore.status === "LOGGED_OUT") {
             const message: keyof ITranslations = "auth.logged_out_successfully";
             notification.info({ message: t(message) });
         }
@@ -54,7 +54,7 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
 
     public render(): React.ReactNode {
         return (
-            <Spin spinning={this.props.auth.status === "CHECKING_LOGGED_IN"} size="large">
+            <Spin spinning={this.props.authStore.status === "CHECKING_LOGGED_IN"} size="large">
                 {this.props.children}
             </Spin>
         );
@@ -62,12 +62,12 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
 }
 
 interface IStateProps {
-    auth: IAuthState;
+    authStore: IAuthState;
 }
 
 function mapStateToProps(state: IApplicationState): IStateProps {
     return {
-        auth: state.auth,
+        authStore: state.auth,
     };
 }
 

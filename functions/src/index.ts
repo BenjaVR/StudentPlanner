@@ -4,6 +4,7 @@ import { CallableContext, HttpsError } from "firebase-functions/lib/providers/ht
 import { ISchool, validateSchool } from "shared/dist/models/School";
 import { IFirebaseFunctionParam } from "shared/dist/firebase/interfaces";
 
+admin.initializeApp();
 const db = admin.firestore();
 
 export const test = functions.https.onCall((data, context) => {
