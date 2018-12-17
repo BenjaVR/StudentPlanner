@@ -1,21 +1,8 @@
 service cloud.firestore {
     match /databases/{database}/documents {
         match /{document=**} {
-            allow read, write: if false;
+            allow read: if request.auth.uid != null;
+            allow write if false;
         }
-
-        match /schools/{school} {
-            allow read;
-            allow write: if hasFields(['name'])
-                         && isNotEmpty('name');
-        }
-    }
-
-    function hasFields(fieldNames) {
-        return request.resource.data.keys().hasAll(fieldNames);
-    }
-
-    function isNotEmpty(fieldName) {
-        return request.resource.data[fieldName].size() > 0;
     }
 }
