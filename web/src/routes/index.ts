@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { LogInPage } from "../components/auth/LogInPage";
-import { SchoolsPage } from "../pages/SchoolsPage";
+import { SchoolsPage } from "../components/schools/SchoolsPage";
 
 export type RoutePageComponentProps = RouteComponentProps<any>;
 

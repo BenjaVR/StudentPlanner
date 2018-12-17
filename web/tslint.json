@@ -18,7 +18,8 @@
             true,
             "moment/locale",
             "antd/lib",
-            "firebase"
+            "firebase",
+            "shared/dist"
         ],
         "max-line-length": false,
         "object-literal-sort-keys": false,

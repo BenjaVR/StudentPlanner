@@ -1,5 +1,5 @@
 import React from "react";
-import { ISchool } from "../../../services/interfaces/ISchool";
+import { ISchool } from "shared/dist/models/School";
 
 interface ISchoolListProps {
     schools: ISchool[];

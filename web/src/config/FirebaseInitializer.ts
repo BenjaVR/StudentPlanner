@@ -15,7 +15,15 @@ const firebaseConfig = {
 export class FirebaseInitializer {
     public static initialize(): void {
         firebase.initializeApp(firebaseConfig);
+
         firebase.firestore().settings({ timestampsInSnapshots: true });
+        if (process.env.NODE_ENV === "development") {
+            firebase.firestore.setLogLevel("error");
+        } else {
+            firebase.firestore.setLogLevel("silent");
+        }
+
+        firebase.functions();
     }
 }
 

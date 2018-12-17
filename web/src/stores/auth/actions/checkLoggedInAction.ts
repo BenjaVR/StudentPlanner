@@ -1,6 +1,6 @@
 import firebase from "firebase";
 import { Action, Dispatch } from "redux";
-import { Firebase } from "../../../services/firebase/FirebaseInitializer";
+import { Firebase } from "../../../config/FirebaseInitializer";
 
 interface ICheckLoggedInStartedAction extends Action {
     type: "CHECKLOGGEDIN_INITIAL";

@@ -1,5 +1,5 @@
 import React from "react";
-import { ISchool } from "../../../services/interfaces/ISchool";
+import { ISchool } from "shared/dist/models/School";
 
 interface ISchoolFormProps {
     addSchool: (school: ISchool) => Promise<void>;
@@ -69,8 +69,9 @@ class SchoolForm extends React.Component<ISchoolFormProps, ISchoolFormState> {
             .then(() => {
                 this.resetForm();
             })
-            .catch(() => {
+            .catch((error) => {
                 // TODO: add form validation styles (red input field, ...?)
+                console.log(error);
                 return;
             })
             .finally(() => {
@@ -81,6 +82,7 @@ class SchoolForm extends React.Component<ISchoolFormProps, ISchoolFormState> {
     private handleChange(event: React.FormEvent<HTMLInputElement>): void {
         const target = event.currentTarget;
 
+        // TODO: check if one of the fields is a field of School, and then add it dynamically (instead of switch)
         switch (target.name) {
             case "name":
                 this.setState({

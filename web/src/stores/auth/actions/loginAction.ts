@@ -1,6 +1,10 @@
 import firebase from "firebase";
 import { Action, Dispatch } from "redux";
-import { Firebase } from "../../../services/firebase/FirebaseInitializer";
+import { ILoginDetails, validateLoginDetails } from "shared/dist/models/LoginDetails";
+import { Firebase } from "../../../config/FirebaseInitializer";
+import { notification } from "antd";
+import i18next from "i18next";
+import { ITranslations } from "shared/dist/translations/types";
 
 interface ILoginStartedAction extends Action {
     type: "LOGIN_STARTED";
@@ -62,7 +66,7 @@ function actionLoginIgnored(): ILoginIgnoredAction {
     };
 }
 
-export function login(username: string, password: string): (d: Dispatch) => void {
+export function login(loginDetails: ILoginDetails): (d: Dispatch) => void {
     return (dispatch: Dispatch) => {
         // Do not attempt to log in if the user is already logged in.
         if (Firebase.auth().currentUser != null) {
@@ -71,7 +75,7 @@ export function login(username: string, password: string): (d: Dispatch) => void
 
         dispatch(actionLoginStarted());
 
-        Firebase.auth().signInWithEmailAndPassword(username, password)
+        Firebase.auth().signInWithEmailAndPassword(loginDetails.username, loginDetails.password)
             .then(() => {
                 const user = Firebase.auth().currentUser;
                 if (user === null) {
@@ -81,7 +85,7 @@ export function login(username: string, password: string): (d: Dispatch) => void
                 return dispatch(actionLoginSuccess(user));
             })
             .catch((error: firebase.FirebaseError) => {
-                return dispatch(actionLoginFailure(error));
+                return dispatch(actionLoginFailure(error)); // return localized error
             });
     };
 }

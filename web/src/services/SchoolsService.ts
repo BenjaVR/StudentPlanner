@@ -1,5 +1,5 @@
-import { FirestoreServiceBase } from "../firebase/FirestoreServiceBase";
-import { ISchool } from "../interfaces/ISchool";
+import { ISchool } from "shared/dist/models/School";
+import { FirestoreServiceBase } from "./firestore/FirestoreServiceBase";
 
 export class SchoolsService extends FirestoreServiceBase {
 

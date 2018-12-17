@@ -8,9 +8,9 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import "whatwg-fetch";
 import App from "./components/App/App";
-import { AuthChecker } from "./components/auth/AuthChecker";
+import { FirebaseInitializer } from "./config/FirebaseInitializer";
+import { I18nextInitializer } from "./config/I18nextInitializer";
 import "./index.scss";
-import { FirebaseInitializer } from "./services/firebase/FirebaseInitializer";
 import store from "./stores";
 
 // Polyfills
@@ -23,13 +23,12 @@ FirebaseInitializer.initialize();
 // Locales initialization
 const enabledLocale = nlBE;
 moment.locale("nl-be");
+I18nextInitializer.initialize("nl");
 
 ReactDOM.render(
     <LocaleProvider locale={enabledLocale}>
         <Provider store={store}>
-            <AuthChecker>
-                <App/>
-            </AuthChecker>
+            <App/>
         </Provider>
     </LocaleProvider>,
     document.getElementById("root"),
