@@ -51,7 +51,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                     >
                         {getFieldDecorator<ILoginDetails>("username")(
                             <Input
-                                prefix={<Icon type="user"/>}
+                                prefix={<Icon type="user" />}
                                 placeholder="Username"
                                 disabled={this.props.authStore.status === "LOGGING_IN"}
                             />,
@@ -65,7 +65,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                         {getFieldDecorator<ILoginDetails>("password")(
                             <Input
                                 type="password"
-                                prefix={<Icon type="lock"/>}
+                                prefix={<Icon type="lock" />}
                                 placeholder="Password"
                                 disabled={this.props.authStore.status === "LOGGING_IN"}
                             />,
@@ -81,11 +81,11 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
 
                 <p>STATUS: {this.props.authStore.status}</p>
                 {this.props.authStore.user &&
-                <h1>Welcome, {this.props.authStore.user.email}!</h1>
+                    <h1>Welcome, {this.props.authStore.user.email}!</h1>
                 }
 
                 {this.props.authStore.status === "LOGGED_IN" &&
-                <Button type="dashed" onClick={this.handleLogout} htmlType="button">Log out</Button>
+                    <Button type="dashed" onClick={this.handleLogout} htmlType="button">Log out</Button>
                 }
             </React.Fragment>
         );
@@ -108,7 +108,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
     private handleLogout(event: React.FormEvent): void {
         event.preventDefault();
 
-        this.props.logout();
+        this.props.actions.logout();
     }
 
     private validateForm(doLogin: boolean): void {
@@ -127,7 +127,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
         });
 
         if (!validation.hasErrors() && doLogin) {
-            this.props.login(fieldValues);
+            this.props.actions.login(fieldValues);
         }
     }
 }
@@ -143,14 +143,18 @@ function mapStateToProps(state: IApplicationState): IStateProps {
 }
 
 interface IDispatchProps {
-    login: (loginDetails: ILoginDetails) => void;
-    logout: () => void;
+    actions: {
+        login: (loginDetails: ILoginDetails) => void;
+        logout: () => void;
+    };
 }
 
 function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
     return {
-        login: bindActionCreators(login, dispatch),
-        logout: bindActionCreators(logout, dispatch),
+        actions: bindActionCreators({
+            login,
+            logout,
+        }, dispatch),
     };
 }
 

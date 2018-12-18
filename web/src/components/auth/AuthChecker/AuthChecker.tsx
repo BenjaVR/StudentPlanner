@@ -1,7 +1,7 @@
 import { notification, Spin } from "antd";
 import React from "react";
 import { withNamespaces, WithNamespaces } from "react-i18next";
-import { connect } from "react-redux";
+import { connect, MapStateToProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { ITranslations } from "shared/dist/translations/types";
 import { IApplicationState } from "../../../stores";
@@ -32,7 +32,7 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
     }
 
     public componentDidMount(): void {
-        this.props.checkLoggedIn();
+        this.props.actions.checkLoggedIn();
     }
 
     public componentDidUpdate(prevProps: AuthCheckerProps): void {
@@ -62,7 +62,7 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
 
         if (prevProps.authStore.status === "LOGGING_OUT" && this.props.authStore.status === "LOGGED_OUT") {
             const message: keyof ITranslations = "auth.logged_out_successfully";
-            notification.info({ message: t(message) });
+            notification.success({ message: t(message) });
         }
     }
 
@@ -91,12 +91,16 @@ function mapStateToProps(state: IApplicationState): IStateProps {
 }
 
 interface IDispatchProps {
-    checkLoggedIn: () => void;
+    actions: {
+        checkLoggedIn: () => void;
+    };
 }
 
 function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
     return {
-        checkLoggedIn: bindActionCreators(checkLoggedIn, dispatch),
+        actions: bindActionCreators({
+            checkLoggedIn,
+        }, dispatch),
     };
 }
 

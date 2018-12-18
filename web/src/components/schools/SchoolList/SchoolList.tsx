@@ -15,7 +15,7 @@ type SchoolListProps = ISchoolListProps & IStateProps & IDispatchProps;
 class SchoolList extends React.Component<SchoolListProps> {
 
     public componentDidMount(): void {
-        this.props.fetchSchools();
+        this.props.actions.fetchSchools();
     }
 
     public render(): React.ReactNode {
@@ -55,12 +55,16 @@ function mapStateToProps(state: IApplicationState): IStateProps {
 }
 
 interface IDispatchProps {
-    fetchSchools: () => void;
+    actions: {
+        fetchSchools: () => void;
+    };
 }
 
 function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
     return {
-        fetchSchools: bindActionCreators(fetchSchools, dispatch),
+        actions: bindActionCreators({
+            fetchSchools,
+        }, dispatch),
     };
 }
 
