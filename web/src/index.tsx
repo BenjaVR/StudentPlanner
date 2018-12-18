@@ -1,7 +1,7 @@
-import { LocaleProvider } from "antd";
+import { LocaleProvider, notification } from "antd";
 import nlBE from "antd/lib/locale-provider/nl_BE";
 import es6promise from "es6-promise";
-import moment from "moment";
+import moment, { ISO_8601 } from "moment";
 import "moment/locale/nl-be";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -24,6 +24,11 @@ FirebaseInitializer.initialize();
 const enabledLocale = nlBE;
 moment.locale("nl-be");
 I18nextInitializer.initialize("nl");
+
+// Ant design global notification config
+notification.config({
+    duration: 8,
+});
 
 ReactDOM.render(
     <LocaleProvider locale={enabledLocale}>
