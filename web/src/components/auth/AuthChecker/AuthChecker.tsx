@@ -18,6 +18,19 @@ interface IAuthCheckerState {
 
 class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
 
+    /**
+     * This is to check if the user is refreshing the page, or actually opening it again in an new browser session.
+     */
+    private pageWasReloaded: boolean;
+    private readonly pageWasReloadedSessionKey = "StudentPlanner_PageReloaded";
+
+    constructor(props: AuthCheckerProps) {
+        super(props);
+
+        const sessionReloadedValue = sessionStorage.getItem(this.pageWasReloadedSessionKey);
+        this.pageWasReloaded = sessionReloadedValue !== null ? JSON.parse(sessionReloadedValue) === true : false;
+    }
+
     public componentDidMount(): void {
         this.props.checkLoggedIn();
     }
@@ -26,6 +39,7 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
         const { t } = this.props;
 
         if (prevProps.authStore.status === "LOGGING_IN" && this.props.authStore.status === "LOGGED_IN") {
+            this.setPageReloaded();
             const message: keyof ITranslations = "auth.logged_in_successfully";
             notification.success({ message: t(message) });
         }
@@ -35,8 +49,8 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
             notification.error({ message: t(message) });
         }
 
-        // performance.navigation.type === 1 means a page refresh, and we do not show the "welcome back" message in that case.
-        if (prevProps.authStore.status === "CHECKING_LOGGED_IN" && this.props.authStore.status === "LOGGED_IN" && performance.navigation.type !== 1) {
+        if (prevProps.authStore.status === "CHECKING_LOGGED_IN" && this.props.authStore.status === "LOGGED_IN" && !this.pageWasReloaded) {
+            this.setPageReloaded();
             const message: keyof ITranslations = "auth.welcome_back{{username}}";
             const user = this.props.authStore.user as firebase.User;
             notification.success({
@@ -58,6 +72,11 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
                 {this.props.children}
             </Spin>
         );
+    }
+
+    private setPageReloaded(): void {
+        sessionStorage.setItem(this.pageWasReloadedSessionKey, JSON.stringify(true));
+        this.pageWasReloaded = true;
     }
 }
 

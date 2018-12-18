@@ -64,6 +64,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                     >
                         {getFieldDecorator<ILoginDetails>("password")(
                             <Input
+                                type="password"
                                 prefix={<Icon type="lock"/>}
                                 placeholder="Password"
                                 disabled={this.props.authStore.status === "LOGGING_IN"}
