@@ -1,8 +1,8 @@
+import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
 import { Spin } from "antd";
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { ISchool } from "shared/dist/models/School";
 import { IApplicationState } from "../../../stores";
 import { fetchSchools } from "../../../stores/schools/actions";
 import { ISchoolsState } from "../../../stores/schools/reducer";

@@ -1,5 +1,5 @@
+import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
 import firebase from "firebase";
-import { ISchool } from "shared/dist/models/School";
 import { Firebase } from "../../config/FirebaseInitializer";
 
 export class FirebaseFunctions {

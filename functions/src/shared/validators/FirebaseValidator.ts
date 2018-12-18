@@ -1,4 +1,4 @@
-export default class FirebaseValidator {
+export class FirebaseValidator {
     public static hasId(value: { id?: string }) {
         return value.id !== undefined;
     }

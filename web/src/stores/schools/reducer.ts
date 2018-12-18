@@ -1,4 +1,4 @@
-import { ISchool } from "shared/dist/models/School";
+import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
 import { SchoolsAction } from "./actions";
 
 export type SchoolsLoadingStatus =

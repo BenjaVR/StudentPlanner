@@ -1,5 +1,5 @@
+import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
 import { Action, Dispatch } from "redux";
-import { ISchool } from "shared/dist/models/School";
 import { SchoolsService } from "../../../services/SchoolsService";
 
 interface IFetchSchoolsStartedAction extends Action {

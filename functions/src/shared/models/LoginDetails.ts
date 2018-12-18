@@ -1,5 +1,5 @@
 import { ValidationResult } from "../validators/ValidationResult";
-import { StringValidator } from "../validators";
+import { StringValidator } from "../validators/StringValidator";
 import { ValidationError } from "../validators/ValidationError";
 
 export interface ILoginDetails {

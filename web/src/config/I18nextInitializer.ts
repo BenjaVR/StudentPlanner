@@ -1,8 +1,8 @@
+import { En } from "@studentplanner/functions/dist/shared/translations/En";
+import { Nl } from "@studentplanner/functions/dist/shared/translations/Nl";
+import { Language } from "@studentplanner/functions/dist/shared/translations/types";
 import i18next from "i18next";
 import { reactI18nextModule } from "react-i18next";
-import { En } from "shared/dist/translations/En";
-import { Nl } from "shared/dist/translations/Nl";
-import { Language } from "shared/dist/translations/types";
 
 export class I18nextInitializer {
     public static initialize(lang: Language): void {

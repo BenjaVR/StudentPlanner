@@ -1,3 +1,5 @@
+import { ILoginDetails, validateLoginDetails } from "@studentplanner/functions/dist/shared/models/LoginDetails";
+import { ValidationError } from "@studentplanner/functions/dist/shared/validators/ValidationError";
 import { Button, Form, Icon, Input } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
@@ -5,8 +7,6 @@ import * as React from "react";
 import { withNamespaces, WithNamespaces } from "react-i18next";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { ILoginDetails, validateLoginDetails } from "shared/dist/models/LoginDetails";
-import { ValidationError } from "shared/dist/validators/ValidationError";
 import { IApplicationState } from "../../../stores";
 import { login, logout } from "../../../stores/auth/actions";
 import { IAuthState } from "../../../stores/auth/reducer";

@@ -1,9 +1,9 @@
+import { ITranslations } from "@studentplanner/functions/dist/shared/translations/types";
 import { notification, Spin } from "antd";
 import React from "react";
 import { withNamespaces, WithNamespaces } from "react-i18next";
-import { connect, MapStateToProps } from "react-redux";
+import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { ITranslations } from "shared/dist/translations/types";
 import { IApplicationState } from "../../../stores";
 import { checkLoggedIn } from "../../../stores/auth/actions";
 import { IAuthState } from "../../../stores/auth/reducer";

@@ -1,5 +1,5 @@
+import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
 import React from "react";
-import { ISchool } from "shared/dist/models/School";
 
 interface ISchoolFormProps {
     addSchool: (school: ISchool) => Promise<void>;

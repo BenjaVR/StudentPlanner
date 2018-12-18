@@ -1,6 +1,6 @@
+import { ILoginDetails } from "@studentplanner/functions/dist/shared/models/LoginDetails";
 import firebase from "firebase";
 import { Action, Dispatch } from "redux";
-import { ILoginDetails } from "shared/dist/models/LoginDetails";
 import { Firebase } from "../../../config/FirebaseInitializer";
 
 interface ILoginStartedAction extends Action {

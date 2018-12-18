@@ -1,16 +1,13 @@
 {
-  "name": "student-planner",
+  "name": "studentplanner",
+  "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build-shared": "cd ./shared && npm run build:watch",
-    "build-web": "cd ./web && npm run start",
-    "build-functions": "cd ./functions && npm run build:watch",
-    "all": "npm-run-all --continue-on-error --parallel build-shared build-web build-functions"
+    "build-web": "npm --prefix web run start",
+    "build-functions": "npm --prefix functions run build:watch",
+    "build": "npm-run-all --continue-on-error --parallel build-functions build-web"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BenjaVR/StudentPlanner.git"
-  },
+  "repository": "git+https://github.com/BenjaVR/StudentPlanner.git",
   "author": "Benjamin Van Renterghem",
   "license": "ISC",
   "bugs": {
@@ -19,5 +16,8 @@
   "homepage": "https://github.com/BenjaVR/StudentPlanner#readme",
   "devDependencies": {
     "npm-run-all": "^4.1.5"
-  }
+  },
+  "workspaces": [
+      "functions", "web"
+  ]
 }

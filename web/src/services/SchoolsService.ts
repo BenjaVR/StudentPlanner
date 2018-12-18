@@ -1,4 +1,4 @@
-import { ISchool } from "shared/dist/models/School";
+import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
 import { FirestoreServiceBase } from "./firestore/FirestoreServiceBase";
 import { FirebaseFunctions } from "./functions/FirebaseFunctions";
 

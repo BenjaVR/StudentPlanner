@@ -1,4 +1,4 @@
-interface I18nextResource {
+export interface I18nextResource {
     [key: string]: any;
 }
 

@@ -1,4 +1,5 @@
-import { FirebaseValidator, StringValidator } from "../validators";
+import { FirebaseValidator } from "../validators/FirebaseValidator";
+import { StringValidator } from "../validators/StringValidator";
 import { ValidationResult } from "../validators/ValidationResult";
 import { ValidationError } from "../validators/ValidationError";
 

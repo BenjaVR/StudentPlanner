@@ -1,6 +1,6 @@
+import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
 import { notification } from "antd";
 import React from "react";
-import { ISchool } from "shared/dist/models/School";
 import { RoutePageComponentProps } from "../../../routes";
 import { SchoolsService } from "../../../services/SchoolsService";
 import { SignedInLayout } from "../../layouts/SignedInLayout";
