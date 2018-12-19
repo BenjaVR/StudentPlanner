@@ -4743,7 +4743,7 @@ firebase-functions@^2.1.0:
     jsonwebtoken "^8.2.1"
     lodash "^4.6.1"
 
-firebase@^5.7.0:
+firebase@^5.5.8:
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-5.7.0.tgz#4e43e3f6521cfb4c1b4caf1b269a402c83713dd4"
   integrity sha512-8sQYXCUbUuzpyZS+XpBogstQE/7lvX6tPWtrUH0Cf4mH7flH/Sue5GUvZzwBpkgKOrMpI+clzuoYm/ffGi/TjQ==
@@ -7599,7 +7599,7 @@ modelo@^4.2.0:
   resolved "https://registry.yarnpkg.com/modelo/-/modelo-4.2.3.tgz#b278588a4db87fc1e5107ae3a277c0876f38d894"
   integrity sha512-9DITV2YEMcw7XojdfvGl3gDD8J9QjZTJ7ZOUuSAkP+F3T6rDbzMJuPktxptsdHYEvZcmXrCD3LMOhdSAEq6zKA==
 
-moment@2.x, moment@^2.22.2, moment@^2.23.2:
+moment@2.x, moment@^2.22.2, moment@^2.23.0:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.23.0.tgz#759ea491ac97d54bac5ad776996e2a58cc1bc225"
   integrity sha512-3IE39bHVqFbWWaPOMHZF98Q9c3LDKGTmypMiTM2QygGXXElkFWIH7GxfmlwmY2vwa+wmNsoYZmG2iusf1ZjJoA==

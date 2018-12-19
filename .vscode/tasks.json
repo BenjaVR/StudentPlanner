@@ -15,7 +15,7 @@
         },
         {
             "type": "npm",
-            "script": "all",
+            "script": "build",
             "group": {
                 "kind": "build",
                 "isDefault": true

@@ -6,6 +6,7 @@ import { IFirebaseFunctionParam } from "./shared/firebase/interfaces";
 
 admin.initializeApp();
 const db = admin.firestore();
+const auth = admin.auth();
 
 export const test = functions.https.onCall((data, context) => {
     if (!context.auth) {
@@ -19,4 +20,17 @@ export const addSchool = functions.https.onCall((param: IFirebaseFunctionParam<I
             // TODO: failed!
         }
     }));
+});
+
+/////////////////////////////
+// Authentication triggers //
+/////////////////////////////
+
+/**
+ * Disables users after they sign up. This prevents random people somehow succeeded to sign up from logging in.
+ */
+export const disableUserAfterSignUp = functions.auth.user().onCreate((user: admin.auth.UserRecord): void => {
+    auth.updateUser(user.uid, {
+        disabled: true,
+    });
 });
