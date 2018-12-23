@@ -7,14 +7,28 @@ export type SchoolsLoadingStatus =
     "LOADING_DONE" |
     "LOADING_FAILED";
 
+export type SchoolAddingStatus =
+    "NOTHING_ADDED" |
+    "ADDING" |
+    "ADDED" |
+    "FAILED";
+
 export interface ISchoolsState {
     readonly schools: ISchool[];
-    readonly loadingStatus: SchoolsLoadingStatus;
+    readonly listLoadingStatus: SchoolsLoadingStatus;
+    readonly listErrorMessage: string;
+    readonly lastAddedSchool: ISchool | undefined;
+    readonly addingStatus: SchoolAddingStatus;
+    readonly addErrorMessage: string;
 }
 
 const initialState: ISchoolsState = {
     schools: [],
-    loadingStatus: "NOT_LOADED",
+    listLoadingStatus: "NOT_LOADED",
+    listErrorMessage: "",
+    lastAddedSchool: undefined,
+    addingStatus: "NOTHING_ADDED",
+    addErrorMessage: "",
 };
 
 export function schoolsReducer(state: ISchoolsState = initialState, action: SchoolsAction): ISchoolsState {
@@ -22,21 +36,46 @@ export function schoolsReducer(state: ISchoolsState = initialState, action: Scho
         case "FETCH_SCHOOLS_STARTED":
             return {
                 ...state,
-                loadingStatus: "LOADING",
+                listLoadingStatus: "LOADING",
             };
 
         case "FETCH_SCHOOLS_SUCCESS":
             return {
                 ...state,
-                loadingStatus: "LOADING_DONE",
+                listLoadingStatus: "LOADING_DONE",
                 schools: action.payload.schools,
+                listErrorMessage: "",
             };
 
         case "FETCH_SCHOOLS_FAILURE":
             return {
                 ...state,
-                loadingStatus: "LOADING_FAILED",
+                listLoadingStatus: "LOADING_FAILED",
+                listErrorMessage: action.payload.error,
             };
+
+        case "ADD_SCHOOL_STARTED":
+            return {
+                ...state,
+                addingStatus: "ADDING"
+            }
+
+        case "ADD_SCHOOL_SUCCESS":
+            state.schools.push(action.payload.school);
+            return {
+                ...state,
+                addingStatus: "ADDED",
+                lastAddedSchool: action.payload.school,
+                addErrorMessage: ""
+            }
+
+        case "ADD_SCHOOL_FAILURE":
+            return {
+                ...state,
+                addingStatus: "FAILED",
+                addErrorMessage: action.payload.error,
+                lastAddedSchool: undefined,
+            }
 
         default:
             return state;

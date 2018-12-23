@@ -23,3 +23,7 @@ export class I18nextInitializer {
             });
     }
 }
+
+export function getCurrentLanguage(): Language {
+    return i18next.language as Language;
+}

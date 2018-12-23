@@ -1,6 +1,7 @@
 import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
 import { FirestoreServiceBase } from "./firestore/FirestoreServiceBase";
 import { FirebaseFunctions } from "./functions/FirebaseFunctions";
+import { getCurrentLanguage } from "../config/I18nextInitializer";
 
 export class SchoolsService extends FirestoreServiceBase {
 
@@ -34,12 +35,13 @@ export class SchoolsService extends FirestoreServiceBase {
         });
     }
 
-    public addSchool(school: ISchool): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            FirebaseFunctions.addSchoolFunction({ school })
-                .then(() => {
-                    resolve();
-                })
+    public addSchool(school: ISchool): Promise<ISchool> {
+        return new Promise<ISchool>((resolve, reject) => {
+            FirebaseFunctions.addSchoolFunction({
+                data: school,
+                lang: getCurrentLanguage(),
+            })
+                .then(resolve)
                 .catch(reject);
         });
     }

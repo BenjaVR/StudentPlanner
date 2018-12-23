@@ -1,7 +1,7 @@
 import { FirebaseValidator } from "../validators/FirebaseValidator";
 import { StringValidator } from "../validators/StringValidator";
-import { ValidationResult } from "../validators/ValidationResult";
 import { ValidationError } from "../validators/ValidationError";
+import { ValidationResult } from "../validators/ValidationResult";
 
 export interface ISchool {
     id?: string;
@@ -15,7 +15,7 @@ export function validateSchool(school: ISchool): ValidationResult<ISchool> {
      * id
      */
     if (FirebaseValidator.hasId(school)) {
-        result.add(new ValidationError<ISchool>("id", "validation.model_should_not_have_id"))
+        result.add(new ValidationError<ISchool>("id", "validation.model_should_not_have_id"));
     }
 
     /**

@@ -1,4 +1,4 @@
-import { ILanguage, I18nextResourceTranslations } from "./types";
+import { I18nextResourceTranslations, ILanguage } from "./types";
 
 export class En implements ILanguage {
     public getTranslations(): I18nextResourceTranslations {

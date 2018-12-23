@@ -18,6 +18,6 @@ export class ValidationResult<T> {
     }
 
     public getErrorsWithField(field: keyof T): Array<ValidationError<T>> {
-        return this.errors.filter(error => error.field === field);
+        return this.errors.filter((error) => error.field === field);
     }
 }

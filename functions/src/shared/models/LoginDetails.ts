@@ -1,6 +1,6 @@
-import { ValidationResult } from "../validators/ValidationResult";
 import { StringValidator } from "../validators/StringValidator";
 import { ValidationError } from "../validators/ValidationError";
+import { ValidationResult } from "../validators/ValidationResult";
 
 export interface ILoginDetails {
     username: string;
@@ -14,14 +14,14 @@ export function validateLoginDetails(loginDetails: ILoginDetails): ValidationRes
      * username
      */
     if (StringValidator.isEmpty(loginDetails.username)) {
-        result.add(new ValidationError<ILoginDetails>("username", "validation.field_should_not_be_empty"))
+        result.add(new ValidationError<ILoginDetails>("username", "validation.field_should_not_be_empty"));
     }
 
     /**
      * password
      */
     if (StringValidator.isEmpty(loginDetails.password)) {
-        result.add(new ValidationError<ILoginDetails>("password", "validation.field_should_not_be_empty"))
+        result.add(new ValidationError<ILoginDetails>("password", "validation.field_should_not_be_empty"));
     }
 
     return result;

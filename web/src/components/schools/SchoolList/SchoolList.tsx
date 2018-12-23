@@ -20,7 +20,7 @@ class SchoolList extends React.Component<SchoolListProps> {
 
     public render(): React.ReactNode {
         return (
-            <Spin spinning={this.props.schoolsStore.loadingStatus === "LOADING"}>
+            <Spin spinning={this.props.schoolsStore.listLoadingStatus === "LOADING"}>
                 <table className="table">
                     <thead>
                         <tr>

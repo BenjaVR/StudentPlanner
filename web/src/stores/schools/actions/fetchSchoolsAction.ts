@@ -40,7 +40,6 @@ function actionFetchSchoolsSuccess(schools: ISchool[]): IFetchSchoolsSuccessActi
     };
 }
 
-// TODO: error should be (own) specific object!
 function actionFetchSchoolsFailure(error: string): IFetchSchoolsFailureAction {
     return {
         type: "FETCH_SCHOOLS_FAILURE",
@@ -59,8 +58,7 @@ export function fetchSchools(): (d: Dispatch) => void {
                 return dispatch(actionFetchSchoolsSuccess(schools));
             })
             .catch(() => {
-                // TODO: handle error arguments
-                return dispatch(actionFetchSchoolsFailure("failed"));
+                return dispatch(actionFetchSchoolsFailure("Could not load schools.")); // TODO: translate
             });
     };
 }

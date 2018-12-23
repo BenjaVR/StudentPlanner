@@ -1,5 +1,5 @@
 import { ITranslations } from "@studentplanner/functions/dist/shared/translations/types";
-import { notification, Spin } from "antd";
+import { notification, Spin, Layout } from "antd";
 import React from "react";
 import { withNamespaces, WithNamespaces } from "react-i18next";
 import { connect } from "react-redux";
@@ -14,6 +14,8 @@ interface IAuthCheckerProps {
 type AuthCheckerProps = IAuthCheckerProps & IStateProps & IDispatchProps & WithNamespaces;
 
 interface IAuthCheckerState {
+    isDoingInitialCheck: boolean;
+    initialCheckDone: boolean;
 }
 
 class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
@@ -26,6 +28,18 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
 
     constructor(props: AuthCheckerProps) {
         super(props);
+
+        this.state = {
+            initialCheckDone: false,
+            isDoingInitialCheck: true,
+        };
+
+        window.setTimeout(() => {
+            this.setState({
+                initialCheckDone: true,
+                isDoingInitialCheck: false,
+            });
+        }, 1000);
 
         const sessionReloadedValue = sessionStorage.getItem(this.pageWasReloadedSessionKey);
         this.pageWasReloaded = sessionReloadedValue !== null ? JSON.parse(sessionReloadedValue) === true : false;
@@ -68,8 +82,12 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
 
     public render(): React.ReactNode {
         return (
-            <Spin spinning={this.props.authStore.status === "CHECKING_LOGGED_IN"} size="large">
-                {this.props.children}
+            <Spin spinning={this.state.isDoingInitialCheck} size="large" style={{ minHeight: "100vh" }}>
+                <Layout>
+                    {this.state.initialCheckDone &&
+                        this.props.children
+                    }
+                </Layout>
             </Spin>
         );
     }
