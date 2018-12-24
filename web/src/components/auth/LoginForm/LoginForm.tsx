@@ -84,11 +84,18 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
             if (!errors) {
                 const loginDetails: ILoginDetails = values;
                 Firebase.auth().signInWithEmailAndPassword(loginDetails.username, loginDetails.password)
-                    .then(() => {
-                        // TODO
+                    .then(({ user }) => {
+                        const message = user !== null && user.displayName !== null
+                            ? `Succesvol ingelogd, welkom ${user.displayName}!`
+                            : "Succesvol ingelogd";
+                        notification.success({
+                            message,
+                        });
                     })
                     .catch(() => {
-                        // TODO
+                        notification.error({
+                            message: "Er ging iets fout bij het inloggen",
+                        });
                     })
                     .finally(() => {
                         this.setState({
@@ -113,26 +120,6 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                     message: "Iets ging fout bij het uitloggen... Was u al uitgelogd?",
                 });
             });
-    }
-
-    private validateForm(doLogin: boolean): void {
-        const fields: Array<keyof ILoginDetails> = [
-            "username",
-            "password",
-        ];
-        const fieldValues = this.props.form.getFieldsValue(fields) as ILoginDetails;
-
-        const validation = validateLoginDetails(fieldValues);
-
-        this.setState({
-            doValidateOnChange: true,
-            usernameErrors: validation.getErrorsWithField("username"),
-            passwordErrors: validation.getErrorsWithField("password"),
-        });
-
-        if (!validation.hasErrors() && doLogin) {
-            this.props.actions.login(fieldValues);
-        }
     }
 }
 

@@ -28,7 +28,14 @@
             true,
             "call-signature"
         ],
+        "no-implicit-dependencies": [
+            true,
+            "dev"
+        ],
         "jsx-no-multiline-js": false,
-        "no-implicit-dependencies": [true, "dev"]
+        "jsx-equals-spacing": true,
+        "jsx-self-close": true,
+        "jsx-space-before-trailing-slash": true,
+        "jsx-wrap-multiline": true
     }
 }
