@@ -1,25 +1,17 @@
-import { ILoginDetails, validateLoginDetails } from "@studentplanner/functions/dist/shared/models/LoginDetails";
-import { ValidationError } from "@studentplanner/functions/dist/shared/validators/ValidationError";
-import { Button, Form, Icon, Input } from "antd";
+import { Button, Form, Icon, Input, notification } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
-import { withNamespaces, WithNamespaces } from "react-i18next";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
-import { IApplicationState } from "../../../stores";
-import { login, logout } from "../../../stores/auth/actions";
-import { IAuthState } from "../../../stores/auth/reducer";
+import { Firebase } from "../../../config/FirebaseInitializer";
+import { ILoginDetails } from "../../../models/LoginDetails";
 
 interface ILoginFormProps {
 }
 
-type LoginFormProps = ILoginFormProps & FormComponentProps & IStateProps & IDispatchProps & WithNamespaces;
+type LoginFormProps = ILoginFormProps & FormComponentProps;
 
 interface ILoginFormState {
-    doValidateOnChange: boolean;
-    usernameErrors: Array<ValidationError<ILoginDetails>>;
-    passwordErrors: Array<ValidationError<ILoginDetails>>;
+    isSubmitting: boolean;
 }
 
 class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
@@ -28,65 +20,54 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
         super(props);
 
         this.state = {
-            doValidateOnChange: false,
-            usernameErrors: [],
-            passwordErrors: [],
+            isSubmitting: false,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleFormChange = this.handleFormChange.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
     }
 
     public render(): React.ReactNode {
         const { getFieldDecorator } = this.props.form;
-        const { t } = this.props;
 
         return (
             <React.Fragment>
-                <Form onSubmit={this.handleSubmit} onChange={this.handleFormChange}>
-                    <FormItem
-                        validateStatus={this.state.usernameErrors.length > 0 ? "error" : "success"}
-                        help={this.state.usernameErrors.length > 0 ? t(`${this.state.usernameErrors[0].translationKey}`) : ""}
-                    >
-                        {getFieldDecorator<ILoginDetails>("username")(
+                <Form onSubmit={this.handleSubmit}>
+                    <FormItem>
+                        {getFieldDecorator<ILoginDetails>("username", {
+                            rules: [
+                                { required: true },
+                            ],
+                        })(
                             <Input
                                 prefix={<Icon type="user" />}
-                                placeholder="Username"
-                                disabled={this.props.authStore.status === "LOGGING_IN"}
-                            />,
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        validateStatus={this.state.passwordErrors.length > 0 ? "error" : "success"}
-                        help={this.state.passwordErrors.length > 0 ? t(`${this.state.passwordErrors[0].translationKey}`) : ""}
-                    >
-                        {getFieldDecorator<ILoginDetails>("password")(
-                            <Input
-                                type="password"
-                                prefix={<Icon type="lock" />}
-                                placeholder="Password"
-                                disabled={this.props.authStore.status === "LOGGING_IN"}
+                                placeholder="E-mail"
+                                disabled={this.state.isSubmitting}
                             />,
                         )}
                     </FormItem>
 
                     <FormItem>
-                        <Button type="primary" htmlType="submit" loading={this.props.authStore.status === "LOGGING_IN"}>
+                        {getFieldDecorator<ILoginDetails>("password", {
+                            rules: [
+                                { required: true },
+                            ],
+                        })(
+                            <Input
+                                type="password"
+                                prefix={<Icon type="lock" />}
+                                placeholder="Wachtwoord"
+                                disabled={this.state.isSubmitting}
+                            />,
+                        )}
+                    </FormItem>
+
+                    <FormItem>
+                        <Button type="primary" htmlType="submit" loading={this.state.isSubmitting}>
                             Log in
                         </Button>
                     </FormItem>
                 </Form>
-
-                <p>STATUS: {this.props.authStore.status}</p>
-                {this.props.authStore.user &&
-                    <h1>Welcome, {this.props.authStore.user.email}!</h1>
-                }
-
-                {this.props.authStore.status === "LOGGED_IN" &&
-                    <Button type="dashed" onClick={this.handleLogout} htmlType="button">Log out</Button>
-                }
             </React.Fragment>
         );
     }
@@ -94,21 +75,44 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
     private handleSubmit(event: React.FormEvent): void {
         event.preventDefault();
 
-        this.validateForm(true);
-    }
+        this.setState({
+            isSubmitting: true,
+        });
 
-    private handleFormChange(event: React.FormEvent): void {
-        event.preventDefault();
-
-        if (this.state.doValidateOnChange) {
-            this.validateForm(false);
-        }
+        const fields: Array<keyof ILoginDetails> = ["username", "password"];
+        this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
+            if (!errors) {
+                const loginDetails: ILoginDetails = values;
+                Firebase.auth().signInWithEmailAndPassword(loginDetails.username, loginDetails.password)
+                    .then(() => {
+                        // TODO
+                    })
+                    .catch(() => {
+                        // TODO
+                    })
+                    .finally(() => {
+                        this.setState({
+                            isSubmitting: false,
+                        });
+                    });
+            }
+        });
     }
 
     private handleLogout(event: React.FormEvent): void {
         event.preventDefault();
 
-        this.props.actions.logout();
+        Firebase.auth().signOut()
+            .then(() => {
+                notification.success({
+                    message: "Succesvol uitgelogd",
+                });
+            })
+            .catch(() => {
+                notification.error({
+                    message: "Iets ging fout bij het uitloggen... Was u al uitgelogd?",
+                });
+            });
     }
 
     private validateForm(doLogin: boolean): void {
@@ -132,34 +136,6 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
     }
 }
 
-interface IStateProps {
-    authStore: IAuthState;
-}
+const WrappedLoginForm = Form.create<ILoginFormProps>()(LoginForm);
 
-function mapStateToProps(state: IApplicationState): IStateProps {
-    return {
-        authStore: state.auth,
-    };
-}
-
-interface IDispatchProps {
-    actions: {
-        login: (loginDetails: ILoginDetails) => void;
-        logout: () => void;
-    };
-}
-
-function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
-    return {
-        actions: bindActionCreators({
-            login,
-            logout,
-        }, dispatch),
-    };
-}
-
-const ConnectedLoginForm = connect<IStateProps, IDispatchProps, ILoginFormProps, IApplicationState>(
-    mapStateToProps, mapDispatchToProps)(LoginForm);
-const WrappedLoginForm = Form.create<ILoginFormProps>()(ConnectedLoginForm);
-
-export default withNamespaces()(WrappedLoginForm);
+export default WrappedLoginForm;

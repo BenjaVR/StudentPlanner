@@ -1,5 +1,7 @@
 {
     "files.associations": {
         ".firebaserc": "jsonc"
-    }
+    },
+    "npm.packageManager": "yarn",
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }

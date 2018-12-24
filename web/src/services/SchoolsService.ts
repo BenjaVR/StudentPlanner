@@ -1,34 +1,15 @@
-import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
-import { FirestoreServiceBase } from "./firestore/FirestoreServiceBase";
-import { FirebaseFunctions } from "./functions/FirebaseFunctions";
-import { getCurrentLanguage } from "../config/I18nextInitializer";
+import { ISchool } from "../models/School";
+import { FirestoreServiceBase } from "./FirestoreServiceBase";
 
-export class SchoolsService extends FirestoreServiceBase {
+export class SchoolsService extends FirestoreServiceBase<ISchool> {
 
-    private static instance: SchoolsService;
-
-    private readonly schoolsCollection = "schools";
-    private readonly schoolsRef = this.firestore.collection(this.schoolsCollection);
-
-    public static getInstance(): SchoolsService {
-        if (this.instance === undefined) {
-            this.instance = new SchoolsService();
-        }
-        return this.instance;
-    }
+    private readonly schoolsRef = this.firestore.collection("schools");
 
     public listSchools(): Promise<ISchool[]> {
         return new Promise<ISchool[]>((resolve, reject) => {
             this.schoolsRef.get()
                 .then((snapshot) => {
-                    const schools: ISchool[] = [];
-                    snapshot.docs.forEach((doc) => {
-                        const school = {
-                            id: doc.id,
-                            ...doc.data(),
-                        };
-                        schools.push(school as ISchool);
-                    });
+                    const schools = this.mapQueryDocumentSnapshotsToObject(snapshot.docs);
                     return resolve(schools);
                 })
                 .catch(reject);
@@ -37,11 +18,14 @@ export class SchoolsService extends FirestoreServiceBase {
 
     public addSchool(school: ISchool): Promise<ISchool> {
         return new Promise<ISchool>((resolve, reject) => {
-            FirebaseFunctions.addSchoolFunction({
-                data: school,
-                lang: getCurrentLanguage(),
-            })
-                .then(resolve)
+            this.schoolsRef.add(school)
+                .then((docRef) => {
+                    return docRef.get();
+                })
+                .then((doc) => {
+                    const addedSchool = this.mapQueryDocumentSnapshotToObject(doc);
+                    resolve(addedSchool);
+                })
                 .catch(reject);
         });
     }

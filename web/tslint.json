@@ -19,7 +19,7 @@
             "moment/locale",
             "antd/lib",
             "firebase",
-            "@studentplanner"
+            "core-js/modules"
         ],
         "max-line-length": false,
         "object-literal-sort-keys": false,

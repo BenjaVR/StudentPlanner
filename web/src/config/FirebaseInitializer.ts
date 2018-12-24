@@ -1,7 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import "firebase/functions";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAhHD7f5dudCPHiuidXqWQFzSyOmsmvWcU",
@@ -22,8 +21,6 @@ export class FirebaseInitializer {
         } else {
             firebase.firestore.setLogLevel("silent");
         }
-
-        firebase.functions();
     }
 }
 

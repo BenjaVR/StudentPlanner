@@ -11,8 +11,6 @@ export interface IRoute {
     component: React.ComponentType<RoutePageComponentProps>;
 }
 
-// TODO: titles localizable!
-
 const logInRoute: IRoute = {
     title: "Log In",
     url: "/login",
@@ -20,13 +18,13 @@ const logInRoute: IRoute = {
 };
 
 const schoolsRoute: IRoute = {
-    title: "Schools",
+    title: "Scholen",
     url: "/schools",
     component: SchoolsPage,
 };
 
 const studentsRoute: IRoute = {
-    title: "Students",
+    title: "Studenten",
     url: "/students",
     component: SchoolsPage,
 };

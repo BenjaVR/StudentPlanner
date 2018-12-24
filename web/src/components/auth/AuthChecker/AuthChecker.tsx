@@ -1,24 +1,16 @@
-import { ITranslations } from "@studentplanner/functions/dist/shared/translations/types";
-import { notification, Spin, Layout } from "antd";
+import { notification, Spin } from "antd";
 import React from "react";
-import { withNamespaces, WithNamespaces } from "react-i18next";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
-import { IApplicationState } from "../../../stores";
-import { checkLoggedIn } from "../../../stores/auth/actions";
-import { IAuthState } from "../../../stores/auth/reducer";
+import { Firebase } from "../../../config/FirebaseInitializer";
+import styles from "./AuthChecker.module.scss";
 
 interface IAuthCheckerProps {
 }
 
-type AuthCheckerProps = IAuthCheckerProps & IStateProps & IDispatchProps & WithNamespaces;
-
 interface IAuthCheckerState {
-    isDoingInitialCheck: boolean;
     initialCheckDone: boolean;
 }
 
-class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
+class AuthChecker extends React.Component<IAuthCheckerProps, IAuthCheckerState> {
 
     /**
      * This is to check if the user is refreshing the page, or actually opening it again in an new browser session.
@@ -26,103 +18,46 @@ class AuthChecker extends React.Component<AuthCheckerProps, IAuthCheckerState> {
     private pageWasReloaded: boolean;
     private readonly pageWasReloadedSessionKey = "StudentPlanner_PageReloaded";
 
-    constructor(props: AuthCheckerProps) {
+    constructor(props: IAuthCheckerProps) {
         super(props);
 
         this.state = {
             initialCheckDone: false,
-            isDoingInitialCheck: true,
         };
-
-        window.setTimeout(() => {
-            this.setState({
-                initialCheckDone: true,
-                isDoingInitialCheck: false,
-            });
-        }, 1000);
 
         const sessionReloadedValue = sessionStorage.getItem(this.pageWasReloadedSessionKey);
         this.pageWasReloaded = sessionReloadedValue !== null ? JSON.parse(sessionReloadedValue) === true : false;
     }
 
     public componentDidMount(): void {
-        this.props.actions.checkLoggedIn();
-    }
+        Firebase.auth().onAuthStateChanged((user) => {
+            if (user && !this.state.initialCheckDone && !this.pageWasReloaded) {
+                const hasName = user.displayName !== null;
+                notification.success({
+                    message: hasName ? `Welkom terug, ${user.displayName}!` : "Welkom terug!",
+                });
+            }
 
-    public componentDidUpdate(prevProps: AuthCheckerProps): void {
-        const { t } = this.props;
+            sessionStorage.setItem(this.pageWasReloadedSessionKey, JSON.stringify(true));
+            this.pageWasReloaded = true;
 
-        if (prevProps.authStore.status === "LOGGING_IN" && this.props.authStore.status === "LOGGED_IN") {
-            this.setPageReloaded();
-            const message: keyof ITranslations = "auth.logged_in_successfully";
-            notification.success({ message: t(message) });
-        }
-
-        if (prevProps.authStore.status === "LOGGING_IN" && this.props.authStore.status === "LOGGED_OUT") {
-            const message: keyof ITranslations = "auth.logging_in_failed";
-            notification.error({ message: t(message) });
-        }
-
-        if (prevProps.authStore.status === "CHECKING_LOGGED_IN" && this.props.authStore.status === "LOGGED_IN" && !this.pageWasReloaded) {
-            this.setPageReloaded();
-            const message: keyof ITranslations = "auth.welcome_back{{username}}";
-            const user = this.props.authStore.user as firebase.User;
-            notification.success({
-                message: t(message, {
-                    username: user.displayName !== null ? user.displayName : user.email,
-                }),
+            this.setState({
+                initialCheckDone: true,
             });
-        }
-
-        if (prevProps.authStore.status === "LOGGING_OUT" && this.props.authStore.status === "LOGGED_OUT") {
-            const message: keyof ITranslations = "auth.logged_out_successfully";
-            notification.success({ message: t(message) });
-        }
+        });
     }
 
     public render(): React.ReactNode {
         return (
-            <Spin spinning={this.state.isDoingInitialCheck} size="large" style={{ minHeight: "100vh" }}>
-                <Layout>
+            <Spin spinning={!this.state.initialCheckDone} size="large" className={styles.spinner}>
+                <div>
                     {this.state.initialCheckDone &&
                         this.props.children
                     }
-                </Layout>
+                </div>
             </Spin>
         );
     }
-
-    private setPageReloaded(): void {
-        sessionStorage.setItem(this.pageWasReloadedSessionKey, JSON.stringify(true));
-        this.pageWasReloaded = true;
-    }
 }
 
-interface IStateProps {
-    authStore: IAuthState;
-}
-
-function mapStateToProps(state: IApplicationState): IStateProps {
-    return {
-        authStore: state.auth,
-    };
-}
-
-interface IDispatchProps {
-    actions: {
-        checkLoggedIn: () => void;
-    };
-}
-
-function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
-    return {
-        actions: bindActionCreators({
-            checkLoggedIn,
-        }, dispatch),
-    };
-}
-
-const ConnectedAuthChecker = connect<IStateProps, IDispatchProps, IAuthCheckerProps, IApplicationState>(
-    mapStateToProps, mapDispatchToProps)(AuthChecker);
-
-export default withNamespaces()(ConnectedAuthChecker);
+export default AuthChecker;

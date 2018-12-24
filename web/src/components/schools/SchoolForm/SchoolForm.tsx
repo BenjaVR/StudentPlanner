@@ -1,142 +1,85 @@
-import { ISchool } from "@studentplanner/functions/dist/shared/models/School";
+import { Button, Form, Input } from "antd";
+import { FormComponentProps } from "antd/lib/form";
+import FormItem from "antd/lib/form/FormItem";
 import React from "react";
-import { ISchoolsState } from "../../../stores/schools/reducer";
-import { IApplicationState } from "../../../stores";
-import { Dispatch, bindActionCreators } from "redux";
-import { fetchSchools, addSchool } from "../../../stores/schools/actions";
-import { connect } from "react-redux";
-import { notification } from "antd";
+import { ISchool } from "../../../models/School";
 
 interface ISchoolFormProps {
+    submitSchool(school: ISchool): Promise<void>;
 }
 
-type SchoolFormProps = ISchoolFormProps & IStateProps & IDispatchProps;
+type SchoolFormProps = ISchoolFormProps & FormComponentProps;
 
 interface ISchoolFormState {
-    school: ISchool;
+    isSubmitting: boolean;
 }
 
 class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
-
-    private readonly emptySchool: ISchool = {
-        name: "",
-    };
 
     constructor(props: SchoolFormProps) {
         super(props);
 
         this.state = {
-            school: this.emptySchool,
+            isSubmitting: false,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    public componentDidUpdate(prevProps: SchoolFormProps): void {
-        if (prevProps.schoolsStore.addingStatus === "ADDING" && this.props.schoolsStore.addingStatus === "ADDED") {
-            const schoolName = this.props.schoolsStore.lastAddedSchool !== undefined
-                ? this.props.schoolsStore.lastAddedSchool.name : "";
-            notification.success({
-                message: `Successfully added school "${schoolName}"!`, // TODO: translate
-            });
-            this.resetForm();
-        }
-
-        if (prevProps.schoolsStore.addingStatus === "ADDING" && this.props.schoolsStore.addingStatus === "FAILED") {
-            notification.error({
-                message: this.props.schoolsStore.addErrorMessage, // TODO: translate (key)
-            });
-        }
     }
 
     public render(): React.ReactNode {
-        const isLoading = this.props.schoolsStore.addingStatus === "ADDING";
+        const { getFieldDecorator } = this.props.form;
 
         return (
-            <form onSubmit={this.handleSubmit}>
-                <div className="field">
-                    <label className="label">School naam</label> {/*//TODO: translate */}
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            placeholder="Mijn School"
-                            name="name"
-                            onChange={this.handleChange}
-                            value={this.state.school.name}
-                            disabled={isLoading}
-                        />
-                    </div>
-                </div>
-                <div className="field">
-                    <div className="control">
-                        <button
-                            type="submit"
-                            className={`button is-primary ${isLoading ? "is-loading" : ""}`}
-                        >
-                            Voeg school toe {/*//TODO: translate */}
-                        </button>
-                    </div>
-                </div>
-            </form>
+            <Form onSubmit={this.handleSubmit}>
+                <FormItem>
+                    {getFieldDecorator<ISchool>("name", {
+                        rules: [
+                            { required: true },
+                        ],
+                    })(
+                        <Input
+                            placeholder="Naam"
+                            disabled={this.state.isSubmitting}
+                        />,
+                    )}
+                </FormItem>
+
+                <FormItem>
+                    <Button type="primary" htmlType="submit" loading={this.state.isSubmitting}>
+                        Voeg toe
+                    </Button>
+                </FormItem>
+            </Form>
         );
     }
 
     private handleSubmit(event: React.FormEvent): void {
         event.preventDefault();
 
-        this.props.actions.addSchool(this.state.school);
-    }
+        this.setState({
+            isSubmitting: true,
+        });
 
-    private handleChange(event: React.FormEvent<HTMLInputElement>): void {
-        const target = event.currentTarget;
-
-        // TODO: check if one of the fields is a field of School, and then add it dynamically (instead of switch)
-        switch (target.name) {
-            case "name":
-                this.setState({
-                    school: {
-                        ...this.state.school,
-                        name: target.value,
-                    },
-                });
-                break;
-        }
-    }
-
-    private resetForm(): void {
-        this.setState({school: this.emptySchool});
-    }
-}
-
-interface IStateProps {
-    schoolsStore: ISchoolsState;
-}
-
-function mapStateToProps(state: IApplicationState): IStateProps {
-    return {
-        schoolsStore: state.schools,
+        const fields: Array<keyof ISchool> = ["name"];
+        this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
+            if (!errors) {
+                const school: ISchool = {
+                    ...values,
+                };
+                this.props.submitSchool(school)
+                    .then(() => {
+                        this.props.form.resetFields();
+                    })
+                    .finally(() => {
+                        this.setState({
+                            isSubmitting: false,
+                        });
+                    });
+            }
+        });
     }
 }
 
-interface IDispatchProps {
-    actions: {
-        fetchSchools: () => void;
-        addSchool: (school: ISchool) => void;
-    }
-}
+const WrappedSchoolForm = Form.create<ISchoolFormProps>()(SchoolForm);
 
-function mapDispatchToProps(dispatch: Dispatch): IDispatchProps {
-    return {
-        actions: bindActionCreators({
-            fetchSchools,
-            addSchool,
-        }, dispatch),
-    }
-}
-
-const ConnectedSchoolForm = connect<IStateProps, IDispatchProps, ISchoolFormProps, IApplicationState>(
-    mapStateToProps, mapDispatchToProps)(SchoolForm);
-
-export default ConnectedSchoolForm;
+export default WrappedSchoolForm;

@@ -1,24 +1,24 @@
 {
-  "name": "@studentplanner/functions",
-  "version": "1.0.0",
-  "scripts": {
-    "lint": "tslint --project tsconfig.json",
-    "build": "tsc --skipLibCheck",
-    "build:watch": "tsc -w --skipLibCheck",
-    "serve": "npm run build && firebase serve --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "main": "dist/index.js",
-  "dependencies": {
-    "firebase-admin": "~6.0.0",
-    "firebase-functions": "^2.1.0"
-  },
-  "devDependencies": {
-    "tslint": "~5.8.0",
-    "typescript": "~2.8.3"
-  },
-  "private": true
+    "name": "studentplanner-functions",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "lint": "tslint --project tsconfig.json",
+        "build": "tsc",
+        "build:watch": "tsc -w",
+        "serve": "npm run build && firebase serve --only functions",
+        "shell": "npm run build && firebase functions:shell",
+        "start": "npm run shell",
+        "deploy": "firebase deploy --only functions",
+        "logs": "firebase functions:log"
+    },
+    "main": "dist/index.js",
+    "dependencies": {
+        "firebase-admin": "6.4.0",
+        "firebase-functions": "2.1.0"
+    },
+    "devDependencies": {
+        "tslint": "5.12.0",
+        "typescript": "3.2.2"
+    }
 }
