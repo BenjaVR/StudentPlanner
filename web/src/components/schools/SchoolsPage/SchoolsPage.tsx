@@ -50,6 +50,7 @@ export default class SchoolsPage extends React.Component<ISchoolsPageProps, ISch
                     notification.success({
                         message: `School "${school.name}" succesvol toegevoegd`,
                     });
+                    this.fetchSchools();
                     resolve();
                 })
                 .catch(() => {
