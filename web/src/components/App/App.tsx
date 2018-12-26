@@ -17,10 +17,10 @@ class App extends React.Component<IAppProps, IAppState> {
             <AuthChecker>
                 <BrowserRouter>
                     <Switch>
-                        <Route exact={true} path={routes.logInRoute.url} component={routes.logInRoute.component}/>
-                        <Route exact={true} path={routes.schoolsRoute.url} component={routes.schoolsRoute.component}/>
-                        <Route exact={true} path={routes.studentsRoute.url} component={routes.studentsRoute.component}/>
-                        <Route component={LoginForm}/>
+                        <Route exact={true} path={routes.logInRoute.url} component={routes.logInRoute.component} />
+                        <Route exact={true} path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
+                        <Route exact={true} path={routes.studentsRoute.url} component={routes.studentsRoute.component} />
+                        <Route component={LoginForm} />
                     </Switch>
                 </BrowserRouter>
             </AuthChecker>
