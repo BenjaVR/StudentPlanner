@@ -1,6 +1,6 @@
 import { notification, Spin } from "antd";
 import React from "react";
-import { Firebase } from "../../../config/FirebaseInitializer";
+import { Firebase } from "../../config/FirebaseInitializer";
 import styles from "./AuthChecker.module.scss";
 
 interface IAuthCheckerProps {
@@ -50,11 +50,11 @@ class AuthChecker extends React.Component<IAuthCheckerProps, IAuthCheckerState> 
     public render(): React.ReactNode {
         return (
             <Spin spinning={!this.state.initialCheckDone} size="large" className={styles.spinner}>
-                <div>
+                <React.Fragment>
                     {this.state.initialCheckDone &&
                         this.props.children
                     }
-                </div>
+                </React.Fragment>
             </Spin>
         );
     }

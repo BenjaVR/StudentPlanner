@@ -1,13 +1,18 @@
 import React from "react";
 import { RoutePageComponentProps } from "../../../routes";
+import EmptyCenteredLayout from "../../layouts/EmptyCenteredLayout";
+import { LoginForm } from "../LoginForm";
+import style from "./LoginPage.module.scss";
 
-interface ILogInPageProps extends RoutePageComponentProps {
-}
+type LoginPageProps = RoutePageComponentProps;
 
-class LogInPage extends React.Component<ILogInPageProps> {
-    public render(): React.ReactNode {
-        return <h1>LOG IN PLIS</h1>;
-    }
-}
+const LoginPage: React.FunctionComponent<LoginPageProps> = () => (
+    <EmptyCenteredLayout>
+        <div className={style.title}>
+            <h1>Student Planner</h1>
+        </div>
+        <LoginForm />
+    </EmptyCenteredLayout>
+);
 
-export default LogInPage;
+export default LoginPage;

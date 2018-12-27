@@ -1,6 +1,6 @@
 import { Spin } from "antd";
 import React from "react";
-import { ISchool } from "../../../models/School";
+import { ISchool } from "../../models/School";
 
 interface ISchoolListProps {
     schools: ISchool[];

@@ -1,11 +1,11 @@
 import { notification } from "antd";
 import React from "react";
-import { ISchool } from "../../../models/School";
-import { RoutePageComponentProps } from "../../../routes";
-import { SchoolsService } from "../../../services/SchoolsService";
-import { SignedInLayout } from "../../layouts/SignedInLayout";
-import { SchoolForm } from "../SchoolForm";
-import { SchoolList } from "../SchoolList";
+import { ISchool } from "../../models/School";
+import { RoutePageComponentProps } from "../../routes";
+import { SchoolsService } from "../../services/SchoolsService";
+import SignedInLayout from "../layouts/SignedInLayout";
+import SchoolForm from "./SchoolForm";
+import SchoolList from "./SchoolList";
 
 interface ISchoolsPageProps extends RoutePageComponentProps {
 }

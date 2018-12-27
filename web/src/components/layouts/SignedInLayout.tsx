@@ -2,7 +2,7 @@ import { Icon, Layout } from "antd";
 import Menu, { SelectParam } from "antd/lib/menu";
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { IRoute, routes } from "../../../routes";
+import { IRoute, routes } from "../../routes";
 
 interface ISignedInLayoutProps {
 }

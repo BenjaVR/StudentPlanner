@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { LogInPage } from "../components/auth/LogInPage";
-import { SchoolsPage } from "../components/schools/SchoolsPage";
+import { LoginPage } from "../components/auth/LoginPage";
+import SchoolsPage from "../components/schools/SchoolsPage";
 
 export type RoutePageComponentProps = RouteComponentProps<any>;
 
@@ -14,7 +14,7 @@ export interface IRoute {
 const logInRoute: IRoute = {
     title: "Log In",
     url: "/login",
-    component: LogInPage,
+    component: LoginPage,
 };
 
 const schoolsRoute: IRoute = {

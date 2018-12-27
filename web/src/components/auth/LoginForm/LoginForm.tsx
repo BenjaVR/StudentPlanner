@@ -1,9 +1,10 @@
-import { Button, Form, Icon, Input, notification } from "antd";
+import { Button, Card, Form, Icon, Input, notification } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
 import { Firebase } from "../../../config/FirebaseInitializer";
 import { ILoginDetails } from "../../../models/LoginDetails";
+import styles from "./LoginForm.module.scss";
 
 interface ILoginFormProps {
 }
@@ -31,44 +32,51 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <Form onSubmit={this.handleSubmit}>
-                <FormItem>
-                    {getFieldDecorator<ILoginDetails>("username", {
-                        rules: [
-                            { required: true, message: "E-mail mag niet leeg zijn" },
-                            { type: "email", message: "Dit e-mailadres heeft geen geldig formaat" },
-                        ],
-                    })(
-                        <Input
-                            autoFocus={true}
-                            prefix={<Icon type="user" />}
-                            placeholder="E-mail"
-                            disabled={this.state.isSubmitting}
-                        />,
-                    )}
-                </FormItem>
+            <Card className={styles.card}>
+                <Form onSubmit={this.handleSubmit}>
+                    <FormItem>
+                        {getFieldDecorator<ILoginDetails>("username", {
+                            rules: [
+                                { required: true, message: "E-mail mag niet leeg zijn" },
+                                { type: "email", message: "Dit e-mailadres heeft geen geldig formaat" },
+                            ],
+                        })(
+                            <Input
+                                autoFocus={true}
+                                prefix={<Icon type="user" />}
+                                placeholder="E-mail"
+                                disabled={this.state.isSubmitting}
+                            />,
+                        )}
+                    </FormItem>
 
-                <FormItem>
-                    {getFieldDecorator<ILoginDetails>("password", {
-                        rules: [
-                            { required: true, message: "Wachtwoord mag niet leeg zijn" },
-                        ],
-                    })(
-                        <Input
-                            type="password"
-                            prefix={<Icon type="lock" />}
-                            placeholder="Wachtwoord"
-                            disabled={this.state.isSubmitting}
-                        />,
-                    )}
-                </FormItem>
+                    <FormItem>
+                        {getFieldDecorator<ILoginDetails>("password", {
+                            rules: [
+                                { required: true, message: "Wachtwoord mag niet leeg zijn" },
+                            ],
+                        })(
+                            <Input
+                                type="password"
+                                prefix={<Icon type="lock" />}
+                                placeholder="Wachtwoord"
+                                disabled={this.state.isSubmitting}
+                            />,
+                        )}
+                    </FormItem>
 
-                <FormItem>
-                    <Button type="primary" htmlType="submit" loading={this.state.isSubmitting}>
-                        Log in
+                    <FormItem className={styles.submitButtonFormItem}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={this.state.isSubmitting}
+                            className={styles.submitButton}
+                        >
+                            Log in
                         </Button>
-                </FormItem>
-            </Form>
+                    </FormItem>
+                </Form>
+            </Card>
         );
     }
 

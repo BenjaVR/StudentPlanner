@@ -2,7 +2,7 @@ import { Button, Form, Input } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
-import { ISchool } from "../../../models/School";
+import { ISchool } from "../../models/School";
 
 interface ISchoolFormProps {
     submitSchool(school: ISchool): Promise<void>;
