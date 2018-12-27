@@ -31,78 +31,95 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <React.Fragment>
-                <Form onSubmit={this.handleSubmit}>
-                    <FormItem>
-                        {getFieldDecorator<ILoginDetails>("username", {
-                            rules: [
-                                { required: true },
-                            ],
-                        })(
-                            <Input
-                                prefix={<Icon type="user" />}
-                                placeholder="E-mail"
-                                disabled={this.state.isSubmitting}
-                            />,
-                        )}
-                    </FormItem>
+            <Form onSubmit={this.handleSubmit}>
+                <FormItem>
+                    {getFieldDecorator<ILoginDetails>("username", {
+                        rules: [
+                            { required: true, message: "E-mail mag niet leeg zijn" },
+                            { type: "email", message: "Dit e-mailadres heeft geen geldig formaat" },
+                        ],
+                    })(
+                        <Input
+                            autoFocus={true}
+                            prefix={<Icon type="user" />}
+                            placeholder="E-mail"
+                            disabled={this.state.isSubmitting}
+                        />,
+                    )}
+                </FormItem>
 
-                    <FormItem>
-                        {getFieldDecorator<ILoginDetails>("password", {
-                            rules: [
-                                { required: true },
-                            ],
-                        })(
-                            <Input
-                                type="password"
-                                prefix={<Icon type="lock" />}
-                                placeholder="Wachtwoord"
-                                disabled={this.state.isSubmitting}
-                            />,
-                        )}
-                    </FormItem>
+                <FormItem>
+                    {getFieldDecorator<ILoginDetails>("password", {
+                        rules: [
+                            { required: true, message: "Wachtwoord mag niet leeg zijn" },
+                        ],
+                    })(
+                        <Input
+                            type="password"
+                            prefix={<Icon type="lock" />}
+                            placeholder="Wachtwoord"
+                            disabled={this.state.isSubmitting}
+                        />,
+                    )}
+                </FormItem>
 
-                    <FormItem>
-                        <Button type="primary" htmlType="submit" loading={this.state.isSubmitting}>
-                            Log in
+                <FormItem>
+                    <Button type="primary" htmlType="submit" loading={this.state.isSubmitting}>
+                        Log in
                         </Button>
-                    </FormItem>
-                </Form>
-            </React.Fragment>
+                </FormItem>
+            </Form>
         );
     }
 
     private handleSubmit(event: React.FormEvent): void {
         event.preventDefault();
 
-        this.setState({
-            isSubmitting: true,
-        });
-
         const fields: Array<keyof ILoginDetails> = ["username", "password"];
+
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
-            if (!errors) {
-                const loginDetails: ILoginDetails = values;
-                Firebase.auth().signInWithEmailAndPassword(loginDetails.username, loginDetails.password)
-                    .then(({ user }) => {
-                        const message = user !== null && user.displayName !== null
-                            ? `Succesvol ingelogd, welkom ${user.displayName}!`
-                            : "Succesvol ingelogd";
-                        notification.success({
-                            message,
-                        });
-                    })
-                    .catch(() => {
-                        notification.error({
-                            message: "Er ging iets fout bij het inloggen",
-                        });
-                    })
-                    .finally(() => {
-                        this.setState({
-                            isSubmitting: false,
-                        });
-                    });
+            if (errors) {
+                return;
             }
+
+            this.setState({
+                isSubmitting: true,
+            });
+
+            const loginDetails: ILoginDetails = values;
+            Firebase.auth().signInWithEmailAndPassword(loginDetails.username, loginDetails.password)
+                .then(({ user }) => {
+                    const message = user !== null && user.displayName !== null
+                        ? `Succesvol ingelogd, welkom ${user.displayName}!`
+                        : "Succesvol ingelogd";
+                    notification.success({
+                        message,
+                    });
+                })
+                .catch((error: firebase.FirebaseError) => {
+                    switch (error.code) {
+                        case "auth/user-not-found":
+                            this.props.form.setFields({
+                                username: {
+                                    value: this.props.form.getFieldValue("username"),
+                                    errors: [new Error("Er bestaat geen gebruiker met dit e-mailadres")],
+                                },
+                            });
+                            break;
+                        case "auth/wrong-password":
+                            this.props.form.setFields({
+                                password: { errors: [new Error("Wachtwoord is fout")] },
+                            });
+                            break;
+                        default:
+                            notification.error({ message: "Er ging iets fout bij het inloggen, probeer later opnieuw" });
+                    }
+                })
+                .finally(() => {
+                    this.setState({
+                        isSubmitting: false,
+                    });
+                });
         });
     }
 
