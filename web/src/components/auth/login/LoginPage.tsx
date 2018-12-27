@@ -1,7 +1,7 @@
 import React from "react";
 import { RoutePageComponentProps } from "../../../routes";
 import EmptyCenteredLayout from "../../layouts/EmptyCenteredLayout";
-import { LoginForm } from "../LoginForm";
+import LoginForm from "./LoginForm";
 import style from "./LoginPage.module.scss";
 
 type LoginPageProps = RoutePageComponentProps;

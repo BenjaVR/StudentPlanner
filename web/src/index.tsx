@@ -6,7 +6,7 @@ import moment from "moment";
 import "moment/locale/nl-be";
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App/App";
+import Root from "./components/Root";
 import { FirebaseInitializer } from "./config/FirebaseInitializer";
 import "./index.scss";
 
@@ -23,7 +23,7 @@ notification.config({
 
 ReactDOM.render(
     <LocaleProvider locale={nlBE}>
-        <App />
+        <Root />
     </LocaleProvider>,
     document.getElementById("root"),
 );

@@ -1,9 +1,9 @@
 import React from "react";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { routes } from "../../routes";
-import AuthChecker from "../auth/AuthChecker";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { routes } from "../routes";
+import AuthChecker from "./auth/AuthChecker";
 
-const App: React.FunctionComponent = () => (
+const Root: React.FunctionComponent = () => (
     <AuthChecker>
         <BrowserRouter>
             <Switch>
@@ -17,4 +17,4 @@ const App: React.FunctionComponent = () => (
     </AuthChecker>
 );
 
-export default App;
+export default Root;
