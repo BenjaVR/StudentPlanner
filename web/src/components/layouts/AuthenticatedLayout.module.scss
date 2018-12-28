@@ -35,3 +35,11 @@
     background: white;
     text-align: center;
 }
+
+.logoutButton {
+    &:hover, &:active, &:focus {
+        // Do not use the primary color for the logout button.
+        border-color: red !important;
+        color: red !important;
+    }
+}

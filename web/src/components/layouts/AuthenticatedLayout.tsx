@@ -73,7 +73,12 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                                 </Col>
                                 <Col>
                                     <Tooltip title="Logout">
-                                        <Button icon="logout" type="ghost" onClick={this.handleLogout} />
+                                        <Button
+                                            icon="logout"
+                                            type="ghost"
+                                            onClick={this.handleLogout}
+                                            className={styles.logoutButton}
+                                        />
                                     </Tooltip>
                                 </Col>
                             </Row>
