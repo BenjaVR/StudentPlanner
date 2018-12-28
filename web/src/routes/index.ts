@@ -12,7 +12,7 @@ export interface IRoute {
 }
 
 const logInRoute: IRoute = {
-    title: "Log In",
+    title: "Login",
     url: "/login",
     component: LoginPage,
 };

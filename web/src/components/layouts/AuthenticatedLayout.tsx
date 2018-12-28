@@ -1,14 +1,17 @@
-import { Icon, Layout } from "antd";
+import { Button, Icon, Layout, notification, Tooltip, Row, Col } from "antd";
 import Menu, { SelectParam } from "antd/lib/menu";
 import * as React from "react";
 import { Link } from "react-router-dom";
+import { Firebase } from "../../config/FirebaseInitializer";
 import { IRoute, routes } from "../../routes";
+import styles from "./AuthenticatedLayout.module.scss";
 
-interface ISignedInLayoutProps {
+interface IAuthenticatedLayoutProps {
 }
 
-interface ISignedInLayoutState {
+interface IAuthenticatedLayoutState {
     activeMenuItem: IMenuItem;
+    isSidebarCollapsed: boolean;
 }
 
 interface IMenuItem {
@@ -16,21 +19,24 @@ interface IMenuItem {
     iconType: string;
 }
 
-class SignedInLayout extends React.Component<ISignedInLayoutProps, ISignedInLayoutState> {
+class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAuthenticatedLayoutState> {
 
     private menuItems: IMenuItem[] = [
         { route: routes.studentsRoute, iconType: "team" },
         { route: routes.schoolsRoute, iconType: "bank" },
     ];
 
-    constructor(props: ISignedInLayoutProps) {
+    constructor(props: IAuthenticatedLayoutProps) {
         super(props);
 
         this.state = {
             activeMenuItem: this.menuItems[0],
+            isSidebarCollapsed: false,
         };
 
+        this.handleSidebarCollapse = this.handleSidebarCollapse.bind(this);
         this.handleSelectMenuItem = this.handleSelectMenuItem.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     public render(): React.ReactNode {
@@ -39,21 +45,34 @@ class SignedInLayout extends React.Component<ISignedInLayoutProps, ISignedInLayo
                 <Layout.Sider
                     breakpoint="md"
                     collapsible={true}
-                    collapsedWidth={0}
+                    onCollapse={this.handleSidebarCollapse}
                 >
-                    <div className="logo">
-                        SOME LOGO
+                    <div className={styles.logo}>
+                        {this.state.isSidebarCollapsed ? "SP" : "Student Planner"}
                     </div>
                     <Menu
                         theme="dark"
-                        mode="inline"
                         selectedKeys={[this.state.activeMenuItem.route.url]}
                         onSelect={this.handleSelectMenuItem}
                     >
                         {this.renderMenuItems()}
                     </Menu>
                 </Layout.Sider>
-                <Layout style={{ minHeight: "100vh" }}>
+                <Layout className={styles.contentLayout}>
+                    <Layout.Header className={styles.header}>
+                        <Row type="flex" justify="space-between" align="middle">
+                            <Col >
+                                <h1 className={styles.title}>
+                                    {this.state.activeMenuItem.route.title}
+                                </h1>
+                            </Col>
+                            <Col>
+                                <Tooltip title="Logout">
+                                    <Button icon="logout" onClick={this.handleLogout} />
+                                </Tooltip>
+                            </Col>
+                        </Row>
+                    </Layout.Header>
                     <Layout.Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
                         <div style={{ padding: 24, background: "#fff", textAlign: "center" }}>
                             {this.props.children}
@@ -77,6 +96,12 @@ class SignedInLayout extends React.Component<ISignedInLayoutProps, ISignedInLayo
         });
     }
 
+    private handleSidebarCollapse(isCollapsed: boolean): void {
+        this.setState({
+            isSidebarCollapsed: isCollapsed,
+        });
+    }
+
     private handleSelectMenuItem(selectParam: SelectParam): void {
         const newMenuItem = this.menuItems.find((menuItem) => menuItem.route.url === selectParam.key);
 
@@ -86,6 +111,22 @@ class SignedInLayout extends React.Component<ISignedInLayoutProps, ISignedInLayo
             });
         }
     }
+
+    private handleLogout(event: React.FormEvent): void {
+        event.preventDefault();
+
+        Firebase.auth().signOut()
+            .then(() => {
+                notification.success({
+                    message: "Succesvol uitgelogd!",
+                });
+            })
+            .catch(() => {
+                notification.error({
+                    message: "Iets ging fout bij het uitloggen... Herlaad de pagina a.u.b.",
+                });
+            });
+    }
 }
 
-export default SignedInLayout;
+export default AuthenticatedLayout;

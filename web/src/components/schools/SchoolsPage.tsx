@@ -3,23 +3,22 @@ import React from "react";
 import { ISchool } from "../../models/School";
 import { RoutePageComponentProps } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
-import SignedInLayout from "../layouts/SignedInLayout";
+import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
 import SchoolForm from "./SchoolForm";
 import SchoolList from "./SchoolList";
 
-interface ISchoolsPageProps extends RoutePageComponentProps {
-}
+type SchoolsPageProps = RoutePageComponentProps;
 
 interface ISchoolsPageState {
     schools: ISchool[];
     isFetching: boolean;
 }
 
-export default class SchoolsPage extends React.Component<ISchoolsPageProps, ISchoolsPageState> {
+export default class SchoolsPage extends React.Component<SchoolsPageProps, ISchoolsPageState> {
 
     private readonly schoolsService = new SchoolsService();
 
-    constructor(props: ISchoolsPageProps) {
+    constructor(props: SchoolsPageProps) {
         super(props);
 
         this.state = {
@@ -36,10 +35,10 @@ export default class SchoolsPage extends React.Component<ISchoolsPageProps, ISch
 
     public render(): React.ReactNode {
         return (
-            <SignedInLayout>
+            <AuthenticatedLayout>
                 <SchoolList schools={this.state.schools} isLoading={this.state.isFetching} />
                 <SchoolForm submitSchool={this.addSchool} />
-            </SignedInLayout>
+            </AuthenticatedLayout>
         );
     }
 

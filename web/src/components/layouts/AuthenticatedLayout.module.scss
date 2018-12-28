@@ -1,0 +1,26 @@
+.logo {
+    height: 32px;
+    margin: 16px;
+
+    // TODO: tijdelijk!
+    background-color: rgba(255,255,255,.2);
+    text-align: center;
+    line-height: 32px;
+    color: rgb(197, 197, 197);
+}
+
+.contentLayout {
+    min-height: 100vh !important;
+}
+
+.header {
+    background-color: white !important;
+    padding: 0 25px;
+}
+
+.title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0;
+}

@@ -19,6 +19,7 @@ moment.locale("nl-be");
 // Ant design global notification config
 notification.config({
     duration: 8,
+    placement: "bottomRight",
 });
 
 ReactDOM.render(

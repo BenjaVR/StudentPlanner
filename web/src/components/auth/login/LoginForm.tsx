@@ -25,7 +25,6 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
     }
 
     public render(): React.ReactNode {
@@ -129,22 +128,6 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                     });
                 });
         });
-    }
-
-    private handleLogout(event: React.FormEvent): void {
-        event.preventDefault();
-
-        Firebase.auth().signOut()
-            .then(() => {
-                notification.success({
-                    message: "Succesvol uitgelogd",
-                });
-            })
-            .catch(() => {
-                notification.error({
-                    message: "Iets ging fout bij het uitloggen... Was u al uitgelogd?",
-                });
-            });
     }
 }
 

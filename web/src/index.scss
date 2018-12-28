@@ -4,3 +4,7 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.ant-notification {
+    margin-right: 15px; // Fix to center notifications on small screens.
+}
