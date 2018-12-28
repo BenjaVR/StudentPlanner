@@ -20,6 +20,7 @@ moment.locale("nl-be");
 notification.config({
     duration: 8,
     placement: "bottomRight",
+    bottom: 0,
 });
 
 ReactDOM.render(
