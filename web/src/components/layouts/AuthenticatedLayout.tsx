@@ -1,11 +1,11 @@
 import { Button, Col, Icon, Layout, notification, Row, Tooltip } from "antd";
 import Menu, { SelectParam } from "antd/lib/menu";
 import * as React from "react";
+import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
 import { Firebase } from "../../config/FirebaseInitializer";
 import { IRoute, routes } from "../../routes";
 import styles from "./AuthenticatedLayout.module.scss";
-import Helmet from "react-helmet";
 
 interface IAuthenticatedLayoutProps {
 }
@@ -73,7 +73,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                                 </Col>
                                 <Col>
                                     <Tooltip title="Logout">
-                                        <Button icon="logout" onClick={this.handleLogout} />
+                                        <Button icon="logout" type="ghost" onClick={this.handleLogout} />
                                     </Tooltip>
                                 </Col>
                             </Row>
