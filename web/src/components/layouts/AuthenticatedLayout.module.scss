@@ -24,3 +24,14 @@
     text-overflow: ellipsis;
     margin: 0;
 }
+
+.content {
+    margin: 24px 16px 0;
+    overflow: initial;
+}
+
+.innerContent {
+    padding: 24px;
+    background: white;
+    text-align: center;
+}

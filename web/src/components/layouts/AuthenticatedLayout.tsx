@@ -73,8 +73,8 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                             </Col>
                         </Row>
                     </Layout.Header>
-                    <Layout.Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
-                        <div style={{ padding: 24, background: "#fff", textAlign: "center" }}>
+                    <Layout.Content className={styles.content}>
+                        <div className={styles.innerContent}>
                             {this.props.children}
                         </div>
                     </Layout.Content>
@@ -89,7 +89,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                 <Menu.Item key={menuItem.route.url}>
                     <Link to={menuItem.route.url}>
                         <Icon type={menuItem.iconType} />
-                        <span className="nav-text">{menuItem.route.title}</span>
+                        <span>{menuItem.route.title}</span>
                     </Link>
                 </Menu.Item>
             );
