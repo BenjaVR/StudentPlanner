@@ -1,10 +1,11 @@
-import { Button, Icon, Layout, notification, Tooltip, Row, Col } from "antd";
+import { Button, Col, Icon, Layout, notification, Row, Tooltip } from "antd";
 import Menu, { SelectParam } from "antd/lib/menu";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Firebase } from "../../config/FirebaseInitializer";
 import { IRoute, routes } from "../../routes";
 import styles from "./AuthenticatedLayout.module.scss";
+import Helmet from "react-helmet";
 
 interface IAuthenticatedLayoutProps {
 }
@@ -41,45 +42,50 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
 
     public render(): React.ReactNode {
         return (
-            <Layout>
-                <Layout.Sider
-                    breakpoint="md"
-                    collapsible={true}
-                    onCollapse={this.handleSidebarCollapse}
-                >
-                    <div className={styles.logo}>
-                        {this.state.isSidebarCollapsed ? "SP" : "Student Planner"}
-                    </div>
-                    <Menu
-                        theme="dark"
-                        selectedKeys={[this.state.activeMenuItem.route.url]}
-                        onSelect={this.handleSelectMenuItem}
+            <React.Fragment>
+                <Helmet>
+                    <title>{this.state.activeMenuItem.route.title}</title>
+                </Helmet>
+                <Layout>
+                    <Layout.Sider
+                        breakpoint="md"
+                        collapsible={true}
+                        onCollapse={this.handleSidebarCollapse}
                     >
-                        {this.renderMenuItems()}
-                    </Menu>
-                </Layout.Sider>
-                <Layout className={styles.contentLayout}>
-                    <Layout.Header className={styles.header}>
-                        <Row type="flex" justify="space-between" align="middle">
-                            <Col >
-                                <h1 className={styles.title}>
-                                    {this.state.activeMenuItem.route.title}
-                                </h1>
-                            </Col>
-                            <Col>
-                                <Tooltip title="Logout">
-                                    <Button icon="logout" onClick={this.handleLogout} />
-                                </Tooltip>
-                            </Col>
-                        </Row>
-                    </Layout.Header>
-                    <Layout.Content className={styles.content}>
-                        <div className={styles.innerContent}>
-                            {this.props.children}
+                        <div className={styles.logo}>
+                            {this.state.isSidebarCollapsed ? "SP" : "Student Planner"}
                         </div>
-                    </Layout.Content>
+                        <Menu
+                            theme="dark"
+                            selectedKeys={[this.state.activeMenuItem.route.url]}
+                            onSelect={this.handleSelectMenuItem}
+                        >
+                            {this.renderMenuItems()}
+                        </Menu>
+                    </Layout.Sider>
+                    <Layout className={styles.contentLayout}>
+                        <Layout.Header className={styles.header}>
+                            <Row type="flex" justify="space-between" align="middle">
+                                <Col >
+                                    <h1 className={styles.title}>
+                                        {this.state.activeMenuItem.route.title}
+                                    </h1>
+                                </Col>
+                                <Col>
+                                    <Tooltip title="Logout">
+                                        <Button icon="logout" onClick={this.handleLogout} />
+                                    </Tooltip>
+                                </Col>
+                            </Row>
+                        </Layout.Header>
+                        <Layout.Content className={styles.content}>
+                            <div className={styles.innerContent}>
+                                {this.props.children}
+                            </div>
+                        </Layout.Content>
+                    </Layout>
                 </Layout>
-            </Layout>
+            </React.Fragment>
         );
     }
 
