@@ -12,6 +12,9 @@ interface IAuthenticatedLayoutProps {
 
 interface IAuthenticatedLayoutState {
     activeMenuItem: IMenuItem;
+    /**
+     * This state field is used to update UI according to the sidebar collapse state.
+     */
     isSidebarCollapsed: boolean;
 }
 
@@ -108,9 +111,14 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
     }
 
     private handleSidebarCollapse(isCollapsed: boolean): void {
-        this.setState({
-            isSidebarCollapsed: isCollapsed,
-        });
+        // Delay if it changed to not collapsed, because text will jump otherwise.
+        const timeout = isCollapsed ? 0 : 100;
+        window.setTimeout(() => {
+            this.setState({
+                isSidebarCollapsed: isCollapsed,
+            });
+        }, timeout);
+
     }
 
     private handleSelectMenuItem(selectParam: SelectParam): void {
