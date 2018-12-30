@@ -28,8 +28,10 @@ interface IMenuItem {
 class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAuthenticatedLayoutState> {
 
     private menuItems: IMenuItem[] = [
+        { route: routes.planningsRoute, iconType: "calendar" },
         { route: routes.studentsRoute, iconType: "team" },
         { route: routes.schoolsRoute, iconType: "bank" },
+        { route: routes.departmentsRoute, iconType: "home" },
     ];
 
     constructor(props: IAuthenticatedLayoutProps) {

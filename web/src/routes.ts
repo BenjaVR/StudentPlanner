@@ -17,9 +17,9 @@ const logInRoute: IRoute = {
     component: LoginPage,
 };
 
-const schoolsRoute: IRoute = {
-    title: "Scholen",
-    url: "/schools",
+const planningsRoute: IRoute = {
+    title: "Planning",
+    url: "/planning",
     component: SchoolsPage,
 };
 
@@ -29,11 +29,25 @@ const studentsRoute: IRoute = {
     component: SchoolsPage,
 };
 
+const schoolsRoute: IRoute = {
+    title: "Scholen",
+    url: "/schools",
+    component: SchoolsPage,
+};
+
+const departmentsRoute: IRoute = {
+    title: "Afdelingen",
+    url: "/departments",
+    component: SchoolsPage,
+};
+
 export const routes = {
     signedInHomeRoute: studentsRoute,
     signedOutHomeRoute: logInRoute,
 
     logInRoute,
-    schoolsRoute,
+    planningsRoute,
     studentsRoute,
+    schoolsRoute,
+    departmentsRoute,
 };

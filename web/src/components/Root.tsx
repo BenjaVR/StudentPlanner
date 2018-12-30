@@ -13,8 +13,10 @@ const Root: React.FunctionComponent = () => (
             <BrowserRouter>
                 <Switch>
                     <NotAuthenticatedOnlyRoute exact={true} path={routes.logInRoute.url} component={routes.logInRoute.component} />
-                    <PrivateRoute exact={true} path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
+                    <PrivateRoute exact={true} path={routes.planningsRoute.url} component={routes.planningsRoute.component} />
                     <PrivateRoute exact={true} path={routes.studentsRoute.url} component={routes.studentsRoute.component} />
+                    <PrivateRoute exact={true} path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
+                    <PrivateRoute exact={true} path={routes.departmentsRoute.url} component={routes.departmentsRoute.component} />
 
                     <Redirect to={routes.logInRoute.url} />
                 </Switch>
