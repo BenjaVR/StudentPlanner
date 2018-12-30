@@ -30,6 +30,9 @@ const studentsRoute: IRoute = {
 };
 
 export const routes = {
+    signedInHomeRoute: studentsRoute,
+    signedOutHomeRoute: logInRoute,
+
     logInRoute,
     schoolsRoute,
     studentsRoute,

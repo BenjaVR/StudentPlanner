@@ -7,6 +7,7 @@ import { ILoginDetails } from "../../../models/LoginDetails";
 import styles from "./LoginForm.module.scss";
 
 interface ILoginFormProps {
+    loginSuccessfulCallback?: () => void;
 }
 
 type LoginFormProps = ILoginFormProps & FormComponentProps;
@@ -17,6 +18,10 @@ interface ILoginFormState {
 }
 
 class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
+
+    public static defaultProps: Partial<LoginFormProps> = {
+        loginSuccessfulCallback: () => { return; },
+    };
 
     constructor(props: LoginFormProps) {
         super(props);
@@ -111,6 +116,10 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                     notification.success({
                         message,
                     });
+                    this.setState({
+                        isSubmitting: false,
+                    });
+                    this.props.loginSuccessfulCallback!();
                 })
                 .catch((error: firebase.FirebaseError) => {
                     switch (error.code) {
@@ -130,8 +139,6 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                         default:
                             notification.error({ message: "Er ging iets fout bij het inloggen, probeer later opnieuw" });
                     }
-                })
-                .finally(() => {
                     this.setState({
                         isSubmitting: false,
                     });

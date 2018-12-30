@@ -35,7 +35,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
 
     public render(): React.ReactNode {
         return (
-            <AuthenticatedLayout>
+            <AuthenticatedLayout router={{ history: this.props.history }}>
                 <SchoolList schools={this.state.schools} isLoading={this.state.isFetching} />
                 <SchoolForm submitSchool={this.addSchool} />
             </AuthenticatedLayout>

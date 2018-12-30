@@ -6,7 +6,7 @@ import { routes } from "../../routes";
 const NotAuthenticatedOnlyRoute: React.FunctionComponent<RouteProps> = (props: RouteProps) => {
     return Firebase.auth().currentUser === null
         ? <Route {...props} />
-        : <Redirect to={routes.schoolsRoute.url} />;
+        : <Redirect to={routes.signedInHomeRoute.url} />;
 };
 
 export default NotAuthenticatedOnlyRoute;

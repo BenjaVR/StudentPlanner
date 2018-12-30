@@ -2,12 +2,14 @@ import { Button, Col, Icon, Layout, notification, Row, Tooltip } from "antd";
 import Menu, { SelectParam } from "antd/lib/menu";
 import * as React from "react";
 import Helmet from "react-helmet";
+import { RouterProps } from "react-router";
 import { Link } from "react-router-dom";
 import { Firebase } from "../../config/FirebaseInitializer";
 import { IRoute, routes } from "../../routes";
 import styles from "./AuthenticatedLayout.module.scss";
 
 interface IAuthenticatedLayoutProps {
+    router: RouterProps;
 }
 
 interface IAuthenticatedLayoutState {
@@ -139,6 +141,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                 notification.success({
                     message: "Succesvol uitgelogd!",
                 });
+                this.props.router.history.push(routes.signedOutHomeRoute.url);
             })
             .catch(() => {
                 notification.error({
