@@ -13,6 +13,7 @@ type LoginFormProps = ILoginFormProps & FormComponentProps;
 
 interface ILoginFormState {
     isSubmitting: boolean;
+    formValidateTrigger: "onChange" | "";
 }
 
 class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
@@ -22,6 +23,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
 
         this.state = {
             isSubmitting: false,
+            formValidateTrigger: "",
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,6 +37,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem>
                         {getFieldDecorator<ILoginDetails>("username", {
+                            validateTrigger: this.state.formValidateTrigger,
                             rules: [
                                 { required: true, message: "E-mail mag niet leeg zijn" },
                                 { type: "email", message: "Dit e-mailadres heeft geen geldig formaat" },
@@ -51,6 +54,7 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
 
                     <FormItem>
                         {getFieldDecorator<ILoginDetails>("password", {
+                            validateTrigger: this.state.formValidateTrigger,
                             rules: [
                                 { required: true, message: "Wachtwoord mag niet leeg zijn" },
                             ],
@@ -81,6 +85,11 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
 
     private handleSubmit(event: React.FormEvent): void {
         event.preventDefault();
+
+        // Do real-time validation (while typing) only after the first submit.
+        this.setState({
+            formValidateTrigger: "onChange",
+        });
 
         const fields: Array<keyof ILoginDetails> = ["username", "password"];
 
