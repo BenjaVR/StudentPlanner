@@ -1,8 +1,10 @@
 import React from "react";
 import Helmet from "react-helmet";
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Redirect, Switch } from "react-router-dom";
 import { routes } from "../routes";
 import AuthChecker from "./auth/AuthChecker";
+import NotAuthenticatedOnlyRoute from "./routes/NotAuthenticatedOnlyRoute";
+import PrivateRoute from "./routes/PrivateRoute";
 
 const Root: React.FunctionComponent = () => (
     <React.Fragment>
@@ -10,9 +12,9 @@ const Root: React.FunctionComponent = () => (
         <AuthChecker>
             <BrowserRouter>
                 <Switch>
-                    <Route exact={true} path={routes.logInRoute.url} component={routes.logInRoute.component} />
-                    <Route exact={true} path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
-                    <Route exact={true} path={routes.studentsRoute.url} component={routes.studentsRoute.component} />
+                    <NotAuthenticatedOnlyRoute exact={true} path={routes.logInRoute.url} component={routes.logInRoute.component} />
+                    <PrivateRoute exact={true} path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
+                    <PrivateRoute exact={true} path={routes.studentsRoute.url} component={routes.studentsRoute.component} />
 
                     <Redirect to={routes.logInRoute.url} />
                 </Switch>

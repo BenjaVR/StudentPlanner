@@ -75,7 +75,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                                     </h1>
                                 </Col>
                                 <Col>
-                                    <Tooltip title="Logout">
+                                    <Tooltip title="Meld u af">
                                         <Button
                                             icon="logout"
                                             type="ghost"
