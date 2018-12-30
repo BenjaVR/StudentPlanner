@@ -3,6 +3,7 @@ import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
 import { Firebase } from "../../../config/FirebaseInitializer";
+import { FormValidationTrigger } from "../../../helpers/types";
 import { ILoginDetails } from "../../../models/LoginDetails";
 import styles from "./LoginForm.module.scss";
 
@@ -14,7 +15,7 @@ type LoginFormProps = ILoginFormProps & FormComponentProps;
 
 interface ILoginFormState {
     isSubmitting: boolean;
-    formValidateTrigger: "onChange" | "";
+    formValidateTrigger: FormValidationTrigger;
 }
 
 class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {

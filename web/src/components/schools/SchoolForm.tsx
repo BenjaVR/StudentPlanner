@@ -2,6 +2,7 @@ import { Button, Form, Input } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
+import { FormValidationTrigger } from "../../helpers/types";
 import { ISchool } from "../../models/School";
 
 interface ISchoolFormProps {
@@ -12,6 +13,7 @@ type SchoolFormProps = ISchoolFormProps & FormComponentProps;
 
 interface ISchoolFormState {
     isSubmitting: boolean;
+    formValidateTrigger: FormValidationTrigger;
 }
 
 class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
@@ -21,6 +23,7 @@ class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
 
         this.state = {
             isSubmitting: false,
+            formValidateTrigger: "",
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -33,8 +36,9 @@ class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
             <Form onSubmit={this.handleSubmit}>
                 <FormItem>
                     {getFieldDecorator<ISchool>("name", {
+                        validateTrigger: this.state.formValidateTrigger,
                         rules: [
-                            { required: true },
+                            { required: true, message: "Naam mag niet leeg zijn" },
                         ],
                     })(
                         <Input
@@ -56,13 +60,18 @@ class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
     private handleSubmit(event: React.FormEvent): void {
         event.preventDefault();
 
+        // Do real-time validation (while typing) only after the first submit.
         this.setState({
-            isSubmitting: true,
+            formValidateTrigger: "onChange",
         });
 
         const fields: Array<keyof ISchool> = ["name"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
+                this.setState({
+                    isSubmitting: true,
+                });
+
                 const school: ISchool = {
                     ...values,
                 };
