@@ -27,6 +27,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
         };
 
         this.addSchool = this.addSchool.bind(this);
+        this.deleteSchool = this.deleteSchool.bind(this);
     }
 
     public componentDidMount(): void {
@@ -36,7 +37,12 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     public render(): React.ReactNode {
         return (
             <AuthenticatedLayout router={{ history: this.props.history }}>
-                <SchoolList schools={this.state.schools} isLoading={this.state.isFetching} />
+                <SchoolList
+                    isLoading={this.state.isFetching}
+                    schools={this.state.schools}
+                    deleteSchool={this.deleteSchool}
+                    onAddSchoolRequest={() => {}}
+                />
                 <SchoolForm submitSchool={this.addSchool} />
             </AuthenticatedLayout>
         );
@@ -55,6 +61,25 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                 .catch(() => {
                     notification.error({
                         message: "Kon school niet toevoegen",
+                    });
+                    reject();
+                });
+        });
+    }
+
+    private deleteSchool(school: ISchool): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.schoolsService.deleteSchool(school)
+                .then(() => {
+                    notification.success({
+                        message: `School "${school.name}" succesvol verwijderd`,
+                    });
+                    this.fetchSchools();
+                    resolve();
+                })
+                .catch(() => {
+                    notification.error({
+                        message: `Kon school "${school.name}" niet verwijderen, probeer later opnieuw`,
                     });
                     reject();
                 });

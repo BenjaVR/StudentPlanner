@@ -32,4 +32,15 @@ export class SchoolsService extends FirestoreServiceBase<ISchool> {
                 .catch(reject);
         });
     }
+
+    public deleteSchool(school: ISchool): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            if (school.id === undefined) {
+                reject();
+            }
+            this.schoolsRef.doc(school.id).delete()
+                .then(resolve)
+                .catch(reject);
+        });
+    }
 }
