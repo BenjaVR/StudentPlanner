@@ -1,13 +1,14 @@
+import { Firebase } from "../config/FirebaseInitializer";
 import { ISchool } from "../models/School";
-import { FirestoreServiceBase } from "./FirestoreServiceBase";
+import { FirestoreServiceBase, OrderByType } from "./FirestoreServiceBase";
 
 export class SchoolsService extends FirestoreServiceBase<ISchool> {
 
     private readonly schoolsRef = this.firestore.collection("schools");
 
-    public listSchools(): Promise<ISchool[]> {
+    public listSchools(orderBy: keyof ISchool = "updatedDate", orderType: OrderByType = "desc"): Promise<ISchool[]> {
         return new Promise<ISchool[]>((resolve, reject) => {
-            this.schoolsRef.get()
+            this.schoolsRef.orderBy(orderBy, orderType).get()
                 .then((snapshot) => {
                     const schools = this.mapQueryDocumentSnapshotsToObject(snapshot.docs);
                     return resolve(schools);
@@ -17,6 +18,8 @@ export class SchoolsService extends FirestoreServiceBase<ISchool> {
     }
 
     public addSchool(school: ISchool): Promise<ISchool> {
+        school.createdDate = school.updatedDate = Firebase.firestore.Timestamp.now();
+
         return new Promise<ISchool>((resolve, reject) => {
             this.schoolsRef.add(school)
                 .then((docRef) => {

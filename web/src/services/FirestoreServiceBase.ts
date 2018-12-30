@@ -3,6 +3,8 @@ import { Firebase } from "../config/FirebaseInitializer";
 
 type DocSnap = firebase.firestore.DocumentSnapshot;
 
+export type OrderByType = "asc" | "desc";
+
 export abstract class FirestoreServiceBase<T> {
     protected readonly firestore = Firebase.firestore();
 
