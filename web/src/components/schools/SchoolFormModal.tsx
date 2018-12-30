@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
@@ -6,6 +6,10 @@ import { FormValidationTrigger } from "../../helpers/types";
 import { ISchool } from "../../models/School";
 
 interface ISchoolFormProps {
+    title: string;
+    okText: string;
+    isVisible: boolean;
+    onCloseRequest: () => void;
     submitSchool(school: ISchool): Promise<void>;
 }
 
@@ -16,7 +20,7 @@ interface ISchoolFormState {
     formValidateTrigger: FormValidationTrigger;
 }
 
-class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
+class SchoolFormModal extends React.Component<SchoolFormProps, ISchoolFormState> {
 
     constructor(props: SchoolFormProps) {
         super(props);
@@ -26,40 +30,47 @@ class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
             formValidateTrigger: "",
         };
 
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.doClose = this.doClose.bind(this);
+        this.handleOk = this.handleOk.bind(this);
     }
 
     public render(): React.ReactNode {
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <Form onSubmit={this.handleSubmit}>
-                <FormItem>
-                    {getFieldDecorator<ISchool>("name", {
-                        validateTrigger: this.state.formValidateTrigger,
-                        rules: [
-                            { required: true, message: "Naam mag niet leeg zijn" },
-                        ],
-                    })(
-                        <Input
-                            placeholder="Naam"
-                            disabled={this.state.isSubmitting}
-                        />,
-                    )}
-                </FormItem>
-
-                <FormItem>
-                    <Button type="primary" htmlType="submit" loading={this.state.isSubmitting}>
-                        Voeg toe
-                    </Button>
-                </FormItem>
-            </Form>
+            <Modal
+                visible={this.props.isVisible}
+                title={this.props.title}
+                onCancel={this.doClose}
+                onOk={this.handleOk}
+                okText={this.props.okText}
+                confirmLoading={this.state.isSubmitting}
+            >
+                <Form>
+                    <FormItem>
+                        {getFieldDecorator<ISchool>("name", {
+                            validateTrigger: this.state.formValidateTrigger,
+                            rules: [
+                                { required: true, message: "Naam mag niet leeg zijn" },
+                            ],
+                        })(
+                            <Input
+                                placeholder="Naam"
+                                disabled={this.state.isSubmitting}
+                            />,
+                        )}
+                    </FormItem>
+                </Form>
+            </Modal>
         );
     }
 
-    private handleSubmit(event: React.FormEvent): void {
-        event.preventDefault();
+    private doClose(): void {
+        this.props.form.resetFields();
+        this.props.onCloseRequest();
+    }
 
+    private handleOk(): void {
         // Do real-time validation (while typing) only after the first submit.
         this.setState({
             formValidateTrigger: "onChange",
@@ -77,7 +88,7 @@ class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
                 };
                 this.props.submitSchool(school)
                     .then(() => {
-                        this.props.form.resetFields();
+                        this.doClose();
                     })
                     .finally(() => {
                         this.setState({
@@ -89,6 +100,6 @@ class SchoolForm extends React.Component<SchoolFormProps, ISchoolFormState> {
     }
 }
 
-const WrappedSchoolForm = Form.create<ISchoolFormProps>()(SchoolForm);
+const WrappedSchoolFormModal = Form.create<ISchoolFormProps>()(SchoolFormModal);
 
-export default WrappedSchoolForm;
+export default WrappedSchoolFormModal;

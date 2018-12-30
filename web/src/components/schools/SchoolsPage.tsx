@@ -1,10 +1,10 @@
-import { notification } from "antd";
+import { Col, notification, Row } from "antd";
 import React from "react";
 import { ISchool } from "../../models/School";
 import { RoutePageComponentProps } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
-import SchoolForm from "./SchoolForm";
+import SchoolFormModal from "./SchoolFormModal";
 import SchoolList from "./SchoolList";
 
 type SchoolsPageProps = RoutePageComponentProps;
@@ -12,6 +12,7 @@ type SchoolsPageProps = RoutePageComponentProps;
 interface ISchoolsPageState {
     schools: ISchool[];
     isFetching: boolean;
+    isAddSchoolModalVisible: boolean;
 }
 
 export default class SchoolsPage extends React.Component<SchoolsPageProps, ISchoolsPageState> {
@@ -24,8 +25,11 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
         this.state = {
             schools: [],
             isFetching: false,
+            isAddSchoolModalVisible: false,
         };
 
+        this.openAddSchoolModal = this.openAddSchoolModal.bind(this);
+        this.closeAddSchoolModal = this.closeAddSchoolModal.bind(this);
         this.addSchool = this.addSchool.bind(this);
         this.deleteSchool = this.deleteSchool.bind(this);
     }
@@ -36,16 +40,36 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
 
     public render(): React.ReactNode {
         return (
-            <AuthenticatedLayout router={{ history: this.props.history }}>
-                <SchoolList
-                    isLoading={this.state.isFetching}
-                    schools={this.state.schools}
-                    deleteSchool={this.deleteSchool}
-                    onAddSchoolRequest={() => {}}
+            <React.Fragment>
+                <AuthenticatedLayout router={{ history: this.props.history }}>
+                    <Row>
+                        <Col xl={12} span={24}>
+                            <SchoolList
+                                isLoading={this.state.isFetching}
+                                schools={this.state.schools}
+                                deleteSchool={this.deleteSchool}
+                                onAddSchoolRequest={this.openAddSchoolModal}
+                            />
+                        </Col>
+                    </Row>
+                </AuthenticatedLayout>
+                <SchoolFormModal
+                    title="Nieuwe school toevoegen"
+                    okText="Voeg toe"
+                    isVisible={this.state.isAddSchoolModalVisible}
+                    submitSchool={this.addSchool}
+                    onCloseRequest={this.closeAddSchoolModal}
                 />
-                <SchoolForm submitSchool={this.addSchool} />
-            </AuthenticatedLayout>
+            </React.Fragment>
         );
+    }
+
+    private openAddSchoolModal(): void {
+        this.setState({ isAddSchoolModalVisible: true });
+    }
+
+    private closeAddSchoolModal(): void {
+        this.setState({ isAddSchoolModalVisible: false });
     }
 
     private addSchool(school: ISchool): Promise<void> {
