@@ -10,6 +10,7 @@ interface ISchoolListProps {
     schools: ISchool[];
     deleteSchool: (school: ISchool) => Promise<void>;
     onAddSchoolRequest: () => void;
+    onEditSchoolRequest: (school: ISchool) => void;
 }
 
 class SchoolList extends React.Component<ISchoolListProps> {
@@ -54,6 +55,7 @@ class SchoolList extends React.Component<ISchoolListProps> {
 
     private renderActions(school: ISchool): React.ReactNode {
         const deleteFunc = () => this.props.deleteSchool(school);
+        const editFunc = () => this.props.onEditSchoolRequest(school);
         return (
             <React.Fragment>
                 <Button
@@ -62,6 +64,7 @@ class SchoolList extends React.Component<ISchoolListProps> {
                     type="primary"
                     ghost={true}
                     className={styles.actionButton}
+                    onClick={editFunc}
                 />
                 <Popconfirm
                     title="Weet u zeker dat u deze school wilt verwijderen?"

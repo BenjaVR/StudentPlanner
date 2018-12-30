@@ -18,9 +18,8 @@ export class SchoolsService extends FirestoreServiceBase<ISchool> {
     }
 
     public addSchool(school: ISchool): Promise<ISchool> {
-        school.createdDate = school.updatedDate = Firebase.firestore.Timestamp.now();
-
         return new Promise<ISchool>((resolve, reject) => {
+            school.createdDate = school.updatedDate = Firebase.firestore.Timestamp.now();
             this.schoolsRef.add(school)
                 .then((docRef) => {
                     return docRef.get();
@@ -28,6 +27,20 @@ export class SchoolsService extends FirestoreServiceBase<ISchool> {
                 .then((doc) => {
                     const addedSchool = this.mapQueryDocumentSnapshotToObject(doc);
                     resolve(addedSchool);
+                })
+                .catch(reject);
+        });
+    }
+
+    public editSchool(school: ISchool): Promise<ISchool> {
+        return new Promise<ISchool>((resolve, reject) => {
+            if (school.id === undefined) {
+                return reject();
+            }
+            school.updatedDate = Firebase.firestore.Timestamp.now();
+            this.schoolsRef.doc(school.id).update(school)
+                .then(() => {
+                    resolve(school);
                 })
                 .catch(reject);
         });

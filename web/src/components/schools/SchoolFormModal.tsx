@@ -5,24 +5,25 @@ import React from "react";
 import { FormValidationTrigger } from "../../helpers/types";
 import { ISchool } from "../../models/School";
 
-interface ISchoolFormProps {
+interface ISchoolFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
+    schoolToEdit: ISchool | undefined;
     onCloseRequest: () => void;
     submitSchool(school: ISchool): Promise<void>;
 }
 
-type SchoolFormProps = ISchoolFormProps & FormComponentProps;
+type SchoolFormModalProps = ISchoolFormModalProps & FormComponentProps;
 
-interface ISchoolFormState {
+interface ISchoolFormModalState {
     isSubmitting: boolean;
     formValidateTrigger: FormValidationTrigger;
 }
 
-class SchoolFormModal extends React.Component<SchoolFormProps, ISchoolFormState> {
+class SchoolFormModal extends React.Component<SchoolFormModalProps, ISchoolFormModalState> {
 
-    constructor(props: SchoolFormProps) {
+    constructor(props: SchoolFormModalProps) {
         super(props);
 
         this.state = {
@@ -32,6 +33,17 @@ class SchoolFormModal extends React.Component<SchoolFormProps, ISchoolFormState>
 
         this.doClose = this.doClose.bind(this);
         this.handleOk = this.handleOk.bind(this);
+    }
+
+    public componentDidUpdate(prevProps: SchoolFormModalProps): void {
+        // Populate the form if it is just opened and if a school to edit is passed.
+        if (this.props.schoolToEdit !== undefined
+            && this.props.isVisible === true
+            && prevProps.isVisible === false) {
+            this.props.form.setFieldsValue({
+                name: this.props.schoolToEdit.name,
+            });
+        }
     }
 
     public render(): React.ReactNode {
@@ -100,6 +112,6 @@ class SchoolFormModal extends React.Component<SchoolFormProps, ISchoolFormState>
     }
 }
 
-const WrappedSchoolFormModal = Form.create<ISchoolFormProps>()(SchoolFormModal);
+const WrappedSchoolFormModal = Form.create<ISchoolFormModalProps>()(SchoolFormModal);
 
 export default WrappedSchoolFormModal;

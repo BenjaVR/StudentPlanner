@@ -13,6 +13,8 @@ interface ISchoolsPageState {
     schools: ISchool[];
     isFetching: boolean;
     isAddSchoolModalVisible: boolean;
+    isEditSchoolModalVisible: boolean;
+    schoolToEdit: ISchool | undefined;
 }
 
 export default class SchoolsPage extends React.Component<SchoolsPageProps, ISchoolsPageState> {
@@ -26,11 +28,16 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
             schools: [],
             isFetching: false,
             isAddSchoolModalVisible: false,
+            isEditSchoolModalVisible: false,
+            schoolToEdit: undefined,
         };
 
         this.openAddSchoolModal = this.openAddSchoolModal.bind(this);
         this.closeAddSchoolModal = this.closeAddSchoolModal.bind(this);
+        this.openEditSchoolModal = this.openEditSchoolModal.bind(this);
+        this.closeEditSchoolModal = this.closeEditSchoolModal.bind(this);
         this.addSchool = this.addSchool.bind(this);
+        this.editSchool = this.editSchool.bind(this);
         this.deleteSchool = this.deleteSchool.bind(this);
     }
 
@@ -49,6 +56,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                                 schools={this.state.schools}
                                 deleteSchool={this.deleteSchool}
                                 onAddSchoolRequest={this.openAddSchoolModal}
+                                onEditSchoolRequest={this.openEditSchoolModal}
                             />
                         </Col>
                     </Row>
@@ -59,6 +67,15 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                     isVisible={this.state.isAddSchoolModalVisible}
                     submitSchool={this.addSchool}
                     onCloseRequest={this.closeAddSchoolModal}
+                    schoolToEdit={undefined}
+                />
+                <SchoolFormModal
+                    title="School bewerken"
+                    okText="Bewerk"
+                    isVisible={this.state.isEditSchoolModalVisible}
+                    submitSchool={this.editSchool}
+                    onCloseRequest={this.closeEditSchoolModal}
+                    schoolToEdit={this.state.schoolToEdit}
                 />
             </React.Fragment>
         );
@@ -70,6 +87,17 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
 
     private closeAddSchoolModal(): void {
         this.setState({ isAddSchoolModalVisible: false });
+    }
+
+    private openEditSchoolModal(school: ISchool): void {
+        this.setState({
+            isEditSchoolModalVisible: true,
+            schoolToEdit: school,
+        });
+    }
+
+    private closeEditSchoolModal(): void {
+        this.setState({ isEditSchoolModalVisible: false });
     }
 
     private addSchool(school: ISchool): Promise<void> {
@@ -85,6 +113,26 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                 .catch(() => {
                     notification.error({
                         message: "Kon school niet toevoegen",
+                    });
+                    reject();
+                });
+        });
+    }
+
+    private editSchool(school: ISchool): Promise<void> {
+        school.id = this.state.schoolToEdit!.id;
+        return new Promise<void>((resolve, reject) => {
+            this.schoolsService.editSchool(school)
+                .then(() => {
+                    notification.success({
+                        message: `School "${school.name}" succesvol bewerkt`,
+                    });
+                    this.fetchSchools();
+                    resolve();
+                })
+                .catch(() => {
+                    notification.error({
+                        message: "Kon school niet bewerken",
                     });
                     reject();
                 });
