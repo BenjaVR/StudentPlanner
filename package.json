@@ -6,6 +6,9 @@
         "build-web": "npm --prefix web run start",
         "build-functions": "npm --prefix functions run build:watch",
         "build": "npm-run-all --continue-on-error --parallel build-functions build-web",
+        "lint-web": "npm --prefix web run lint",
+        "lint-functions": "npm --prefix functions run lint",
+        "lint": "npm-run-all --continue-on-error --parallel lint-functions lint-web",
         "deploy": "firebase deploy"
     },
     "repository": "git+https://github.com/BenjaVR/StudentPlanner.git",

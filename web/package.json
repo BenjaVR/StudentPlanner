@@ -18,7 +18,8 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test"
+        "test": "react-scripts test",
+        "lint": "tslint --project tsconfig.json"
     },
     "browserslist": [
         ">0.2%",
