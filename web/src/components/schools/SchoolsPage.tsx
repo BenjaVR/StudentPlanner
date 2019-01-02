@@ -3,6 +3,7 @@ import React from "react";
 import { ISchool } from "../../models/School";
 import { RoutePageComponentProps } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
+import EducationsTable from "../EducationsTable";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
 import SchoolFormModal from "./SchoolFormModal";
 import SchoolList from "./SchoolList";
@@ -58,6 +59,9 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                                 onAddSchoolRequest={this.openAddSchoolModal}
                                 onEditSchoolRequest={this.openEditSchoolModal}
                             />
+                        </Col>
+                        <Col xl={12} span={24}>
+                            <EducationsTable />
                         </Col>
                     </Row>
                 </AuthenticatedLayout>
