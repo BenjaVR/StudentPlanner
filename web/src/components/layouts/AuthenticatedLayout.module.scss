@@ -7,10 +7,23 @@
     text-align: center;
     line-height: 32px;
     color: rgb(197, 197, 197);
+    white-space: nowrap;
+}
+
+.sider {
+    overflow: auto;
+    height: 100vh;
+    position: fixed !important;
+    left: 0;
 }
 
 .contentLayout {
     min-height: 100vh !important;
+    margin-left: 200px;
+
+    &Collapsed {
+        margin-left: 80px;
+    }
 }
 
 .header {

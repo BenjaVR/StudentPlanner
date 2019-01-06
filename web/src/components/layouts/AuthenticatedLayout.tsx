@@ -1,5 +1,6 @@
 import { Button, Col, Icon, Layout, notification, Row, Tooltip } from "antd";
 import Menu, { SelectParam } from "antd/lib/menu";
+import classNames from "classnames";
 import * as React from "react";
 import Helmet from "react-helmet";
 import { RouterProps } from "react-router";
@@ -58,6 +59,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                         breakpoint="md"
                         collapsible={true}
                         onCollapse={this.handleSidebarCollapse}
+                        className={styles.sider}
                     >
                         <div className={styles.logo}>
                             {this.state.isSidebarCollapsed ? "SP" : "Student Planner"}
@@ -70,7 +72,9 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                             {this.renderMenuItems()}
                         </Menu>
                     </Layout.Sider>
-                    <Layout className={styles.contentLayout}>
+                    <Layout
+                        className={classNames(styles.contentLayout, {[styles.contentLayoutCollapsed]: this.state.isSidebarCollapsed})}
+                    >
                         <Layout.Header className={styles.header}>
                             <Row type="flex" justify="space-between" align="middle">
                                 <Col >
@@ -115,14 +119,9 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
     }
 
     private handleSidebarCollapse(isCollapsed: boolean): void {
-        // Delay if it changed to not collapsed, because text will jump otherwise.
-        const timeout = isCollapsed ? 0 : 100;
-        window.setTimeout(() => {
-            this.setState({
-                isSidebarCollapsed: isCollapsed,
-            });
-        }, timeout);
-
+        this.setState({
+            isSidebarCollapsed: isCollapsed,
+        });
     }
 
     private handleSelectMenuItem(selectParam: SelectParam): void {
