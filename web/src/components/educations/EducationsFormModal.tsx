@@ -57,6 +57,7 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
                 onOk={this.handleOk}
                 okText={this.props.okText}
                 confirmLoading={this.state.isSubmitting}
+                destroyOnClose={true}
             >
                 <Form>
                     <FormItem>
@@ -79,7 +80,6 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
     }
 
     private doClose(): void {
-        this.props.form.resetFields();
         this.props.onCloseRequest();
     }
 

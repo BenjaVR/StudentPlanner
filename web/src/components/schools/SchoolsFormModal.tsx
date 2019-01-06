@@ -57,6 +57,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
                 onOk={this.handleOk}
                 okText={this.props.okText}
                 confirmLoading={this.state.isSubmitting}
+                destroyOnClose={true}
             >
                 <Form>
                     <FormItem>
@@ -79,7 +80,6 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
     }
 
     private doClose(): void {
-        this.props.form.resetFields();
         this.props.onCloseRequest();
     }
 
