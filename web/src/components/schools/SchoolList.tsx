@@ -85,7 +85,7 @@ class SchoolList extends React.Component<ISchoolListProps> {
 
     private renderTableTitle(): React.ReactNode {
         return (
-            <Row type="flex" justify="space-between">
+            <Row type="flex" justify="space-between" align="middle">
                 <Col>
                     <h2 className={styles.tableTitleText}>Scholen</h2>
                 </Col>

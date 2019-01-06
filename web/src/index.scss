@@ -8,3 +8,7 @@ body {
 .ant-notification {
     margin-right: 15px; // Fix to center notifications on small screens.
 }
+
+.ant-table td {
+    white-space: nowrap; // Fix for the responsive table scrollbars.
+}

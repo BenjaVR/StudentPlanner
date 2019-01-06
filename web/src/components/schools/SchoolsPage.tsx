@@ -27,7 +27,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
 
         this.state = {
             schools: [],
-            isFetching: false,
+            isFetching: true,
             isAddSchoolModalVisible: false,
             isEditSchoolModalVisible: false,
             schoolToEdit: undefined,
@@ -43,7 +43,12 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     }
 
     public componentDidMount(): void {
-        this.fetchSchools();
+        this.schoolsService.subscribe((schools) => {
+            this.setState({
+                isFetching: false,
+                schools,
+            });
+        });
     }
 
     public render(): React.ReactNode {
@@ -105,13 +110,12 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     }
 
     private addSchool(school: ISchool): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.schoolsService.addSchool(school)
+        return new Promise<void>((resolve, reject): void => {
+            this.schoolsService.add(school)
                 .then(() => {
                     notification.success({
                         message: `School "${school.name}" succesvol toegevoegd`,
                     });
-                    this.fetchSchools();
                     resolve();
                 })
                 .catch(() => {
@@ -125,13 +129,12 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
 
     private editSchool(school: ISchool): Promise<void> {
         school.id = this.state.schoolToEdit!.id;
-        return new Promise<void>((resolve, reject) => {
-            this.schoolsService.editSchool(school)
+        return new Promise<void>((resolve, reject): void => {
+            this.schoolsService.update(school)
                 .then(() => {
                     notification.success({
                         message: `School "${school.name}" succesvol bewerkt`,
                     });
-                    this.fetchSchools();
                     resolve();
                 })
                 .catch(() => {
@@ -144,13 +147,12 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     }
 
     private deleteSchool(school: ISchool): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.schoolsService.deleteSchool(school)
+        return new Promise<void>((resolve, reject): void => {
+            this.schoolsService.delete(school)
                 .then(() => {
                     notification.success({
                         message: `School "${school.name}" succesvol verwijderd`,
                     });
-                    this.fetchSchools();
                     resolve();
                 })
                 .catch(() => {
@@ -160,23 +162,5 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                     reject();
                 });
         });
-    }
-
-    private fetchSchools(): void {
-        this.setState({
-            isFetching: true,
-        });
-
-        this.schoolsService.listSchools()
-            .then((schools) => {
-                this.setState({
-                    schools,
-                });
-            })
-            .finally(() => {
-                this.setState({
-                    isFetching: false,
-                });
-            });
     }
 }
