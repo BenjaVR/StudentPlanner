@@ -1,4 +1,4 @@
-import { Button, Col, Icon, Layout, notification, Row, Tooltip } from "antd";
+import { Avatar, Button, Col, Icon, Layout, notification, Row, Tooltip } from "antd";
 import Menu, { SelectParam } from "antd/lib/menu";
 import classNames from "classnames";
 import * as React from "react";
@@ -73,7 +73,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                         </Menu>
                     </Layout.Sider>
                     <Layout
-                        className={classNames(styles.contentLayout, {[styles.contentLayoutCollapsed]: this.state.isSidebarCollapsed})}
+                        className={classNames(styles.contentLayout, { [styles.contentLayoutCollapsed]: this.state.isSidebarCollapsed })}
                     >
                         <Layout.Header className={styles.header}>
                             <Row type="flex" justify="space-between" align="middle">
@@ -83,10 +83,14 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                                     </h1>
                                 </Col>
                                 <Col>
-                                    <Tooltip title="Meld u af">
+                                    <Tooltip title={this.getUsername()} placement="bottom">
+                                        {this.renderAvatar()}
+                                    </Tooltip>
+                                    <Tooltip title="Afmelden" placement="bottom">
                                         <Button
-                                            icon="logout"
+                                            shape="circle-outline"
                                             type="ghost"
+                                            icon="logout"
                                             onClick={this.handleLogout}
                                             className={styles.logoutButton}
                                         />
@@ -102,6 +106,27 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                     </Layout>
                 </Layout>
             </React.Fragment>
+        );
+    }
+
+    private renderAvatar(): React.ReactNode {
+        const username = this.getUsername();
+        const characters = username.indexOf("@") > -1
+            ? [username.charAt(0)]
+            : username.match(/\b(\w)/g);
+
+        const avatarUsername = characters === null
+            ? undefined
+            : characters.map((c) => c.toUpperCase()).join("");
+
+        if (avatarUsername === undefined) {
+            return (
+                <Avatar className={styles.avatar} icon="user" />
+            );
+        }
+
+        return (
+            <Avatar className={styles.avatar}>{avatarUsername}</Avatar>
         );
     }
 
@@ -149,6 +174,24 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                     message: "Iets ging fout bij het uitloggen... Herlaad de pagina a.u.b.",
                 });
             });
+    }
+
+    private getUsername(): string {
+        const user = Firebase.auth().currentUser;
+
+        if (user === null) {
+            return "";
+        }
+
+        if (user.displayName !== null) {
+            return user.displayName;
+        }
+
+        if (user.email !== null) {
+            return user.email;
+        }
+
+        return "";
     }
 }
 

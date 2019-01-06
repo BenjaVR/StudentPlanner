@@ -49,9 +49,16 @@
 }
 
 .logoutButton {
+    margin: 4px;
+    top: 3px; // Align with user badge.
+
     &:hover, &:active, &:focus {
         // Do not use the primary color for the logout button.
         border-color: red !important;
         color: red !important;
     }
+}
+
+.avatar {
+    margin: 4px !important;
 }
