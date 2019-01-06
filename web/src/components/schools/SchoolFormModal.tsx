@@ -2,6 +2,7 @@ import { Form, Input, Modal } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
+import { FormValidationTrigger } from "../../helpers/types";
 import { ISchool } from "../../models/School";
 
 interface ISchoolFormModalProps {
@@ -19,8 +20,6 @@ interface ISchoolFormModalState {
     isSubmitting: boolean;
     formValidateTrigger: FormValidationTrigger;
 }
-
-export type FormValidationTrigger = "onChange" | "";
 
 class SchoolFormModal extends React.Component<SchoolFormModalProps, ISchoolFormModalState> {
 

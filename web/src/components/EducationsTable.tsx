@@ -14,8 +14,6 @@ interface IEducationsTableState {
     loading: boolean;
 }
 
-export type FormValidationTrigger = "onChange" | "";
-
 class EducationsTable extends React.Component<IEducationsTableProps, IEducationsTableState> {
 
     private educationsService = new EducationsService();
@@ -169,7 +167,7 @@ class EducationsTable extends React.Component<IEducationsTableProps, IEducations
             this.setState({ loading: false });
         });
     }
-    
+
     private editEducation(education: IEducation): void {
 
     }

@@ -1,0 +1,1 @@
+export type FormValidationTrigger = "onChange" | "";
