@@ -1,20 +1,19 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
 import { ISchool } from "../../models/School";
-import { RoutePageComponentProps } from "../../routes";
+import { RoutePageComponentProps, routes } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
-import EducationsTable from "../EducationsTable";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
-import SchoolFormModal from "./SchoolFormModal";
-import SchoolList from "./SchoolList";
+import SchoolFormModal from "./SchoolsFormModal";
+import SchoolList from "./SchoolsTable";
 
 type SchoolsPageProps = RoutePageComponentProps;
 
 interface ISchoolsPageState {
     schools: ISchool[];
     isFetching: boolean;
-    isAddSchoolModalVisible: boolean;
-    isEditSchoolModalVisible: boolean;
+    isAddSchoolsModalVisible: boolean;
+    isEditSchoolsModalVisible: boolean;
     schoolToEdit: ISchool | undefined;
 }
 
@@ -28,8 +27,8 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
         this.state = {
             schools: [],
             isFetching: true,
-            isAddSchoolModalVisible: false,
-            isEditSchoolModalVisible: false,
+            isAddSchoolsModalVisible: false,
+            isEditSchoolsModalVisible: false,
             schoolToEdit: undefined,
         };
 
@@ -54,9 +53,9 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <AuthenticatedLayout router={{ history: this.props.history }}>
+                <AuthenticatedLayout router={{ history: this.props.history }} initialRoute={routes.schoolsRoute}>
                     <Row>
-                        <Col xl={12} span={24}>
+                        <Col>
                             <SchoolList
                                 isLoading={this.state.isFetching}
                                 schools={this.state.schools}
@@ -65,15 +64,12 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                                 onEditSchoolRequest={this.openEditSchoolModal}
                             />
                         </Col>
-                        <Col xl={12} span={24}>
-                            <EducationsTable />
-                        </Col>
                     </Row>
                 </AuthenticatedLayout>
                 <SchoolFormModal
                     title="Nieuwe school toevoegen"
                     okText="Voeg toe"
-                    isVisible={this.state.isAddSchoolModalVisible}
+                    isVisible={this.state.isAddSchoolsModalVisible}
                     submitSchool={this.addSchool}
                     onCloseRequest={this.closeAddSchoolModal}
                     schoolToEdit={undefined}
@@ -81,7 +77,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                 <SchoolFormModal
                     title="School bewerken"
                     okText="Bewerk"
-                    isVisible={this.state.isEditSchoolModalVisible}
+                    isVisible={this.state.isEditSchoolsModalVisible}
                     submitSchool={this.editSchool}
                     onCloseRequest={this.closeEditSchoolModal}
                     schoolToEdit={this.state.schoolToEdit}
@@ -91,22 +87,22 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     }
 
     private openAddSchoolModal(): void {
-        this.setState({ isAddSchoolModalVisible: true });
+        this.setState({ isAddSchoolsModalVisible: true });
     }
 
     private closeAddSchoolModal(): void {
-        this.setState({ isAddSchoolModalVisible: false });
+        this.setState({ isAddSchoolsModalVisible: false });
     }
 
     private openEditSchoolModal(school: ISchool): void {
         this.setState({
-            isEditSchoolModalVisible: true,
+            isEditSchoolsModalVisible: true,
             schoolToEdit: school,
         });
     }
 
     private closeEditSchoolModal(): void {
-        this.setState({ isEditSchoolModalVisible: false });
+        this.setState({ isEditSchoolsModalVisible: false });
     }
 
     private addSchool(school: ISchool): Promise<void> {

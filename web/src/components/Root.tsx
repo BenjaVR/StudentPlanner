@@ -16,6 +16,7 @@ const Root: React.FunctionComponent = () => (
                     <PrivateRoute exact={true} path={routes.planningsRoute.url} component={routes.planningsRoute.component} />
                     <PrivateRoute exact={true} path={routes.studentsRoute.url} component={routes.studentsRoute.component} />
                     <PrivateRoute exact={true} path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
+                    <PrivateRoute exact={true} path={routes.educationsRoute.url} component={routes.educationsRoute.component} />
                     <PrivateRoute exact={true} path={routes.departmentsRoute.url} component={routes.departmentsRoute.component} />
 
                     <Redirect to={routes.logInRoute.url} />

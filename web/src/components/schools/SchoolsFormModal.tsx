@@ -5,7 +5,7 @@ import React from "react";
 import { FormValidationTrigger } from "../../helpers/types";
 import { ISchool } from "../../models/School";
 
-interface ISchoolFormModalProps {
+interface ISchoolsFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
@@ -14,14 +14,14 @@ interface ISchoolFormModalProps {
     submitSchool(school: ISchool): Promise<void>;
 }
 
-type SchoolFormModalProps = ISchoolFormModalProps & FormComponentProps;
+type SchoolFormModalProps = ISchoolsFormModalProps & FormComponentProps;
 
-interface ISchoolFormModalState {
+interface ISchoolsFormModalState {
     isSubmitting: boolean;
     formValidateTrigger: FormValidationTrigger;
 }
 
-class SchoolFormModal extends React.Component<SchoolFormModalProps, ISchoolFormModalState> {
+class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFormModalState> {
 
     constructor(props: SchoolFormModalProps) {
         super(props);
@@ -67,6 +67,7 @@ class SchoolFormModal extends React.Component<SchoolFormModalProps, ISchoolFormM
                             ],
                         })(
                             <Input
+                                autoFocus={true}
                                 placeholder="Naam"
                                 disabled={this.state.isSubmitting}
                             />,
@@ -112,6 +113,5 @@ class SchoolFormModal extends React.Component<SchoolFormModalProps, ISchoolFormM
     }
 }
 
-const WrappedSchoolFormModal = Form.create<ISchoolFormModalProps>()(SchoolFormModal);
-
-export default WrappedSchoolFormModal;
+const WrappedSchoolsFormModal = Form.create<ISchoolsFormModalProps>()(SchoolsFormModal);
+export default WrappedSchoolsFormModal;

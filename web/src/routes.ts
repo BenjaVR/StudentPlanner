@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import LoginPage from "./components/auth/login/LoginPage";
+import EducationsPage from "./components/educations/EducationsPage";
 import SchoolsPage from "./components/schools/SchoolsPage";
 
 export type RoutePageComponentProps = RouteComponentProps<any>;
@@ -35,6 +36,12 @@ const schoolsRoute: IRoute = {
     component: SchoolsPage,
 };
 
+const educationsRoute: IRoute = {
+    title: "Opleidingen",
+    url: "/educations",
+    component: EducationsPage,
+};
+
 const departmentsRoute: IRoute = {
     title: "Afdelingen",
     url: "/departments",
@@ -49,5 +56,6 @@ export const routes = {
     planningsRoute,
     studentsRoute,
     schoolsRoute,
+    educationsRoute,
     departmentsRoute,
 };

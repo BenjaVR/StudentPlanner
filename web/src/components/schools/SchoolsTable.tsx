@@ -1,11 +1,11 @@
-import { Button, Col, Popconfirm, Row, Table } from "antd";
+import { Button, Col, Popconfirm, Row, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import React from "react";
 import { stringSorter } from "../../helpers/sorters";
 import { ISchool } from "../../models/School";
-import styles from "./SchoolList.module.scss";
+import styles from "../DataTable.module.scss";
 
-interface ISchoolListProps {
+interface ISchoolsTableProps {
     isLoading: boolean;
     schools: ISchool[];
     deleteSchool: (school: ISchool) => Promise<void>;
@@ -13,7 +13,7 @@ interface ISchoolListProps {
     onEditSchoolRequest: (school: ISchool) => void;
 }
 
-class SchoolList extends React.Component<ISchoolListProps> {
+class SchoolsTable extends React.Component<ISchoolsTableProps> {
 
     private columns: Array<ColumnProps<ISchool>> = [
         {
@@ -31,7 +31,7 @@ class SchoolList extends React.Component<ISchoolListProps> {
         },
     ];
 
-    constructor(props: ISchoolListProps) {
+    constructor(props: ISchoolsTableProps) {
         super(props);
 
         this.renderActions = this.renderActions.bind(this);
@@ -41,14 +41,15 @@ class SchoolList extends React.Component<ISchoolListProps> {
     public render(): React.ReactNode {
         return (
             <Table
-                rowKey={this.getTableRowKey}
                 title={this.renderTableTitle}
                 columns={this.columns}
+                rowKey={this.generateTableRowKey}
                 dataSource={this.props.schools}
                 loading={this.props.isLoading}
-                bordered={true}
                 size="middle"
-                scroll={{ x: 250 }}
+                bordered={true}
+                scroll={{ x: true }}
+                className={styles.table}
             />
         );
     }
@@ -58,27 +59,30 @@ class SchoolList extends React.Component<ISchoolListProps> {
         const editFunc = () => this.props.onEditSchoolRequest(school);
         return (
             <React.Fragment>
-                <Button
-                    size="small"
-                    icon="edit"
-                    type="primary"
-                    ghost={true}
-                    className={styles.actionButton}
-                    onClick={editFunc}
-                />
-                <Popconfirm
-                    title="Weet u zeker dat u deze school wilt verwijderen?"
-                    onConfirm={deleteFunc}
-                >
+                <Tooltip title="Bewerken">
                     <Button
                         size="small"
-                        icon="delete"
-                        type="danger"
+                        icon="edit"
+                        type="primary"
                         ghost={true}
+                        onClick={editFunc}
                         className={styles.actionButton}
                     />
-                </Popconfirm>
-
+                </Tooltip>
+                <Tooltip title="Verwijderen">
+                    <Popconfirm
+                        title="Weet u zeker dat u deze school wilt verwijderen?"
+                        onConfirm={deleteFunc}
+                    >
+                        <Button
+                            size="small"
+                            icon="delete"
+                            type="danger"
+                            ghost={true}
+                            className={styles.actionButton}
+                        />
+                    </Popconfirm>
+                </Tooltip>
             </React.Fragment>
         );
     }
@@ -86,21 +90,18 @@ class SchoolList extends React.Component<ISchoolListProps> {
     private renderTableTitle(): React.ReactNode {
         return (
             <Row type="flex" justify="space-between" align="middle">
-                <Col>
-                    <h2 className={styles.tableTitleText}>Scholen</h2>
-                </Col>
-                <Col>
-                    <Button type="primary" onClick={this.props.onAddSchoolRequest}>
+                <Col className={styles.col}>
+                    <Button icon="plus" type="primary" onClick={this.props.onAddSchoolRequest}>
                         Nieuwe school
-                </Button>
+                    </Button>
                 </Col>
             </Row>
         );
     }
 
-    private getTableRowKey(record: ISchool, index: number): string {
+    private generateTableRowKey(record: ISchool, index: number): string {
         return record.id || index.toString();
     }
 }
 
-export default SchoolList;
+export default SchoolsTable;

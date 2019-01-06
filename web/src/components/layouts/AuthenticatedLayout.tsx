@@ -11,6 +11,7 @@ import styles from "./AuthenticatedLayout.module.scss";
 
 interface IAuthenticatedLayoutProps {
     router: RouterProps;
+    initialRoute: IRoute;
 }
 
 interface IAuthenticatedLayoutState {
@@ -32,6 +33,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
         { route: routes.planningsRoute, iconType: "calendar" },
         { route: routes.studentsRoute, iconType: "team" },
         { route: routes.schoolsRoute, iconType: "bank" },
+        { route: routes.educationsRoute, iconType: "edit" },
         { route: routes.departmentsRoute, iconType: "home" },
     ];
 
@@ -39,7 +41,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
         super(props);
 
         this.state = {
-            activeMenuItem: this.menuItems[0],
+            activeMenuItem: this.getMenuItemByUrl(props.initialRoute.url) || this.menuItems[0],
             isSidebarCollapsed: false,
         };
 
@@ -150,7 +152,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
     }
 
     private handleSelectMenuItem(selectParam: SelectParam): void {
-        const newMenuItem = this.menuItems.find((menuItem) => menuItem.route.url === selectParam.key);
+        const newMenuItem = this.getMenuItemByUrl(selectParam.key);
 
         if (newMenuItem !== undefined) {
             this.setState({
@@ -174,6 +176,10 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                     message: "Iets ging fout bij het uitloggen... Herlaad de pagina a.u.b.",
                 });
             });
+    }
+
+    private getMenuItemByUrl(url: string): IMenuItem | undefined {
+        return this.menuItems.find((menuItem) => menuItem.route.url === url);
     }
 
     private getUsername(): string {
