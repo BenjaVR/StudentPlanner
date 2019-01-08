@@ -25,6 +25,10 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
 
     public add(obj: T): Promise<T> {
         return new Promise<T>((resolve, reject): void => {
+            if (obj.id !== undefined) {
+                reject("Cannot add a object which already has an id!");
+            }
+
             const now = Firebase.firestore.Timestamp.now();
             obj.createdTimestamp = now;
             obj.updatedTimestamp = now;
@@ -36,7 +40,10 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
                 .then((doc) => {
                     resolve(this.mapDocToObject(doc));
                 })
-                .catch(reject);
+                .catch((error) => {
+                    catchErrorDev(error);
+                    reject(error);
+                });
         });
     }
 
@@ -46,11 +53,16 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
                 reject("Id is undefined");
             }
 
+            const id = obj.id;
+            delete obj.id;
             obj.updatedTimestamp = Firebase.firestore.Timestamp.now();
 
-            this.collectionRef.doc(obj.id).update(obj)
+            this.collectionRef.doc(id).update(obj)
                 .then(() => resolve())
-                .catch(reject);
+                .catch((error) => {
+                    catchErrorDev(error);
+                    reject(error);
+                });
         });
     }
 
@@ -62,7 +74,10 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
 
             this.collectionRef.doc(obj.id).delete()
                 .then(resolve)
-                .catch(reject);
+                .catch((error) => {
+                    catchErrorDev(error);
+                    reject(error);
+                });
         });
     }
 
@@ -76,5 +91,12 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
             id: docSnap.id,
         };
         return obj as T;
+    }
+}
+
+function catchErrorDev(error: any): void {
+    if (process.env.NODE_ENV === "development") {
+        // tslint:disable-next-line:no-console
+        console.log(error);
     }
 }

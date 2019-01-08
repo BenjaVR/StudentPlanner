@@ -79,7 +79,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
                     >
                         <Layout.Header className={styles.header}>
                             <Row type="flex" justify="space-between" align="middle">
-                                <Col >
+                                <Col className={styles.titlColumn}>
                                     <h1 className={styles.title}>
                                         {this.state.activeMenuItem.route.title}
                                     </h1>

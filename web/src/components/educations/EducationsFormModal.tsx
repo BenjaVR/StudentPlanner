@@ -114,5 +114,4 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
 }
 
 const WrappedEducationFormModal = Form.create<IEducationFormModalProps>()(EducationFormModal);
-
 export default WrappedEducationFormModal;

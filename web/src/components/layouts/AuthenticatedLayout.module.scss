@@ -31,6 +31,10 @@
     padding: 0 25px !important;
 }
 
+.titlColumn {
+    max-width: 50%;
+}
+
 .title {
     overflow: hidden;
     white-space: nowrap;
@@ -61,4 +65,8 @@
 
 .avatar {
     margin: 4px !important;
+
+    &:hover {
+        cursor: default; // Should be removed when using the avatar to go to profile settings or something like that.
+    }
 }

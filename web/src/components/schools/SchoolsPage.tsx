@@ -114,11 +114,11 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                     });
                     resolve();
                 })
-                .catch(() => {
+                .catch((error) => {
                     notification.error({
                         message: "Kon school niet toevoegen",
                     });
-                    reject();
+                    reject(error);
                 });
         });
     }
@@ -133,11 +133,11 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                     });
                     resolve();
                 })
-                .catch(() => {
+                .catch((error) => {
                     notification.error({
                         message: "Kon school niet bewerken",
                     });
-                    reject();
+                    reject(error);
                 });
         });
     }
@@ -151,11 +151,11 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                     });
                     resolve();
                 })
-                .catch(() => {
+                .catch((error) => {
                     notification.error({
                         message: `Kon school "${school.name}" niet verwijderen, probeer later opnieuw`,
                     });
-                    reject();
+                    reject(error);
                 });
         });
     }

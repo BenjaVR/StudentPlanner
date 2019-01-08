@@ -114,11 +114,11 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
                     });
                     resolve();
                 })
-                .catch(() => {
+                .catch((error) => {
                     notification.error({
                         message: "Kon opleiding niet toevoegen",
                     });
-                    reject();
+                    reject(error);
                 });
         });
     }
@@ -133,11 +133,11 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
                     });
                     resolve();
                 })
-                .catch(() => {
+                .catch((error) => {
                     notification.error({
                         message: "Kon opleiding niet bewerken",
                     });
-                    reject();
+                    reject(error);
                 });
         });
     }
@@ -151,11 +151,11 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
                     });
                     resolve();
                 })
-                .catch(() => {
+                .catch((error) => {
                     notification.error({
                         message: `Kon opleiding "${education.name}" niet verwijderen, probeer later opnieuw`,
                     });
-                    reject();
+                    reject(error);
                 });
         });
     }
