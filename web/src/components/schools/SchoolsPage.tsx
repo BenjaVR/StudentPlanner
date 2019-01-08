@@ -5,7 +5,7 @@ import { RoutePageComponentProps, routes } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
 import SchoolFormModal from "./SchoolsFormModal";
-import SchoolList from "./SchoolsTable";
+import SchoolsTable from "./SchoolsTable";
 
 type SchoolsPageProps = RoutePageComponentProps;
 
@@ -56,7 +56,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                 <AuthenticatedLayout router={{ history: this.props.history }} initialRoute={routes.schoolsRoute}>
                     <Row>
                         <Col>
-                            <SchoolList
+                            <SchoolsTable
                                 isLoading={this.state.isFetching}
                                 schools={this.state.schools}
                                 deleteSchool={this.deleteSchool}

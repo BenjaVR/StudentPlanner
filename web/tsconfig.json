@@ -17,6 +17,11 @@
             "es6",
             "dom",
             "es2018.promise"
+        ],
+        "plugins": [
+            {
+                "name": "typescript-plugin-css-modules"
+            }
         ]
     },
     "include": [
