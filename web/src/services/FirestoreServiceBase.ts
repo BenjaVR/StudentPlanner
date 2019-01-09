@@ -1,32 +1,47 @@
 import firebase from "firebase";
 import { Firebase } from "../config/FirebaseInitializer";
+import { FirebaseModelMapper } from "./FirebaseModelMapper";
 
 export type OrderByType = "asc" | "desc";
 
 export type ListenOnChangeFunc<T> = (objects: T[], size: number) => void;
 
-export interface IFirebaseModel {
+export interface IFirebaseTable {
     id?: string;
     createdTimestamp?: firebase.firestore.Timestamp;
     updatedTimestamp?: firebase.firestore.Timestamp;
 }
 
-export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
+export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
 
     protected readonly abstract collectionRef: firebase.firestore.CollectionReference;
 
     public subscribe(onChange: ListenOnChangeFunc<T>, orderBy: keyof T = "updatedTimestamp", orderByType: OrderByType = "desc"): void {
         this.collectionRef.orderBy(orderBy as string, orderByType)
             .onSnapshot((change): void => {
-                const mappedDocs = this.mapDocsToObject(change.docs);
+                const mappedDocs = FirebaseModelMapper.mapDocsToObject<T>(change.docs);
                 onChange(mappedDocs, change.size);
             });
     }
 
+    public get(id: string): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            this.collectionRef.doc(id).get()
+                .then((docSnap) => {
+                    const mappedDoc = FirebaseModelMapper.mapDocToObject<T>(docSnap);
+                    resolve(mappedDoc);
+                })
+                .catch((error) => {
+                    catchErrorDev(error);
+                    reject(error);
+                });
+        });
+    }
+
     public add(obj: T): Promise<T> {
-        return new Promise<T>((resolve, reject): void => {
+        return new Promise<T>((resolve, reject) => {
             if (obj.id !== undefined) {
-                reject("Cannot add a object which already has an id!");
+                return reject("Cannot add a object which already has an id!");
             }
 
             const now = Firebase.firestore.Timestamp.now();
@@ -38,7 +53,7 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
                     return docRef.get();
                 })
                 .then((doc) => {
-                    resolve(this.mapDocToObject(doc));
+                    resolve(FirebaseModelMapper.mapDocToObject<T>(doc));
                 })
                 .catch((error) => {
                     catchErrorDev(error);
@@ -48,16 +63,24 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
     }
 
     public update(obj: T): Promise<void> {
-        return new Promise<void>((resolve, reject): void => {
+        return new Promise<void>((resolve, reject) => {
             if (obj.id === undefined) {
-                reject("Id is undefined");
+                return reject("Id is undefined");
             }
 
             const id = obj.id;
             delete obj.id;
             obj.updatedTimestamp = Firebase.firestore.Timestamp.now();
 
-            this.collectionRef.doc(id).update(obj)
+            // Change all "undefined" to "delete()", because Firestore wants this.
+            const objToClean: { [key: string]: any } = obj;
+            Object.keys(objToClean).forEach((key) => {
+                if (objToClean[key] === undefined) {
+                    objToClean[key] = Firebase.firestore.FieldValue.delete();
+                }
+            });
+
+            this.collectionRef.doc(id).update(objToClean)
                 .then(() => resolve())
                 .catch((error) => {
                     catchErrorDev(error);
@@ -67,9 +90,9 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
     }
 
     public delete(obj: T): Promise<void> {
-        return new Promise<void>((resolve, reject): void => {
+        return new Promise<void>((resolve, reject) => {
             if (obj.id === undefined) {
-                reject("Id is undefined");
+                return reject("Id is undefined");
             }
 
             this.collectionRef.doc(obj.id).delete()
@@ -79,18 +102,6 @@ export abstract class FirestoreServiceBase<T extends IFirebaseModel> {
                     reject(error);
                 });
         });
-    }
-
-    protected mapDocsToObject(docSnaps: firebase.firestore.DocumentSnapshot[]): T[] {
-        return docSnaps.map(this.mapDocToObject);
-    }
-
-    protected mapDocToObject(docSnap: firebase.firestore.DocumentSnapshot): T {
-        const obj = {
-            ...docSnap.data(),
-            id: docSnap.id,
-        };
-        return obj as T;
     }
 }
 

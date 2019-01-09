@@ -3,6 +3,7 @@ import { RouteComponentProps } from "react-router";
 import LoginPage from "./components/auth/login/LoginPage";
 import EducationsPage from "./components/educations/EducationsPage";
 import SchoolsPage from "./components/schools/SchoolsPage";
+import StudentsPage from "./components/students/StudentsPage";
 
 export type RoutePageComponentProps = RouteComponentProps<any>;
 
@@ -27,7 +28,7 @@ const planningsRoute: IRoute = {
 const studentsRoute: IRoute = {
     title: "Studenten",
     url: "/students",
-    component: SchoolsPage,
+    component: StudentsPage,
 };
 
 const schoolsRoute: IRoute = {

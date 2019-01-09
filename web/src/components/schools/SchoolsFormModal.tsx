@@ -60,7 +60,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
                 destroyOnClose={true}
             >
                 <Form>
-                    <FormItem>
+                    <FormItem label="Naam">
                         {getFieldDecorator<ISchool>("name", {
                             validateTrigger: this.state.formValidateTrigger,
                             rules: [
@@ -69,7 +69,6 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
                         })(
                             <Input
                                 autoFocus={true}
-                                placeholder="Naam"
                                 disabled={this.state.isSubmitting}
                             />,
                         )}
