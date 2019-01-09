@@ -3,6 +3,7 @@ import { ColumnFilterItem, ColumnProps } from "antd/lib/table";
 import React from "react";
 import { emptyFilterOptionValue, exactMatchOrDefaultOptionFilter, hasElementWithId } from "../../helpers/filters";
 import { stringSorter } from "../../helpers/sorters";
+import { IEducation } from "../../models/Education";
 import { ISchool } from "../../models/School";
 import { IStudent } from "../../models/Student";
 import styles from "../DataTable.module.scss";
@@ -12,6 +13,8 @@ interface IStudentsTableProps {
     students: IStudent[];
     schools: ISchool[];
     isLoadingSchools: boolean;
+    educations: IEducation[];
+    isLoadingEducations: boolean;
     deleteStudent: (student: IStudent) => Promise<void>;
     onAddStudentRequest: () => void;
     onEditStudentRequest: (student: IStudent) => void;
@@ -55,6 +58,18 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
         }
 
         return this.getSchoolNameForStudent(student);
+    }
+
+    private renderEducationName(student: IStudent): React.ReactNode {
+        if (this.props.isLoadingEducations) {
+            return <Spin size="small" spinning={true} />;
+        }
+
+        if (student.educationId === undefined) {
+            return "";
+        }
+
+        return this.getEducationNameForStudent(student);
     }
 
     private renderActions(student: IStudent): React.ReactNode {
@@ -115,6 +130,15 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
         return school.name;
     }
 
+    private getEducationNameForStudent(student: IStudent): string {
+        const education = this.props.educations.find((e) => student.educationId !== undefined && student.educationId === e.id);
+        if (education === undefined) {
+            return "";
+        }
+
+        return education.name;
+    }
+
     private getTableColumns(): Array<ColumnProps<IStudent>> {
         return [
             {
@@ -137,6 +161,19 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
                 },
             },
             {
+                title: "Opleiding",
+                key: "education",
+                render: (record: IStudent) => this.renderEducationName(record),
+                sorter: (a, b) => stringSorter(this.getEducationNameForStudent(a), this.getEducationNameForStudent(b)),
+                filters: this.getEducationFilters(),
+                onFilter: (value, record: IStudent) => {
+                    return exactMatchOrDefaultOptionFilter(value,
+                        hasElementWithId(this.props.educations, record.educationId)
+                            ? record.educationId
+                            : undefined);
+                },
+            },
+            {
                 title: "Acties",
                 key: "actions",
                 width: 120,
@@ -155,6 +192,20 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
         });
         filters.unshift({
             text: "Zonder school",
+            value: emptyFilterOptionValue,
+        });
+        return filters;
+    }
+
+    private getEducationFilters(): ColumnFilterItem[] {
+        const filters: ColumnFilterItem[] = this.props.educations.map((education) => {
+            return {
+                text: education.name,
+                value: education.id!,
+            };
+        });
+        filters.unshift({
+            text: "Zonder opleiding",
             value: emptyFilterOptionValue,
         });
         return filters;

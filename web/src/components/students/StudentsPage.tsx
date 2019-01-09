@@ -1,8 +1,10 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
+import { IEducation } from "../../models/Education";
 import { ISchool } from "../../models/School";
 import { IStudent } from "../../models/Student";
 import { RoutePageComponentProps, routes } from "../../routes";
+import { EducationsService } from "../../services/EducationsService";
 import { SchoolsService } from "../../services/SchoolsService";
 import { StudentsService } from "../../services/StudentsService";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
@@ -19,12 +21,15 @@ interface IStudentsPageState {
     studentToEdit: IStudent | undefined;
     schools: ISchool[];
     isFetchingSchools: boolean;
+    educations: IEducation[];
+    isFetchingEducations: boolean;
 }
 
 export default class StudentsPage extends React.Component<StudentsPageProps, IStudentsPageState> {
 
     private readonly studentsService = new StudentsService();
     private readonly schoolsService = new SchoolsService();
+    private readonly educationsService = new EducationsService();
 
     constructor(props: StudentsPageProps) {
         super(props);
@@ -37,6 +42,8 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
             studentToEdit: undefined,
             schools: [],
             isFetchingSchools: true,
+            educations: [],
+            isFetchingEducations: true,
         };
 
         this.openAddStudentModal = this.openAddStudentModal.bind(this);
@@ -61,6 +68,12 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                 schools,
             });
         });
+        this.educationsService.subscribe((educations) => {
+            this.setState({
+                isFetchingEducations: false,
+                educations,
+            });
+        });
     }
 
     public render(): React.ReactNode {
@@ -77,6 +90,8 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                                 onEditStudentRequest={this.openEditStudentModal}
                                 schools={this.state.schools}
                                 isLoadingSchools={this.state.isFetchingSchools}
+                                educations={this.state.educations}
+                                isLoadingEducations={this.state.isFetchingEducations}
                             />
                         </Col>
                     </Row>
@@ -90,6 +105,8 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                     studentToEdit={undefined}
                     schools={this.state.schools}
                     isLoadingSchools={this.state.isFetchingSchools}
+                    educations={this.state.educations}
+                    isLoadingEducations={this.state.isFetchingEducations}
                 />
                 <StudentFormModal
                     title="Student bewerken"
@@ -100,6 +117,8 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                     studentToEdit={this.state.studentToEdit}
                     schools={this.state.schools}
                     isLoadingSchools={this.state.isFetchingSchools}
+                    educations={this.state.educations}
+                    isLoadingEducations={this.state.isFetchingEducations}
                 />
             </React.Fragment>
         );
