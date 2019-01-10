@@ -116,6 +116,9 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                                 disabled={this.state.isSubmitting}
                                 loading={this.props.isLoadingSchools}
                                 allowClear={true}
+                                showSearch={true}
+                                filterOption={true}
+                                optionFilterProp="children"
                             >
                                 {this.props.schools.map(this.renderSchoolSelectOption)}
                             </Select>,
@@ -129,6 +132,9 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                                 disabled={this.state.isSubmitting}
                                 loading={this.props.isLoadingEducations}
                                 allowClear={true}
+                                showSearch={true}
+                                filterOption={true}
+                                optionFilterProp="children"
                             >
                                 {this.props.educations.map(this.renderEducationSelectOption)}
                             </Select>,

@@ -144,8 +144,8 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
             {
                 title: "Naam",
                 key: "name",
-                render: (record: IStudent) => `${record.firstName} ${record.lastName}`,
-                sorter: (a, b) => stringSorter(`${a.firstName} ${a.lastName}`, `${b.firstName} ${b.lastName}`),
+                render: (record: IStudent) => this.getStudentName(record),
+                sorter: (a, b) => stringSorter(this.getStudentName(a), this.getStudentName(b)),
             },
             {
                 title: "School",
@@ -209,6 +209,13 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
             value: emptyFilterOptionValue,
         });
         return filters;
+    }
+
+    private getStudentName(student: IStudent): string {
+        if (student.lastName === undefined) {
+            return student.firstName;
+        }
+        return `${student.firstName} ${student.lastName}`;
     }
 }
 
