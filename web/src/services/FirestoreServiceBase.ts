@@ -2,6 +2,10 @@ import firebase from "firebase";
 import { Firebase } from "../config/FirebaseInitializer";
 import { FirebaseModelMapper } from "./FirebaseModelMapper";
 
+interface IObjectToClean {
+    [key: string]: any;
+}
+
 export type OrderByType = "asc" | "desc";
 
 export type ListenOnChangeFunc<T> = (objects: T[], size: number) => void;
@@ -32,7 +36,7 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
                     resolve(mappedDoc);
                 })
                 .catch((error) => {
-                    catchErrorDev(error);
+                    this.catchErrorDev(error);
                     reject(error);
                 });
         });
@@ -48,7 +52,9 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             obj.createdTimestamp = now;
             obj.updatedTimestamp = now;
 
-            this.collectionRef.add(obj)
+            const cleanedObj = this.cleanUndefinedFieldsInObjects(obj, false);
+
+            this.collectionRef.add(cleanedObj)
                 .then((docRef) => {
                     return docRef.get();
                 })
@@ -56,7 +62,7 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
                     resolve(FirebaseModelMapper.mapDocToObject<T>(doc));
                 })
                 .catch((error) => {
-                    catchErrorDev(error);
+                    this.catchErrorDev(error);
                     reject(error);
                 });
         });
@@ -72,18 +78,12 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             delete obj.id;
             obj.updatedTimestamp = Firebase.firestore.Timestamp.now();
 
-            // Change all "undefined" to "delete()", because Firestore wants this.
-            const objToClean: { [key: string]: any } = obj;
-            Object.keys(objToClean).forEach((key) => {
-                if (objToClean[key] === undefined) {
-                    objToClean[key] = Firebase.firestore.FieldValue.delete();
-                }
-            });
+            const cleanedObj = this.cleanUndefinedFieldsInObjects(obj, true);
 
-            this.collectionRef.doc(id).update(objToClean)
+            this.collectionRef.doc(id).update(cleanedObj)
                 .then(() => resolve())
                 .catch((error) => {
-                    catchErrorDev(error);
+                    this.catchErrorDev(error);
                     reject(error);
                 });
         });
@@ -98,16 +98,29 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             this.collectionRef.doc(obj.id).delete()
                 .then(resolve)
                 .catch((error) => {
-                    catchErrorDev(error);
+                    this.catchErrorDev(error);
                     reject(error);
                 });
         });
     }
-}
 
-function catchErrorDev(error: any): void {
-    if (process.env.NODE_ENV === "development") {
-        // tslint:disable-next-line:no-console
-        console.log(error);
+    private cleanUndefinedFieldsInObjects(obj: IObjectToClean, forceDeleteInFirestore: boolean): object {
+        Object.keys(obj).forEach((key) => {
+            if (obj[key] === undefined) {
+                if (forceDeleteInFirestore) {
+                    obj[key] = Firebase.firestore.FieldValue.delete();
+                } else {
+                    delete obj[key];
+                }
+            }
+        });
+        return obj;
+    }
+
+    private catchErrorDev(error: any): void {
+        if (process.env.NODE_ENV === "development") {
+            // tslint:disable-next-line:no-console
+            console.log(error);
+        }
     }
 }

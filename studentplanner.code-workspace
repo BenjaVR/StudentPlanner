@@ -11,6 +11,7 @@
             "*.json": "jsonc"
         },
         "npm.packageManager": "yarn",
-        "typescript.tsdk": "node_modules\\typescript\\lib"
+        "typescript.tsdk": "node_modules\\typescript\\lib",
+        "files.autoSave": "onFocusChange"
     }
 }
