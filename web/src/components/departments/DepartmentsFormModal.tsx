@@ -1,4 +1,4 @@
-import { Button, Form, Icon, Input, InputNumber, Modal, Select } from "antd";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Tooltip } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
@@ -85,49 +85,58 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
         const capacitiesFormItems = this.state.capacityFieldIds.map((capacityFieldId) => {
             const deleletCapacityFunc = () => this.handleDeleteCapacityField(capacityFieldId);
             return (
-                <React.Fragment key={capacityFieldId}>
-                    <FormItem label="Opleiding">
-                        {getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.educationIdFieldName}`, {
-                            validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                { required: true, message: "Kies een opleiding" },
-                            ],
-                        })(
-                            <Select
-                                autoFocus={true}
-                                disabled={this.state.isSubmitting}
-                                loading={this.props.isEducationsLoading}
-                                allowClear={true}
-                                showSearch={true}
-                                filterOption={true}
-                                optionFilterProp="children"
-                            >
-                                {educationSelectOptions}
-                            </Select>,
-                        )}
-                    </FormItem>
-                    <FormItem label="Max. aantal studenten (capaciteit)">
-                        {getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.capacityFieldName}`, {
-                            validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                { required: true, message: "Vul een capaciteit in" },
-                            ],
-                        })(
-                            <InputNumber
-                                className={styles.fullWidthInputField}
-                                disabled={this.state.isSubmitting}
-                                min={1}
-                            />,
-                        )}
-                    </FormItem>
-                    <Button
-                        size="small"
-                        icon="delete"
-                        type="danger"
-                        ghost={true}
-                        onClick={deleletCapacityFunc}
-                    />
-                </React.Fragment>
+                <Row key={capacityFieldId} gutter={8} type="flex" justify="space-between" align="bottom">
+                    <Col span={14}>
+                        <FormItem label="Opleiding">
+                            {getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.educationIdFieldName}`, {
+                                validateTrigger: this.state.formValidateTrigger,
+                                rules: [
+                                    { required: true, message: "Kies een opleiding" },
+                                ],
+                            })(
+                                <Select
+                                    autoFocus={true}
+                                    disabled={this.state.isSubmitting}
+                                    loading={this.props.isEducationsLoading}
+                                    allowClear={true}
+                                    showSearch={true}
+                                    filterOption={true}
+                                    optionFilterProp="children"
+                                >
+                                    {educationSelectOptions}
+                                </Select>,
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={7}>
+                        <FormItem label="Capaciteit">
+                            {getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.capacityFieldName}`, {
+                                validateTrigger: this.state.formValidateTrigger,
+                                rules: [
+                                    { required: true, message: "Vul een capaciteit in" },
+                                ],
+                            })(
+                                <InputNumber
+                                    className={styles.fullWidthInputField}
+                                    disabled={this.state.isSubmitting}
+                                    min={1}
+                                />,
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={3}>
+                        <FormItem>
+                            <Tooltip title="Verwijderen">
+                                <Button
+                                    icon="delete"
+                                    type="danger"
+                                    ghost={true}
+                                    onClick={deleletCapacityFunc}
+                                />
+                            </Tooltip>
+                        </FormItem>
+                    </Col>
+                </Row>
             );
         });
 
@@ -158,6 +167,7 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                     </FormItem>
 
                     <h4>Capaciteit per opleiding</h4>
+                    <p>Max. aantal studenten per opleiding voor deze afdeling</p>
                     {capacitiesFormItems}
                     <Button type="dashed" onClick={this.handleAddCapacityField} className={styles.fullWidthInputField}>
                         Voeg capaciteit toe
