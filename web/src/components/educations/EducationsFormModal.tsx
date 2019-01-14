@@ -31,7 +31,7 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
             formValidateTrigger: "",
         };
 
-        this.doClose = this.doClose.bind(this);
+        this.handleClose = this.handleClose.bind(this);
         this.handleOk = this.handleOk.bind(this);
     }
 
@@ -53,7 +53,7 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
             <Modal
                 visible={this.props.isVisible}
                 title={this.props.title}
-                onCancel={this.doClose}
+                onCancel={this.handleClose}
                 onOk={this.handleOk}
                 okText={this.props.okText}
                 confirmLoading={this.state.isSubmitting}
@@ -78,7 +78,7 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
         );
     }
 
-    private doClose(): void {
+    private handleClose(): void {
         this.props.onCloseRequest();
     }
 
@@ -100,7 +100,7 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
                 };
                 this.props.submitEducation(education)
                     .then(() => {
-                        this.doClose();
+                        this.handleClose();
                     })
                     .finally(() => {
                         this.setState({

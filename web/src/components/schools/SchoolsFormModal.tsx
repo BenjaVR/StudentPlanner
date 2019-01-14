@@ -31,7 +31,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
             formValidateTrigger: "",
         };
 
-        this.doClose = this.doClose.bind(this);
+        this.handleClose = this.handleClose.bind(this);
         this.handleOk = this.handleOk.bind(this);
     }
 
@@ -53,7 +53,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
             <Modal
                 visible={this.props.isVisible}
                 title={this.props.title}
-                onCancel={this.doClose}
+                onCancel={this.handleClose}
                 onOk={this.handleOk}
                 okText={this.props.okText}
                 confirmLoading={this.state.isSubmitting}
@@ -78,7 +78,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
         );
     }
 
-    private doClose(): void {
+    private handleClose(): void {
         this.props.onCloseRequest();
     }
 
@@ -100,7 +100,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
                 };
                 this.props.submitSchool(school)
                     .then(() => {
-                        this.doClose();
+                        this.handleClose();
                     })
                     .finally(() => {
                         this.setState({

@@ -37,7 +37,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
             formValidateTrigger: "",
         };
 
-        this.doClose = this.doClose.bind(this);
+        this.handleClose = this.handleClose.bind(this);
         this.handleOk = this.handleOk.bind(this);
     }
 
@@ -79,7 +79,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
             <Modal
                 visible={this.props.isVisible}
                 title={this.props.title}
-                onCancel={this.doClose}
+                onCancel={this.handleClose}
                 onOk={this.handleOk}
                 okText={this.props.okText}
                 confirmLoading={this.state.isSubmitting}
@@ -157,7 +157,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
         );
     }
 
-    private doClose(): void {
+    private handleClose(): void {
         this.props.onCloseRequest();
     }
 
@@ -179,7 +179,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                 };
                 this.props.submitStudent(student)
                     .then(() => {
-                        this.doClose();
+                        this.handleClose();
                     })
                     .finally(() => {
                         this.setState({
