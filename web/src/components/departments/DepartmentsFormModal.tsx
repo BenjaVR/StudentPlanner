@@ -192,9 +192,9 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
         const fields: Array<keyof IDepartment> = ["name", "capacityPerEducation"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
-                // this.setState({
-                //     isSubmitting: true,
-                // });
+                this.setState({
+                    isSubmitting: true,
+                });
 
                 const department: IDepartment = {
                     ...values,
