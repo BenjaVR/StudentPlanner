@@ -2,9 +2,9 @@ import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Tooltip } fr
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
+import { IDepartment, IDepartmentEducationCapacity } from "studentplanner-functions/src/contract/IDepartment";
+import { IEducation } from "studentplanner-functions/src/contract/IEducation";
 import { FormValidationTrigger } from "../../helpers/types";
-import { IDepartment, IDepartmentEducationCapacity } from "../../models/Department";
-import { IEducation } from "../../models/Education";
 import styles from "./DepartmentsFormModal.module.scss";
 
 interface IDepartmentFormModalProps {

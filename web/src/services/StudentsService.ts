@@ -1,5 +1,5 @@
+import { IStudent } from "studentplanner-functions/src/contract/IStudent";
 import { Firebase } from "../config/FirebaseInitializer";
-import { IStudent } from "../models/Student";
 import { FirestoreServiceBase } from "./FirestoreServiceBase";
 
 export class StudentsService extends FirestoreServiceBase<IStudent> {

@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import { IFirebaseTable } from "studentplanner-functions/src/contract/IFirebaseTable";
 import { Firebase } from "../config/FirebaseInitializer";
 import { FirebaseModelMapper } from "./FirebaseModelMapper";
 
@@ -9,12 +10,6 @@ interface IObjectToClean {
 export type OrderByType = "asc" | "desc";
 
 export type ListenOnChangeFunc<T> = (objects: T[], size: number) => void;
-
-export interface IFirebaseTable {
-    id?: string;
-    createdTimestamp?: firebase.firestore.Timestamp;
-    updatedTimestamp?: firebase.firestore.Timestamp;
-}
 
 export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
 

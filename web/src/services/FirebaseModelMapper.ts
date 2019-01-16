@@ -1,4 +1,4 @@
-import { IFirebaseTable } from "./FirestoreServiceBase";
+import { IFirebaseTable } from "studentplanner-functions/src/contract/IFirebaseTable";
 
 export class FirebaseModelMapper {
 

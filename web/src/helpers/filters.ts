@@ -1,4 +1,4 @@
-import { IFirebaseTable } from "../services/FirestoreServiceBase";
+import { IFirebaseTable } from "studentplanner-functions/src/contract/IFirebaseTable";
 
 export const emptyFilterOptionValue = "@@__";
 

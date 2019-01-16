@@ -1,5 +1,5 @@
+import { IEducation } from "studentplanner-functions/src/contract/IEducation";
 import { Firebase } from "../config/FirebaseInitializer";
-import { IEducation } from "../models/Education";
 import { FirestoreServiceBase } from "./FirestoreServiceBase";
 
 export class EducationsService extends FirestoreServiceBase<IEducation> {

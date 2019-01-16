@@ -2,8 +2,8 @@ import { Form, Input, Modal } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
+import { IEducation } from "studentplanner-functions/src/contract/IEducation";
 import { FormValidationTrigger } from "../../helpers/types";
-import { IEducation } from "../../models/Education";
 
 interface IEducationFormModalProps {
     title: string;

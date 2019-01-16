@@ -2,11 +2,13 @@
   "compilerOptions": {
     "lib": ["es6"],
     "module": "commonjs",
+    "moduleResolution": "node",
     "declaration": true,
     "noImplicitReturns": true,
     "outDir": "dist",
     "sourceMap": true,
-    "target": "es5"
+    "target": "es5",
+    "baseUrl": "dist"
   },
   "compileOnSave": true,
   "include": [

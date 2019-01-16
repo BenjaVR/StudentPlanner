@@ -1,4 +1,4 @@
-import { IFirebaseTable } from "../services/FirestoreServiceBase";
+import { IFirebaseTable } from "./IFirebaseTable";
 
 export interface IEducation extends IFirebaseTable {
     name: string;

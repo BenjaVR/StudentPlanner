@@ -1,7 +1,7 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
-import { IDepartment } from "../../models/Department";
-import { IEducation } from "../../models/Education";
+import { IDepartment } from "studentplanner-functions/src/contract/IDepartment";
+import { IEducation } from "studentplanner-functions/src/contract/IEducation";
 import { RoutePageComponentProps, routes } from "../../routes";
 import { DepartmentsService } from "../../services/DepartmentsService";
 import { EducationsService } from "../../services/EducationsService";
