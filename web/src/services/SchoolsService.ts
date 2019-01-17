@@ -1,4 +1,4 @@
-import { ISchool } from "studentplanner-functions/src/contract/ISchool";
+import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { Firebase } from "../config/FirebaseInitializer";
 import { FirestoreServiceBase } from "./FirestoreServiceBase";
 

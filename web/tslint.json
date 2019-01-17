@@ -20,7 +20,7 @@
             "antd/lib",
             "firebase",
             "core-js/modules",
-            "studentplanner-functions/src/contract"
+            "studentplanner-functions/shared"
         ],
         "max-line-length": false,
         "object-literal-sort-keys": false,

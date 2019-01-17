@@ -1,9 +1,9 @@
 import { Button, Col, Popconfirm, Row, Spin, Table, Tooltip } from "antd";
 import { ColumnFilterItem, ColumnProps } from "antd/lib/table";
 import React from "react";
-import { IEducation } from "studentplanner-functions/src/contract/IEducation";
-import { ISchool } from "studentplanner-functions/src/contract/ISchool";
-import { IStudent } from "studentplanner-functions/src/contract/IStudent";
+import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
+import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
+import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { emptyFilterOptionValue, exactMatchOrDefaultOptionFilter, hasElementWithId } from "../../helpers/filters";
 import { stringSorter } from "../../helpers/sorters";
 import styles from "../DataTable.module.scss";

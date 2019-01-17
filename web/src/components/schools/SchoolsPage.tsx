@@ -1,6 +1,6 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
-import { ISchool } from "studentplanner-functions/src/contract/ISchool";
+import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { RoutePageComponentProps, routes } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";

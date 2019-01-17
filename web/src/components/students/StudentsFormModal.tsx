@@ -2,9 +2,9 @@ import { Form, Input, Modal, Select } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
-import { IEducation } from "studentplanner-functions/src/contract/IEducation";
-import { ISchool } from "studentplanner-functions/src/contract/ISchool";
-import { IStudent } from "studentplanner-functions/src/contract/IStudent";
+import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
+import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
+import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { FormValidationTrigger } from "../../helpers/types";
 
 interface IStudentsFormModalProps {

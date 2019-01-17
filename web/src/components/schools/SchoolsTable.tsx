@@ -1,7 +1,7 @@
 import { Button, Col, Popconfirm, Row, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import React from "react";
-import { ISchool } from "studentplanner-functions/src/contract/ISchool";
+import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { stringSorter } from "../../helpers/sorters";
 import styles from "../DataTable.module.scss";
 

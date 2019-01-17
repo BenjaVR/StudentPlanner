@@ -1,4 +1,4 @@
-import { IEducation } from "studentplanner-functions/src/contract/IEducation";
+import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { Firebase } from "../config/FirebaseInitializer";
 import { FirestoreServiceBase } from "./FirestoreServiceBase";
 

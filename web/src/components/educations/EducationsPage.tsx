@@ -1,6 +1,6 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
-import { IEducation } from "studentplanner-functions/src/contract/IEducation";
+import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { RoutePageComponentProps, routes } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
 import EducationsTable from "../educations/EducationsTable";

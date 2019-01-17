@@ -2,7 +2,7 @@ import { Button, Card, Form, Icon, Input, notification } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
-import { ILoginDetails } from "studentplanner-functions/src/contract/ILoginDetails";
+import { ILoginDetails } from "studentplanner-functions/shared/contract/ILoginDetails";
 import { Firebase } from "../../../config/FirebaseInitializer";
 import { FormValidationTrigger } from "../../../helpers/types";
 import styles from "./LoginForm.module.scss";

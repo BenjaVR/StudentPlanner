@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { IFirebaseTable } from "studentplanner-functions/src/contract/IFirebaseTable";
+import { IFirebaseTable } from "studentplanner-functions/shared/contract/IFirebaseTable";
 import { Firebase } from "../config/FirebaseInitializer";
 import { FirebaseModelMapper } from "./FirebaseModelMapper";
 
