@@ -1,3 +1,4 @@
+import { firestore } from "firebase-admin";
 import { IFirebaseTable } from "studentplanner-functions/shared/contract/IFirebaseTable";
 
 export class FirebaseModelMapper {
