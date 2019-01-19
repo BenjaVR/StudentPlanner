@@ -1,7 +1,7 @@
 import firebase from "firebase";
-import { FirebaseModelMapper } from "studentplanner-functions/shared/contract/FirebaseModelMapper";
 import { IFirebaseTable } from "studentplanner-functions/shared/contract/IFirebaseTable";
 import { Firebase } from "../config/FirebaseInitializer";
+import { FirebaseModelMapper } from "./FirebaseModelMapper";
 
 interface IObjectToClean {
     [key: string]: any;
@@ -18,7 +18,7 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
     public subscribe(onChange: ListenOnChangeFunc<T>, orderBy: keyof T = "updatedTimestamp", orderByType: OrderByType = "desc"): void {
         this.collectionRef.orderBy(orderBy as string, orderByType)
             .onSnapshot((change): void => {
-                const mappedDocs = FirebaseModelMapper.mapDocsToObject<T>(change.docs);
+                const mappedDocs = FirebaseModelMapper.mapDocsToObjects<T>(change.docs);
                 onChange(mappedDocs, change.size);
             });
     }

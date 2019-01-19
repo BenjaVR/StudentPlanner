@@ -1,5 +1,7 @@
+import { Timestamp } from "@google-cloud/firestore";
+
 export interface IFirebaseTable {
     id?: string;
-    createdTimestamp?: firebase.firestore.Timestamp;
-    updatedTimestamp?: firebase.firestore.Timestamp;
+    createdTimestamp?: Timestamp;
+    updatedTimestamp?: Timestamp;
 }

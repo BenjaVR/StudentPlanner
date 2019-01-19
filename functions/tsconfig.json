@@ -8,10 +8,11 @@
     "sourceMap": true,
     "target": "es5",
     "composite": true,
-    "rootDir": "src"
+    "rootDir": "."
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "shared",
+    "server"
   ]
 }
