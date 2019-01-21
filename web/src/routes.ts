@@ -52,7 +52,6 @@ const departmentsRoute: IRoute = {
 
 export const routes = {
     signedInHomeRoute: studentsRoute,
-    signedOutHomeRoute: logInRoute,
 
     logInRoute,
     planningsRoute,

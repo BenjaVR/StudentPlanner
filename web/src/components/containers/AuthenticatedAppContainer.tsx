@@ -169,7 +169,7 @@ class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContain
                 notification.success({
                     message: "Succesvol uitgelogd!",
                 });
-                this.props.router.history.push(routes.signedOutHomeRoute.url);
+                this.props.router.history.push(routes.logInRoute.url);
             })
             .catch(() => {
                 notification.error({
