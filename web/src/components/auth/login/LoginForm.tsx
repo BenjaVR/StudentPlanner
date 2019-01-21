@@ -3,8 +3,8 @@ import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
 import { ILoginDetails } from "studentplanner-functions/shared/contract/ILoginDetails";
-import { Firebase } from "../../../config/FirebaseInitializer";
 import { FormValidationTrigger } from "../../../helpers/types";
+import { Firebase } from "../../../services/FirebaseInitializer";
 import styles from "./LoginForm.module.scss";
 
 interface ILoginFormProps {

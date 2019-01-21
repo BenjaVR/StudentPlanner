@@ -5,8 +5,8 @@ import * as React from "react";
 import Helmet from "react-helmet";
 import { RouterProps } from "react-router";
 import { Link } from "react-router-dom";
-import { Firebase } from "../../config/FirebaseInitializer";
 import { IRoute, routes } from "../../routes";
+import { Firebase } from "../../services/FirebaseInitializer";
 import styles from "./AuthenticatedLayout.module.scss";
 
 interface IAuthenticatedLayoutProps {

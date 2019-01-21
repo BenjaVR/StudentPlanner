@@ -1,6 +1,6 @@
 import firebase from "firebase";
 import { IFirebaseTable } from "studentplanner-functions/shared/contract/IFirebaseTable";
-import { Firebase } from "../config/FirebaseInitializer";
+import { Firebase } from "./FirebaseInitializer";
 import { FirebaseModelMapper } from "./FirebaseModelMapper";
 
 interface IObjectToClean {

@@ -7,8 +7,8 @@ import "moment/locale/nl-be";
 import React from "react";
 import ReactDOM from "react-dom";
 import Root from "./components/Root";
-import { FirebaseInitializer } from "./config/FirebaseInitializer";
 import "./index.scss";
+import { FirebaseInitializer } from "./services/FirebaseInitializer";
 
 // Firebase initialization
 FirebaseInitializer.initialize();

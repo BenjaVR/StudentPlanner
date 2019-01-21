@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router";
-import { Firebase } from "../../config/FirebaseInitializer";
 import { routes } from "../../routes";
+import { Firebase } from "../../services/FirebaseInitializer";
 
 const NotAuthenticatedOnlyRoute: React.FunctionComponent<RouteProps> = (props: RouteProps) => {
     return Firebase.auth().currentUser === null

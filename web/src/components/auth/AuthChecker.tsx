@@ -1,6 +1,6 @@
 import { notification, Spin } from "antd";
 import React from "react";
-import { Firebase } from "../../config/FirebaseInitializer";
+import { Firebase } from "../../services/FirebaseInitializer";
 import styles from "./AuthChecker.module.scss";
 
 interface IAuthCheckerProps {
