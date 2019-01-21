@@ -1,9 +1,11 @@
+import { Col, Layout, Row } from "antd";
 import React from "react";
 import Helmet from "react-helmet";
+import { Redirect } from "react-router-dom";
 import { RoutePageComponentProps, routes } from "../../../routes";
-import NotAuthenticatedAppContainer from "../../containers/NotAuthenticatedAppContainer";
+import { Firebase } from "../../../services/FirebaseInitializer";
 import LoginForm from "./LoginForm";
-import style from "./LoginPage.module.scss";
+import styles from "./LoginPage.module.scss";
 
 type LoginPageProps = RoutePageComponentProps;
 
@@ -16,17 +18,24 @@ class LoginPage extends React.Component<LoginPageProps> {
     }
 
     public render(): React.ReactNode {
+        if (Firebase.auth().currentUser === null) {
+            return <Redirect to={routes.signedInHomeRoute.url} />;
+        }
         return (
             <React.Fragment>
                 <Helmet>
                     <title>{routes.logInRoute.title}</title>
                 </Helmet>
-                <NotAuthenticatedAppContainer>
-                    <div className={style.title}>
-                        <h1>Student Planner</h1>
-                    </div>
-                    <LoginForm loginSuccessfulCallback={this.goToAuthenticatedApp} />
-                </NotAuthenticatedAppContainer>
+                <Layout className={styles.layout}>
+                    <Row type="flex" justify="space-around" align="middle" className={styles.row}>
+                        <Col>
+                            <div className={styles.title}>
+                                <h1>Student Planner</h1>
+                            </div>
+                            <LoginForm loginSuccessfulCallback={this.goToAuthenticatedApp} />
+                        </Col>
+                    </Row>
+                </Layout>
             </React.Fragment>
         );
     }
