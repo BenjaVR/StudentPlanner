@@ -50,6 +50,10 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
         });
     }
 
+    public componentWillUnmount(): void {
+        this.educationsService.unsubscribe();
+    }
+
     public render(): React.ReactNode {
         return (
             <React.Fragment>

@@ -50,6 +50,10 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
         });
     }
 
+    public componentWillUnmount(): void {
+        this.schoolsService.unsubscribe();
+    }
+
     public render(): React.ReactNode {
         return (
             <React.Fragment>

@@ -76,6 +76,12 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
         });
     }
 
+    public componentWillUnmount(): void {
+        this.studentsService.unsubscribe();
+        this.schoolsService.unsubscribe();
+        this.educationsService.unsubscribe();
+    }
+
     public render(): React.ReactNode {
         return (
             <React.Fragment>

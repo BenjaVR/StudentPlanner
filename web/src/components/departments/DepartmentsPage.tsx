@@ -63,6 +63,11 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
         });
     }
 
+    public componentWillUnmount(): void {
+        this.educationsService.unsubscribe();
+        this.departmentsService.unsubscribe();
+    }
+
     public render(): React.ReactNode {
         return (
             <React.Fragment>
