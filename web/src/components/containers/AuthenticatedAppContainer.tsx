@@ -7,14 +7,14 @@ import { RouterProps } from "react-router";
 import { Link } from "react-router-dom";
 import { IRoute, routes } from "../../routes";
 import { Firebase } from "../../services/FirebaseInitializer";
-import styles from "./AuthenticatedLayout.module.scss";
+import styles from "./AuthenticatedAppContainer.module.scss";
 
-interface IAuthenticatedLayoutProps {
+interface IAuthenticatedAppContainerProps {
     router: RouterProps;
     initialRoute: IRoute;
 }
 
-interface IAuthenticatedLayoutState {
+interface IAuthenticatedAppContainerState {
     activeMenuItem: IMenuItem;
     /**
      * This state field is used to update UI according to the sidebar collapse state.
@@ -27,7 +27,7 @@ interface IMenuItem {
     iconType: string;
 }
 
-class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAuthenticatedLayoutState> {
+class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContainerProps, IAuthenticatedAppContainerState> {
 
     private menuItems: IMenuItem[] = [
         { route: routes.planningsRoute, iconType: "calendar" },
@@ -37,7 +37,7 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
         { route: routes.departmentsRoute, iconType: "home" },
     ];
 
-    constructor(props: IAuthenticatedLayoutProps) {
+    constructor(props: IAuthenticatedAppContainerProps) {
         super(props);
 
         this.state = {
@@ -201,4 +201,4 @@ class AuthenticatedLayout extends React.Component<IAuthenticatedLayoutProps, IAu
     }
 }
 
-export default AuthenticatedLayout;
+export default AuthenticatedAppContainer;

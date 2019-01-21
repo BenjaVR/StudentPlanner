@@ -7,7 +7,7 @@ import { RoutePageComponentProps, routes } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
 import { SchoolsService } from "../../services/SchoolsService";
 import { StudentsService } from "../../services/StudentsService";
-import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
+import AuthenticatedAppContainer from "../containers/AuthenticatedAppContainer";
 import StudentFormModal from "./StudentsFormModal";
 import StudentsTable from "./StudentsTable";
 
@@ -85,7 +85,7 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <AuthenticatedLayout router={{ history: this.props.history }} initialRoute={routes.studentsRoute}>
+                <AuthenticatedAppContainer router={{ history: this.props.history }} initialRoute={routes.studentsRoute}>
                     <Row>
                         <Col>
                             <StudentsTable
@@ -101,7 +101,7 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                             />
                         </Col>
                     </Row>
-                </AuthenticatedLayout>
+                </AuthenticatedAppContainer>
                 <StudentFormModal
                     title="Nieuwe student toevoegen"
                     okText="Voeg toe"

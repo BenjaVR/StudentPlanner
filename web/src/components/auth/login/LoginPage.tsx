@@ -1,7 +1,7 @@
 import React from "react";
 import Helmet from "react-helmet";
 import { RoutePageComponentProps, routes } from "../../../routes";
-import EmptyCenteredLayout from "../../layouts/EmptyCenteredLayout";
+import NotAuthenticatedAppContainer from "../../containers/NotAuthenticatedAppContainer";
 import LoginForm from "./LoginForm";
 import style from "./LoginPage.module.scss";
 
@@ -21,12 +21,12 @@ class LoginPage extends React.Component<LoginPageProps> {
                 <Helmet>
                     <title>{routes.logInRoute.title}</title>
                 </Helmet>
-                <EmptyCenteredLayout>
+                <NotAuthenticatedAppContainer>
                     <div className={style.title}>
                         <h1>Student Planner</h1>
                     </div>
                     <LoginForm loginSuccessfulCallback={this.goToAuthenticatedApp} />
-                </EmptyCenteredLayout>
+                </NotAuthenticatedAppContainer>
             </React.Fragment>
         );
     }

@@ -5,7 +5,7 @@ import { IEducation } from "studentplanner-functions/shared/contract/IEducation"
 import { RoutePageComponentProps, routes } from "../../routes";
 import { DepartmentsService } from "../../services/DepartmentsService";
 import { EducationsService } from "../../services/EducationsService";
-import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
+import AuthenticatedAppContainer from "../containers/AuthenticatedAppContainer";
 import DepartmentFormModal from "./DepartmentsFormModal";
 import DepartmentsTable from "./DepartmentsTable";
 
@@ -71,7 +71,7 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <AuthenticatedLayout router={{ history: this.props.history }} initialRoute={routes.departmentsRoute}>
+                <AuthenticatedAppContainer router={{ history: this.props.history }} initialRoute={routes.departmentsRoute}>
                     <Row>
                         <Col>
                             <DepartmentsTable
@@ -83,7 +83,7 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
                             />
                         </Col>
                     </Row>
-                </AuthenticatedLayout>
+                </AuthenticatedAppContainer>
                 <DepartmentFormModal
                     title="Nieuwe afdeling toevoegen"
                     okText="Voeg toe"

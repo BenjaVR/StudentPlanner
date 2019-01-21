@@ -3,8 +3,8 @@ import React from "react";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { RoutePageComponentProps, routes } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
+import AuthenticatedAppContainer from "../containers/AuthenticatedAppContainer";
 import EducationsTable from "../educations/EducationsTable";
-import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
 import EducationFormModal from "./EducationsFormModal";
 
 type EducationsPageProps = RoutePageComponentProps;
@@ -57,7 +57,7 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <AuthenticatedLayout router={{ history: this.props.history }} initialRoute={routes.educationsRoute}>
+                <AuthenticatedAppContainer router={{ history: this.props.history }} initialRoute={routes.educationsRoute}>
                     <Row>
                         <Col>
                             <EducationsTable
@@ -69,7 +69,7 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
                             />
                         </Col>
                     </Row>
-                </AuthenticatedLayout>
+                </AuthenticatedAppContainer>
                 <EducationFormModal
                     title="Nieuwe opleiding toevoegen"
                     okText="Voeg toe"

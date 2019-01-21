@@ -3,7 +3,7 @@ import React from "react";
 import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { RoutePageComponentProps, routes } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
-import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
+import AuthenticatedAppContainer from "../containers/AuthenticatedAppContainer";
 import SchoolFormModal from "./SchoolsFormModal";
 import SchoolsTable from "./SchoolsTable";
 
@@ -57,7 +57,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <AuthenticatedLayout router={{ history: this.props.history }} initialRoute={routes.schoolsRoute}>
+                <AuthenticatedAppContainer router={{ history: this.props.history }} initialRoute={routes.schoolsRoute}>
                     <Row>
                         <Col>
                             <SchoolsTable
@@ -69,7 +69,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                             />
                         </Col>
                     </Row>
-                </AuthenticatedLayout>
+                </AuthenticatedAppContainer>
                 <SchoolFormModal
                     title="Nieuwe school toevoegen"
                     okText="Voeg toe"
