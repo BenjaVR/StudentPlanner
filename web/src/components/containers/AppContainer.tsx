@@ -12,10 +12,7 @@ type AppContainerProps = AnyRouteComponentProps;
 
 interface IAppContainerState {
     activeMenuItem: IMenuItem;
-    /**
-     * This state field is used to update UI according to the sidebar collapse state.
-     */
-    isSidebarCollapsed: boolean;
+    isSiderCollapsed: boolean;
 }
 
 interface IMenuItem {
@@ -38,10 +35,11 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
 
         this.state = {
             activeMenuItem: this.getMenuItemByUrl(this.props.location.pathname) || this.menuItems[0],
-            isSidebarCollapsed: false,
+            isSiderCollapsed: false,
         };
 
-        this.handleSidebarCollapse = this.handleSidebarCollapse.bind(this);
+        this.handleBreakpoint = this.handleBreakpoint.bind(this);
+        this.handleSiderCollapseToggle = this.handleSiderCollapseToggle.bind(this);
         this.handleSelectMenuItem = this.handleSelectMenuItem.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
     }
@@ -57,47 +55,51 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
                 </Helmet>
                 <Layout>
                     <Layout.Sider
-                        breakpoint="md"
+                        breakpoint="sm"
+                        onBreakpoint={this.handleBreakpoint}
                         collapsible={true}
-                        onCollapse={this.handleSidebarCollapse}
-                        className={styles.sider}
+                        trigger={null}
+                        collapsed={this.state.isSiderCollapsed}
                     >
-                        <div className={styles.logo}>
-                            {this.state.isSidebarCollapsed ? "SP" : "Student Planner"}
+                        <div className={classNames(styles.siderContentWrapper, { [styles.siderContentWrapperCollapsed]: this.state.isSiderCollapsed })}>
+                            <div className={styles.logo}>
+                                {this.state.isSiderCollapsed ? "SP" : "Student Planner"}
+                            </div>
+                            <Menu
+                                theme="dark"
+                                selectedKeys={[this.state.activeMenuItem.route.url]}
+                                onSelect={this.handleSelectMenuItem}
+                            >
+                                {this.renderMenuItems()}
+                            </Menu>
+                            <div className={classNames(styles.siderFooter, { [styles.siderFooterCollapsed]: this.state.isSiderCollapsed })}>
+                                <Tooltip title={this.getUsername()} placement="right">
+                                    <p className={styles.siderFooterUsername}>{this.getUsername()}</p>
+                                </Tooltip>
+                                <Button
+                                    className={styles.siderFooterLogoutButton}
+                                    type="ghost"
+                                    size="small"
+                                    icon="logout"
+                                    onClick={this.handleLogout}
+                                >
+                                    {this.state.isSiderCollapsed ? "" : "Afmelden"}
+                                </Button>
+                            </div>
                         </div>
-                        <Menu
-                            theme="dark"
-                            selectedKeys={[this.state.activeMenuItem.route.url]}
-                            onSelect={this.handleSelectMenuItem}
-                        >
-                            {this.renderMenuItems()}
-                        </Menu>
                     </Layout.Sider>
                     <Layout
-                        className={classNames(styles.contentLayout, { [styles.contentLayoutCollapsed]: this.state.isSidebarCollapsed })}
+                        className={styles.contentLayout}
                     >
                         <Layout.Header className={styles.header}>
-                            <Row type="flex" justify="space-between" align="middle">
-                                <Col className={styles.titlColumn}>
-                                    <h1 className={styles.title}>
-                                        {this.state.activeMenuItem.route.title}
-                                    </h1>
-                                </Col>
-                                <Col>
-                                    <Tooltip title={this.getUsername()} placement="bottom">
-                                        {this.renderAvatar()}
-                                    </Tooltip>
-                                    <Tooltip title="Afmelden" placement="bottom">
-                                        <Button
-                                            shape="circle-outline"
-                                            type="ghost"
-                                            icon="logout"
-                                            onClick={this.handleLogout}
-                                            className={styles.logoutButton}
-                                        />
-                                    </Tooltip>
-                                </Col>
-                            </Row>
+                            <Icon
+                                className={classNames("trigger", styles.triggerButton)}
+                                type={this.state.isSiderCollapsed ? "menu-unfold" : "menu-fold"}
+                                onClick={this.handleSiderCollapseToggle}
+                            />
+                            <h1 className={styles.title}>
+                                {this.state.activeMenuItem.route.title}
+                            </h1>
                         </Layout.Header>
                         <Layout.Content className={styles.content}>
                             <div className={styles.innerContent}>
@@ -106,7 +108,7 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
                         </Layout.Content>
                     </Layout>
                 </Layout>
-            </React.Fragment>
+            </React.Fragment >
         );
     }
 
@@ -124,23 +126,6 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
         );
     }
 
-    private renderAvatar(): React.ReactNode {
-        const username = this.getUsername();
-        const characters = username.indexOf("@") > -1
-            ? [username.charAt(0)]
-            : username.match(/\b(\w)/g);
-
-        const avatarUsername = characters === null
-            ? undefined
-            : characters.map((c) => c.toUpperCase()).join("");
-
-        if (avatarUsername === undefined) {
-            return <Avatar className={styles.avatar} icon="user" />;
-        }
-
-        return <Avatar className={styles.avatar}>{avatarUsername}</Avatar>;
-    }
-
     private renderMenuItems(): React.ReactNode {
         return this.menuItems.map((menuItem) => {
             return (
@@ -154,9 +139,15 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
         });
     }
 
-    private handleSidebarCollapse(isCollapsed: boolean): void {
+    private handleBreakpoint(broken: boolean): void {
         this.setState({
-            isSidebarCollapsed: isCollapsed,
+            isSiderCollapsed: broken,
+        });
+    }
+
+    private handleSiderCollapseToggle(): void {
+        this.setState({
+            isSiderCollapsed: !this.state.isSiderCollapsed,
         });
     }
 

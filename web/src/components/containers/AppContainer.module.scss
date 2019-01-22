@@ -1,30 +1,67 @@
+@import "../../variables.scss";
+
 .logo {
     height: 32px;
     margin: 16px;
 
     // TODO: tijdelijk!
-    background-color: rgba(255,255,255,.2);
+    background-color: $grayBlue;
     text-align: center;
     line-height: 32px;
     color: rgb(197, 197, 197);
     white-space: nowrap;
+    overflow: hidden;
 }
 
-.sider {
-    overflow: auto;
+.siderContentWrapper {
     height: 100vh;
-    position: fixed !important;
-    left: 0;
+    position: fixed;
+    overflow-y: auto;
+    padding-bottom: 75px; // This is for the Sider Footer.
+
+    // Sider transitions
+    width: 200px;
+    transition: width 0.2s ease;
+    &Collapsed {
+        width: 80px;
+    }
+}
+
+.siderFooter {
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    background-color: $grayBlue;
+    padding: 8px;
+    overflow-x: hidden;
+
+    // Sider transitions
+    width: 200px;
+    transition: width 0.2s ease;
+    &Collapsed {
+        width: 80px;
+    }
+
+    &Username {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        color: white;
+        margin-bottom: 8px;
+    }
+
+    &LogoutButton {
+        i, span {
+            color: white;
+        }
+        &:hover, &:active, &:focus {
+            border-color: white !important;
+        }
+    }
 }
 
 .contentLayout {
     min-height: 100vh !important;
-    margin-left: 200px;
-    transition: all 0.2s ease; // Same as Ant's Sider transition.
-
-    &Collapsed {
-        margin-left: 80px;
-    }
 }
 
 .header {
@@ -32,15 +69,25 @@
     padding: 0 25px !important;
 }
 
-.titlColumn {
-    max-width: 50%;
+.triggerButton {
+    font-size: 18px;
+    line-height: 60px !important;
+    cursor: pointer;
+    transition: color 0.3s;
+    margin-top: 4px;
+    position: absolute;
+
+    &:hover {
+        color: $lightBlue;
+    }
 }
 
 .title {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    margin: 0;
+    margin: 0 0 0 32px;
+    display: inline;
 }
 
 .content {
@@ -51,23 +98,4 @@
 .innerContent {
     padding: 24px;
     background: white;
-}
-
-.logoutButton {
-    margin: 4px;
-    top: 3px; // Align with user badge.
-
-    &:hover, &:active, &:focus {
-        // Do not use the primary color for the logout button.
-        border-color: red !important;
-        color: red !important;
-    }
-}
-
-.avatar {
-    margin: 4px !important;
-
-    &:hover {
-        cursor: default; // Should be removed when using the avatar to go to profile settings or something like that.
-    }
 }

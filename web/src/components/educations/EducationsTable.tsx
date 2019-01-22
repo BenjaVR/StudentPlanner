@@ -90,7 +90,7 @@ class EducationsTable extends React.Component<IEducationsTableProps> {
     private renderTableTitle(): React.ReactNode {
         return (
             <Row type="flex" justify="space-between" align="middle">
-                <Col className={styles.col}>
+                <Col>
                     <Button icon="plus" type="primary" onClick={this.props.onAddEducationRequest}>
                         Nieuwe opleiding
                     </Button>

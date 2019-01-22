@@ -108,7 +108,7 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
     private renderTableTitle(): React.ReactNode {
         return (
             <Row type="flex" justify="space-between" align="middle">
-                <Col className={styles.col}>
+                <Col>
                     <Button icon="plus" type="primary" onClick={this.props.onAddStudentRequest}>
                         Nieuwe student
                     </Button>

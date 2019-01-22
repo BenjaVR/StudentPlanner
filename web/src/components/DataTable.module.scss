@@ -4,14 +4,6 @@
     margin: 16px;
 }
 
-.col {
-    @media (max-width: $breakpoint_sm) {
-        text-align: center;
-        width: 100%;
-        margin: 4px;
-    }
-}
-
 .actionButton {
     margin: 0 4px;
 }
