@@ -20,6 +20,7 @@
 .contentLayout {
     min-height: 100vh !important;
     margin-left: 200px;
+    transition: all 0.2s ease; // Same as Ant's Sider transition.
 
     &Collapsed {
         margin-left: 80px;

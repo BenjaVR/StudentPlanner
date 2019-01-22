@@ -113,11 +113,11 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
     private renderRoutes(): React.ReactNode {
         return (
             <Switch>
-                <Route path={routes.planningsRoute.url} component={routes.planningsRoute.component} />
-                <Route path={routes.studentsRoute.url} component={routes.studentsRoute.component} />
-                <Route path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
-                <Route path={routes.educationsRoute.url} component={routes.educationsRoute.component} />
-                <Route path={routes.departmentsRoute.url} component={routes.departmentsRoute.component} />
+                <Route exact={true} path={routes.planningsRoute.url} component={routes.planningsRoute.component} />
+                <Route exact={true} path={routes.studentsRoute.url} component={routes.studentsRoute.component} />
+                <Route exact={true} path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
+                <Route exact={true} path={routes.educationsRoute.url} component={routes.educationsRoute.component} />
+                <Route exact={true} path={routes.departmentsRoute.url} component={routes.departmentsRoute.component} />
 
                 <Redirect to={routes.planningsRoute.url} />
             </Switch>
