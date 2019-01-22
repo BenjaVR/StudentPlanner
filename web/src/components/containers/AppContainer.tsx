@@ -7,7 +7,7 @@ import { RouterProps } from "react-router";
 import { Link } from "react-router-dom";
 import { IRoute, routes } from "../../routes";
 import { Firebase } from "../../services/FirebaseInitializer";
-import styles from "./AuthenticatedAppContainer.module.scss";
+import styles from "./AppContainer.module.scss";
 
 interface IAuthenticatedAppContainerProps {
     router: RouterProps;

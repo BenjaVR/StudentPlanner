@@ -7,7 +7,7 @@ import { RoutePageComponentProps, routes } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
 import { SchoolsService } from "../../services/SchoolsService";
 import { StudentsService } from "../../services/StudentsService";
-import AuthenticatedAppContainer from "../containers/AuthenticatedAppContainer";
+import AuthenticatedAppContainer from "../containers/AppContainer";
 import StudentFormModal from "./StudentsFormModal";
 import StudentsTable from "./StudentsTable";
 

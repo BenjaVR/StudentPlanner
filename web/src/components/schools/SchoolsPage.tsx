@@ -3,7 +3,7 @@ import React from "react";
 import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { RoutePageComponentProps, routes } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
-import AuthenticatedAppContainer from "../containers/AuthenticatedAppContainer";
+import AuthenticatedAppContainer from "../containers/AppContainer";
 import SchoolFormModal from "./SchoolsFormModal";
 import SchoolsTable from "./SchoolsTable";
 

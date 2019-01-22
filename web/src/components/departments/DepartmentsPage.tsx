@@ -5,7 +5,7 @@ import { IEducation } from "studentplanner-functions/shared/contract/IEducation"
 import { RoutePageComponentProps, routes } from "../../routes";
 import { DepartmentsService } from "../../services/DepartmentsService";
 import { EducationsService } from "../../services/EducationsService";
-import AuthenticatedAppContainer from "../containers/AuthenticatedAppContainer";
+import AuthenticatedAppContainer from "../containers/AppContainer";
 import DepartmentFormModal from "./DepartmentsFormModal";
 import DepartmentsTable from "./DepartmentsTable";
 

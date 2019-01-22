@@ -3,7 +3,7 @@ import React from "react";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { RoutePageComponentProps, routes } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
-import AuthenticatedAppContainer from "../containers/AuthenticatedAppContainer";
+import AuthenticatedAppContainer from "../containers/AppContainer";
 import EducationsTable from "../educations/EducationsTable";
 import EducationFormModal from "./EducationsFormModal";
 
