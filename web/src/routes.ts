@@ -1,17 +1,18 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import LoginPage from "./components/auth/login/LoginPage";
+import AppContainer from "./components/containers/AppContainer";
 import DepartmentsPage from "./components/departments/DepartmentsPage";
 import EducationsPage from "./components/educations/EducationsPage";
 import SchoolsPage from "./components/schools/SchoolsPage";
 import StudentsPage from "./components/students/StudentsPage";
 
-export type RoutePageComponentProps = RouteComponentProps<any>;
+export type AnyRouteComponentProps = RouteComponentProps<any>;
 
 export interface IRoute {
     title: string;
     url: string;
-    component: React.ComponentType<RoutePageComponentProps>;
+    component: React.ComponentType<AnyRouteComponentProps>;
 }
 
 const logInRoute: IRoute = {
@@ -20,40 +21,49 @@ const logInRoute: IRoute = {
     component: LoginPage,
 };
 
+const appRoute: IRoute = {
+    title: "",
+    url: "/app",
+    component: AppContainer,
+};
+
 const planningsRoute: IRoute = {
     title: "Planning",
-    url: "/planning",
+    url: makeAppRoute("planning"),
     component: SchoolsPage,
 };
 
 const studentsRoute: IRoute = {
     title: "Studenten",
-    url: "/students",
+    url: makeAppRoute("students"),
     component: StudentsPage,
 };
 
 const schoolsRoute: IRoute = {
     title: "Scholen",
-    url: "/schools",
+    url: makeAppRoute("schools"),
     component: SchoolsPage,
 };
 
 const educationsRoute: IRoute = {
     title: "Opleidingen",
-    url: "/educations",
+    url: makeAppRoute("educations"),
     component: EducationsPage,
 };
 
 const departmentsRoute: IRoute = {
     title: "Afdelingen",
-    url: "/departments",
+    url: makeAppRoute("departments"),
     component: DepartmentsPage,
 };
 
-export const routes = {
-    signedInHomeRoute: studentsRoute,
+function makeAppRoute(url: string): string {
+    return `${appRoute.url}/${url}`;
+}
 
+export const routes = {
     logInRoute,
+    appRoute,
     planningsRoute,
     studentsRoute,
     schoolsRoute,

@@ -3,18 +3,14 @@ import Menu, { SelectParam } from "antd/lib/menu";
 import classNames from "classnames";
 import * as React from "react";
 import Helmet from "react-helmet";
-import { RouterProps } from "react-router";
-import { Link } from "react-router-dom";
-import { IRoute, routes } from "../../routes";
+import { Link, Redirect, Route, Switch } from "react-router-dom";
+import { AnyRouteComponentProps, IRoute, routes } from "../../routes";
 import { Firebase } from "../../services/FirebaseInitializer";
 import styles from "./AppContainer.module.scss";
 
-interface IAuthenticatedAppContainerProps {
-    router: RouterProps;
-    initialRoute: IRoute;
-}
+type AppContainerProps = AnyRouteComponentProps;
 
-interface IAuthenticatedAppContainerState {
+interface IAppContainerState {
     activeMenuItem: IMenuItem;
     /**
      * This state field is used to update UI according to the sidebar collapse state.
@@ -27,7 +23,7 @@ interface IMenuItem {
     iconType: string;
 }
 
-class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContainerProps, IAuthenticatedAppContainerState> {
+class AppContainer extends React.Component<AppContainerProps, IAppContainerState> {
 
     private menuItems: IMenuItem[] = [
         { route: routes.planningsRoute, iconType: "calendar" },
@@ -37,11 +33,11 @@ class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContain
         { route: routes.departmentsRoute, iconType: "home" },
     ];
 
-    constructor(props: IAuthenticatedAppContainerProps) {
+    constructor(props: AppContainerProps) {
         super(props);
 
         this.state = {
-            activeMenuItem: this.getMenuItemByUrl(props.initialRoute.url) || this.menuItems[0],
+            activeMenuItem: this.getMenuItemByUrl(this.props.location.pathname) || this.menuItems[0],
             isSidebarCollapsed: false,
         };
 
@@ -51,6 +47,9 @@ class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContain
     }
 
     public render(): React.ReactNode {
+        if (Firebase.auth().currentUser === null) {
+            return <Redirect to={routes.logInRoute.url} />;
+        }
         return (
             <React.Fragment>
                 <Helmet>
@@ -102,12 +101,26 @@ class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContain
                         </Layout.Header>
                         <Layout.Content className={styles.content}>
                             <div className={styles.innerContent}>
-                                {this.props.children}
+                                {this.renderRoutes()}
                             </div>
                         </Layout.Content>
                     </Layout>
                 </Layout>
             </React.Fragment>
+        );
+    }
+
+    private renderRoutes(): React.ReactNode {
+        return (
+            <Switch>
+                <Route path={routes.planningsRoute.url} component={routes.planningsRoute.component} />
+                <Route path={routes.studentsRoute.url} component={routes.studentsRoute.component} />
+                <Route path={routes.schoolsRoute.url} component={routes.schoolsRoute.component} />
+                <Route path={routes.educationsRoute.url} component={routes.educationsRoute.component} />
+                <Route path={routes.departmentsRoute.url} component={routes.departmentsRoute.component} />
+
+                <Redirect to={routes.planningsRoute.url} />
+            </Switch>
         );
     }
 
@@ -122,14 +135,10 @@ class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContain
             : characters.map((c) => c.toUpperCase()).join("");
 
         if (avatarUsername === undefined) {
-            return (
-                <Avatar className={styles.avatar} icon="user" />
-            );
+            return <Avatar className={styles.avatar} icon="user" />;
         }
 
-        return (
-            <Avatar className={styles.avatar}>{avatarUsername}</Avatar>
-        );
+        return <Avatar className={styles.avatar}>{avatarUsername}</Avatar>;
     }
 
     private renderMenuItems(): React.ReactNode {
@@ -169,7 +178,7 @@ class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContain
                 notification.success({
                     message: "Succesvol uitgelogd!",
                 });
-                this.props.router.history.push(routes.logInRoute.url);
+                this.props.history.push(routes.logInRoute.url);
             })
             .catch(() => {
                 notification.error({
@@ -201,4 +210,4 @@ class AuthenticatedAppContainer extends React.Component<IAuthenticatedAppContain
     }
 }
 
-export default AuthenticatedAppContainer;
+export default AppContainer;

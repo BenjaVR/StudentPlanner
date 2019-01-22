@@ -3,15 +3,15 @@ import React from "react";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
-import { RoutePageComponentProps, routes } from "../../routes";
+import { AnyRouteComponentProps, routes } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
 import { SchoolsService } from "../../services/SchoolsService";
 import { StudentsService } from "../../services/StudentsService";
-import AuthenticatedAppContainer from "../containers/AppContainer";
+import AppContainer from "../containers/AppContainer";
 import StudentFormModal from "./StudentsFormModal";
 import StudentsTable from "./StudentsTable";
 
-type StudentsPageProps = RoutePageComponentProps;
+type StudentsPageProps = AnyRouteComponentProps;
 
 interface IStudentsPageState {
     students: IStudent[];
@@ -85,23 +85,21 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <AuthenticatedAppContainer router={{ history: this.props.history }} initialRoute={routes.studentsRoute}>
-                    <Row>
-                        <Col>
-                            <StudentsTable
-                                isLoading={this.state.isFetching}
-                                students={this.state.students}
-                                deleteStudent={this.deleteStudent}
-                                onAddStudentRequest={this.openAddStudentModal}
-                                onEditStudentRequest={this.openEditStudentModal}
-                                schools={this.state.schools}
-                                isLoadingSchools={this.state.isFetchingSchools}
-                                educations={this.state.educations}
-                                isLoadingEducations={this.state.isFetchingEducations}
-                            />
-                        </Col>
-                    </Row>
-                </AuthenticatedAppContainer>
+                <Row>
+                    <Col>
+                        <StudentsTable
+                            isLoading={this.state.isFetching}
+                            students={this.state.students}
+                            deleteStudent={this.deleteStudent}
+                            onAddStudentRequest={this.openAddStudentModal}
+                            onEditStudentRequest={this.openEditStudentModal}
+                            schools={this.state.schools}
+                            isLoadingSchools={this.state.isFetchingSchools}
+                            educations={this.state.educations}
+                            isLoadingEducations={this.state.isFetchingEducations}
+                        />
+                    </Col>
+                </Row>
                 <StudentFormModal
                     title="Nieuwe student toevoegen"
                     okText="Voeg toe"

@@ -1,13 +1,13 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
 import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
-import { RoutePageComponentProps, routes } from "../../routes";
+import { AnyRouteComponentProps, routes } from "../../routes";
 import { SchoolsService } from "../../services/SchoolsService";
-import AuthenticatedAppContainer from "../containers/AppContainer";
+import AppContainer from "../containers/AppContainer";
 import SchoolFormModal from "./SchoolsFormModal";
 import SchoolsTable from "./SchoolsTable";
 
-type SchoolsPageProps = RoutePageComponentProps;
+type SchoolsPageProps = AnyRouteComponentProps;
 
 interface ISchoolsPageState {
     schools: ISchool[];
@@ -57,19 +57,17 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <AuthenticatedAppContainer router={{ history: this.props.history }} initialRoute={routes.schoolsRoute}>
-                    <Row>
-                        <Col>
-                            <SchoolsTable
-                                isLoading={this.state.isFetching}
-                                schools={this.state.schools}
-                                deleteSchool={this.deleteSchool}
-                                onAddSchoolRequest={this.openAddSchoolModal}
-                                onEditSchoolRequest={this.openEditSchoolModal}
-                            />
-                        </Col>
-                    </Row>
-                </AuthenticatedAppContainer>
+                <Row>
+                    <Col>
+                        <SchoolsTable
+                            isLoading={this.state.isFetching}
+                            schools={this.state.schools}
+                            deleteSchool={this.deleteSchool}
+                            onAddSchoolRequest={this.openAddSchoolModal}
+                            onEditSchoolRequest={this.openEditSchoolModal}
+                        />
+                    </Col>
+                </Row>
                 <SchoolFormModal
                     title="Nieuwe school toevoegen"
                     okText="Voeg toe"

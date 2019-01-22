@@ -1,13 +1,13 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
-import { RoutePageComponentProps, routes } from "../../routes";
+import { AnyRouteComponentProps, routes } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
-import AuthenticatedAppContainer from "../containers/AppContainer";
+import AppContainer from "../containers/AppContainer";
 import EducationsTable from "../educations/EducationsTable";
 import EducationFormModal from "./EducationsFormModal";
 
-type EducationsPageProps = RoutePageComponentProps;
+type EducationsPageProps = AnyRouteComponentProps;
 
 interface IEducationsPageState {
     educations: IEducation[];
@@ -57,19 +57,17 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <AuthenticatedAppContainer router={{ history: this.props.history }} initialRoute={routes.educationsRoute}>
-                    <Row>
-                        <Col>
-                            <EducationsTable
-                                isLoading={this.state.isFetching}
-                                educations={this.state.educations}
-                                deleteEducation={this.deleteEducation}
-                                onAddEducationRequest={this.openAddEducationModal}
-                                onEditEducationRequest={this.openEditEducationModal}
-                            />
-                        </Col>
-                    </Row>
-                </AuthenticatedAppContainer>
+                <Row>
+                    <Col>
+                        <EducationsTable
+                            isLoading={this.state.isFetching}
+                            educations={this.state.educations}
+                            deleteEducation={this.deleteEducation}
+                            onAddEducationRequest={this.openAddEducationModal}
+                            onEditEducationRequest={this.openEditEducationModal}
+                        />
+                    </Col>
+                </Row>
                 <EducationFormModal
                     title="Nieuwe opleiding toevoegen"
                     okText="Voeg toe"
