@@ -3,11 +3,10 @@ import React from "react";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
-import { AnyRouteComponentProps, routes } from "../../routes";
+import { AnyRouteComponentProps } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
 import { SchoolsService } from "../../services/SchoolsService";
 import { StudentsService } from "../../services/StudentsService";
-import AppContainer from "../containers/AppContainer";
 import StudentFormModal from "./StudentsFormModal";
 import StudentsTable from "./StudentsTable";
 
@@ -67,13 +66,13 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                 isFetchingSchools: false,
                 schools,
             });
-        });
+        }, "name", "asc");
         this.educationsService.subscribe((educations) => {
             this.setState({
                 isFetchingEducations: false,
                 educations,
             });
-        });
+        }, "name", "asc");
     }
 
     public componentWillUnmount(): void {

@@ -2,10 +2,9 @@ import { Col, notification, Row } from "antd";
 import React from "react";
 import { IDepartment } from "studentplanner-functions/shared/contract/IDepartment";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
-import { AnyRouteComponentProps, routes } from "../../routes";
+import { AnyRouteComponentProps } from "../../routes";
 import { DepartmentsService } from "../../services/DepartmentsService";
 import { EducationsService } from "../../services/EducationsService";
-import AppContainer from "../containers/AppContainer";
 import DepartmentFormModal from "./DepartmentsFormModal";
 import DepartmentsTable from "./DepartmentsTable";
 
@@ -60,7 +59,7 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
                 areEducationsFetching: false,
                 educations,
             });
-        });
+        }, "name", "asc");
     }
 
     public componentWillUnmount(): void {
