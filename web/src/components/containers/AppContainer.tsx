@@ -172,9 +172,7 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
                 this.props.history.push(routes.logInRoute.url);
             })
             .catch(() => {
-                notification.error({
-                    message: "Iets ging fout bij het uitloggen... Herlaad de pagina a.u.b.",
-                });
+                window.location.reload();
             });
     }
 
