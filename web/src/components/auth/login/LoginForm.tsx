@@ -111,11 +111,8 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
             const loginDetails: ILoginDetails = values;
             Firebase.auth().signInWithEmailAndPassword(loginDetails.username, loginDetails.password)
                 .then(({ user }) => {
-                    const message = user !== null && user.displayName !== null
-                        ? `Succesvol ingelogd, welkom ${user.displayName}!`
-                        : "Succesvol ingelogd";
                     notification.success({
-                        message,
+                        message: "Succesvol ingelogd!",
                     });
                     this.setState({
                         isSubmitting: false,

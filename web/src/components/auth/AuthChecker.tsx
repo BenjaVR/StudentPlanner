@@ -32,9 +32,8 @@ class AuthChecker extends React.Component<IAuthCheckerProps, IAuthCheckerState> 
     public componentDidMount(): void {
         Firebase.auth().onAuthStateChanged((user) => {
             if (user && !this.state.initialCheckDone && !this.pageWasReloaded) {
-                const hasName = user.displayName !== null;
                 notification.success({
-                    message: hasName ? `Welkom terug, ${user.displayName}!` : "Welkom terug!",
+                    message: "Welkom terug!",
                 });
             }
 

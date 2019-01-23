@@ -73,8 +73,8 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
                                 {this.renderMenuItems()}
                             </Menu>
                             <div className={classNames(styles.siderFooter, { [styles.siderFooterCollapsed]: this.state.isSiderCollapsed })}>
-                                <Tooltip title={this.getUsername()} placement="right">
-                                    <p className={styles.siderFooterUsername}>{this.getUsername()}</p>
+                                <Tooltip title={this.getUserEmail()} placement="right">
+                                    <p className={styles.siderFooterUsername}>{this.getUserEmail()}</p>
                                 </Tooltip>
                                 <Button
                                     className={styles.siderFooterLogoutButton}
@@ -182,15 +182,11 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
         return this.menuItems.find((menuItem) => menuItem.route.url === url);
     }
 
-    private getUsername(): string {
+    private getUserEmail(): string {
         const user = Firebase.auth().currentUser;
 
         if (user === null) {
             return "";
-        }
-
-        if (user.displayName !== null) {
-            return user.displayName;
         }
 
         if (user.email !== null) {
