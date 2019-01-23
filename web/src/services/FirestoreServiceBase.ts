@@ -46,8 +46,8 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
         });
     }
 
-    public add(obj: T): Promise<T> {
-        return new Promise<T>((resolve, reject) => {
+    public add(obj: T): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             if (obj.id !== undefined) {
                 return reject("Cannot add a object which already has an id!");
             }
@@ -59,12 +59,7 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             const cleanedObj = this.cleanUndefinedFieldsInObjects(obj, false);
 
             this.collectionRef.add(cleanedObj)
-                .then((docRef) => {
-                    return docRef.get();
-                })
-                .then((doc) => {
-                    resolve(FirebaseModelMapper.mapDocToObject<T>(doc));
-                })
+                .then(() => resolve())
                 .catch((error) => {
                     this.catchErrorDev(error);
                     reject(error);
