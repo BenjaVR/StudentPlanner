@@ -4,6 +4,7 @@ import LoginPage from "./components/auth/login/LoginPage";
 import AppContainer from "./components/containers/AppContainer";
 import DepartmentsPage from "./components/departments/DepartmentsPage";
 import EducationsPage from "./components/educations/EducationsPage";
+import PlanningsPage from "./components/planning/PlanningsPage";
 import SchoolsPage from "./components/schools/SchoolsPage";
 import StudentsPage from "./components/students/StudentsPage";
 
@@ -30,7 +31,7 @@ const appRoute: IRoute = {
 const planningsRoute: IRoute = {
     title: "Planning",
     url: makeAppRoute("planning"),
-    component: SchoolsPage,
+    component: PlanningsPage,
 };
 
 const studentsRoute: IRoute = {

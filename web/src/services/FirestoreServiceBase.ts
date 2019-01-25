@@ -94,6 +94,13 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
         });
     }
 
+    protected catchErrorDev(error: any): void {
+        if (process.env.NODE_ENV === "development") {
+            // tslint:disable-next-line:no-console
+            console.log(error);
+        }
+    }
+
     private cleanUndefinedFieldsInObjects(obj: IObjectToClean, forceDeleteInFirestore: boolean): object {
         Object.keys(obj).forEach((key) => {
             if (obj[key] === undefined) {
@@ -105,12 +112,5 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             }
         });
         return obj;
-    }
-
-    private catchErrorDev(error: any): void {
-        if (process.env.NODE_ENV === "development") {
-            // tslint:disable-next-line:no-console
-            console.log(error);
-        }
     }
 }
