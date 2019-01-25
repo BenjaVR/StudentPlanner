@@ -12,3 +12,7 @@ body {
 .ant-table td {
     white-space: nowrap; // Fix for the responsive table scrollbars.
 }
+
+.ant-modal {
+    margin: auto; // Fix to always center a modal.
+}
