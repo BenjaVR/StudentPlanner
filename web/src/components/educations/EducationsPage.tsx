@@ -19,6 +19,7 @@ interface IEducationsPageState {
 export default class EducationsPage extends React.Component<EducationsPageProps, IEducationsPageState> {
 
     private readonly educationsService = new EducationsService();
+    private unsubscribeEducation: () => void;
 
     constructor(props: EducationsPageProps) {
         super(props);
@@ -31,6 +32,8 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
             educationToEdit: undefined,
         };
 
+        this.unsubscribeEducation = () => { return; };
+
         this.openAddEducationModal = this.openAddEducationModal.bind(this);
         this.closeAddEducationModal = this.closeAddEducationModal.bind(this);
         this.openEditEducationModal = this.openEditEducationModal.bind(this);
@@ -41,7 +44,7 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
     }
 
     public componentDidMount(): void {
-        this.educationsService.subscribe((educations) => {
+        this.unsubscribeEducation = this.educationsService.subscribe((educations) => {
             this.setState({
                 isFetching: false,
                 educations,
@@ -50,7 +53,7 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
     }
 
     public componentWillUnmount(): void {
-        this.educationsService.unsubscribe();
+        this.unsubscribeEducation();
     }
 
     public render(): React.ReactNode {

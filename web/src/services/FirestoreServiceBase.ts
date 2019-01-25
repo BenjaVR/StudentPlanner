@@ -14,22 +14,13 @@ export type ListenOnChangeFunc<T> = (objects: T[], size: number) => void;
 export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
 
     protected readonly abstract collectionRef: firebase.firestore.CollectionReference;
-    private unsubscribeFn: () => void;
 
-    constructor() {
-        this.unsubscribeFn = () => { return; };
-    }
-
-    public subscribe(onChange: ListenOnChangeFunc<T>, orderBy: keyof T = "updatedTimestamp", orderByType: OrderByType = "desc"): void {
-        this.unsubscribeFn = this.collectionRef.orderBy(orderBy as string, orderByType)
+    public subscribe(onChange: ListenOnChangeFunc<T>, orderBy: keyof T = "updatedTimestamp", orderByType: OrderByType = "desc"): () => void {
+        return this.collectionRef.orderBy(orderBy as string, orderByType)
             .onSnapshot((change): void => {
                 const mappedDocs = FirebaseModelMapper.mapDocsToObjects<T>(change.docs);
                 onChange(mappedDocs, change.size);
             });
-    }
-
-    public unsubscribe(): void {
-        this.unsubscribeFn();
     }
 
     public get(id: string): Promise<T> {

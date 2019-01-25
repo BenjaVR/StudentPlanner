@@ -19,6 +19,7 @@ interface ISchoolsPageState {
 export default class SchoolsPage extends React.Component<SchoolsPageProps, ISchoolsPageState> {
 
     private readonly schoolsService = new SchoolsService();
+    private unsubscribeSchool: () => void;
 
     constructor(props: SchoolsPageProps) {
         super(props);
@@ -31,6 +32,8 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
             schoolToEdit: undefined,
         };
 
+        this.unsubscribeSchool = () => { return; };
+
         this.openAddSchoolModal = this.openAddSchoolModal.bind(this);
         this.closeAddSchoolModal = this.closeAddSchoolModal.bind(this);
         this.openEditSchoolModal = this.openEditSchoolModal.bind(this);
@@ -41,7 +44,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     }
 
     public componentDidMount(): void {
-        this.schoolsService.subscribe((schools) => {
+        this.unsubscribeSchool = this.schoolsService.subscribe((schools) => {
             this.setState({
                 isFetching: false,
                 schools,
@@ -50,7 +53,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     }
 
     public componentWillUnmount(): void {
-        this.schoolsService.unsubscribe();
+        this.unsubscribeSchool();
     }
 
     public render(): React.ReactNode {

@@ -29,6 +29,9 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
     private readonly studentsService = new StudentsService();
     private readonly schoolsService = new SchoolsService();
     private readonly educationsService = new EducationsService();
+    private unsubscribeStudent: () => void;
+    private unsubscribeSchool: () => void;
+    private unsubscribeEducation: () => void;
 
     constructor(props: StudentsPageProps) {
         super(props);
@@ -45,6 +48,10 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
             isFetchingEducations: true,
         };
 
+        this.unsubscribeStudent = () => { return; };
+        this.unsubscribeSchool = () => { return; };
+        this.unsubscribeEducation = () => { return; };
+
         this.openAddStudentModal = this.openAddStudentModal.bind(this);
         this.closeAddStudentModal = this.closeAddStudentModal.bind(this);
         this.openEditStudentModal = this.openEditStudentModal.bind(this);
@@ -55,19 +62,19 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
     }
 
     public componentDidMount(): void {
-        this.studentsService.subscribe((students) => {
+        this.unsubscribeStudent = this.studentsService.subscribe((students) => {
             this.setState({
                 isFetching: false,
                 students,
             });
         });
-        this.schoolsService.subscribe((schools) => {
+        this.unsubscribeSchool = this.schoolsService.subscribe((schools) => {
             this.setState({
                 isFetchingSchools: false,
                 schools,
             });
         }, "name", "asc");
-        this.educationsService.subscribe((educations) => {
+        this.unsubscribeEducation = this.educationsService.subscribe((educations) => {
             this.setState({
                 isFetchingEducations: false,
                 educations,
@@ -76,9 +83,9 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
     }
 
     public componentWillUnmount(): void {
-        this.studentsService.unsubscribe();
-        this.schoolsService.unsubscribe();
-        this.educationsService.unsubscribe();
+        this.unsubscribeStudent();
+        this.unsubscribeSchool();
+        this.unsubscribeEducation();
     }
 
     public render(): React.ReactNode {

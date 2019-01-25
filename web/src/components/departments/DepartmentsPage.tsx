@@ -24,6 +24,8 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
 
     private readonly departmentsService = new DepartmentsService();
     private readonly educationsService = new EducationsService();
+    private unsubscribeDepartment: () => void;
+    private unsubscribeEducation: () => void;
 
     constructor(props: DepartmentsPageProps) {
         super(props);
@@ -38,6 +40,9 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
             areEducationsFetching: true,
         };
 
+        this.unsubscribeDepartment = () => { return; };
+        this.unsubscribeEducation = () => { return; };
+
         this.openAddDepartmentModal = this.openAddDepartmentModal.bind(this);
         this.closeAddDepartmentModal = this.closeAddDepartmentModal.bind(this);
         this.openEditDepartmentModal = this.openEditDepartmentModal.bind(this);
@@ -48,13 +53,13 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
     }
 
     public componentDidMount(): void {
-        this.departmentsService.subscribe((departments) => {
+        this.unsubscribeDepartment = this.departmentsService.subscribe((departments) => {
             this.setState({
                 isFetching: false,
                 departments,
             });
         });
-        this.educationsService.subscribe((educations) => {
+        this.unsubscribeEducation = this.educationsService.subscribe((educations) => {
             this.setState({
                 areEducationsFetching: false,
                 educations,
@@ -63,8 +68,8 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
     }
 
     public componentWillUnmount(): void {
-        this.educationsService.unsubscribe();
-        this.departmentsService.unsubscribe();
+        this.unsubscribeDepartment();
+        this.unsubscribeEducation();
     }
 
     public render(): React.ReactNode {
