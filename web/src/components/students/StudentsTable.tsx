@@ -181,6 +181,13 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
                 onFilter: (value, record: IStudent) => exactMatchOrDefaultOptionFilter(value, record.isConfirmed ? "1" : "0"),
             },
             {
+                title: "Ingepland",
+                key: "isPlanned",
+                render: (record: IStudent) => record.isPlanned ? "Ja" : "",
+                filters: [{ text: "Ingepland", value: "1" }, { text: "Niet ingepland", value: "0" }],
+                onFilter: (value, record: IStudent) => exactMatchOrDefaultOptionFilter(value, record.isPlanned ? "1" : "0"),
+            },
+            {
                 title: "Acties",
                 key: "actions",
                 width: 120,
