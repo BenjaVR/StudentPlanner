@@ -1,4 +1,4 @@
-import { Form, Input, Modal, Select } from "antd";
+import { Checkbox, Form, Input, Modal, Select } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
@@ -66,6 +66,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
             this.props.form.setFieldsValue({ // TODO: fill these keys dynamically
                 firstName: this.props.studentToEdit.firstName,
                 lastName: this.props.studentToEdit.lastName,
+                isConfirmed: this.props.studentToEdit.isConfirmed,
                 schoolId,
                 educationId,
             });
@@ -140,6 +141,14 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                             </Select>,
                         )}
                     </FormItem>
+                    <FormItem label="Bevestiging">
+                        {getFieldDecorator<IStudent>("isConfirmed", {
+                            validateTrigger: this.state.formValidateTrigger,
+                            valuePropName: "checked",
+                        })(
+                            <Checkbox>Student is bevestigd door de school</Checkbox>,
+                        )}
+                    </FormItem>
                 </Form>
             </Modal>
         );
@@ -167,7 +176,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
             formValidateTrigger: "onChange",
         });
 
-        const fields: Array<keyof IStudent> = ["firstName", "lastName", "schoolId", "educationId"];
+        const fields: Array<keyof IStudent> = ["firstName", "lastName", "schoolId", "educationId", "isConfirmed"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
                 this.setState({

@@ -174,6 +174,13 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
                 },
             },
             {
+                title: "Bevestigd",
+                key: "isConfirmed",
+                render: (record: IStudent) => record.isConfirmed ? "Ja" : "",
+                filters: [{ text: "Bevestigd", value: "1" }, { text: "Niet bevestigd", value: "0" }],
+                onFilter: (value, record: IStudent) => exactMatchOrDefaultOptionFilter(value, record.isConfirmed ? "1" : "0"),
+            },
+            {
                 title: "Acties",
                 key: "actions",
                 width: 120,
