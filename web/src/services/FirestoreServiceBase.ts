@@ -47,6 +47,7 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             obj.createdTimestamp = now;
             obj.updatedTimestamp = now;
 
+            obj = this.cleanBeforePersistToFirestore(obj);
             const cleanedObj = this.cleanUndefinedAndWhitespaceFieldsInObjects(obj);
 
             this.collectionRef.add(cleanedObj)
@@ -68,6 +69,7 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             delete obj.id;
             obj.updatedTimestamp = Firebase.firestore.Timestamp.now();
 
+            obj = this.cleanBeforePersistToFirestore(obj);
             const cleanedObj = this.cleanUndefinedAndWhitespaceFieldsInObjects(obj);
 
             this.collectionRef.doc(id).update(cleanedObj)
@@ -100,6 +102,8 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             console.log(error);
         }
     }
+
+    protected abstract cleanBeforePersistToFirestore(model: T): T;
 
     private cleanUndefinedAndWhitespaceFieldsInObjects(obj: IObjectToClean): object {
         Object.keys(obj).forEach((key) => {

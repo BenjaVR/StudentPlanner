@@ -27,8 +27,9 @@ export class StudentsService extends FirestoreServiceBase<IStudent> {
         });
     }
 
-    public add(student: IStudent): Promise<void> {
-        student.isPlanned = student.isPlanned || false; // Make sure this field is not empty.
-        return super.add(student);
+    protected cleanBeforePersistToFirestore(model: IStudent): IStudent {
+        model.isConfirmed = model.isConfirmed === true;
+        model.isPlanned = model.isPlanned === true;
+        return model;
     }
 }
