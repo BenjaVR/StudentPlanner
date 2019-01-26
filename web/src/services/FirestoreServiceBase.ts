@@ -1,8 +1,7 @@
 import firebase from "firebase";
 import { IFirebaseTable } from "studentplanner-functions/shared/contract/IFirebaseTable";
-import { FirebaseModel } from "../models/FirebaseModel";
-import { FirebaseDtoMapper } from "./FirebaseDtoMapper";
 import { Firebase } from "./FirebaseInitializer";
+import { FirebaseModelMapper } from "./FirebaseModelMapper";
 
 interface IObjectToClean {
     [key: string]: any;
@@ -12,26 +11,24 @@ export type OrderByType = "asc" | "desc";
 
 export type ListenOnChangeFunc<T> = (objects: T[], size: number) => void;
 
-export abstract class FirestoreServiceBase<T extends IFirebaseTable, M extends FirebaseModel<T>> {
+export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
 
     protected readonly abstract collectionRef: firebase.firestore.CollectionReference;
 
-    public subscribe(onChange: ListenOnChangeFunc<M>, orderBy: keyof T = "updatedTimestamp", orderByType: OrderByType = "desc"): () => void {
+    public subscribe(onChange: ListenOnChangeFunc<T>, orderBy: keyof T = "updatedTimestamp", orderByType: OrderByType = "desc"): () => void {
         return this.collectionRef.orderBy(orderBy as string, orderByType)
             .onSnapshot((change): void => {
-                const dtos = FirebaseDtoMapper.mapDocsToObjects<T>(change.docs);
-                const models = dtos.map((dto) => this.mapDtoToModel(dto));
-                onChange(models, change.size);
+                const mappedDocs = FirebaseModelMapper.mapDocsToObjects<T>(change.docs);
+                onChange(mappedDocs, change.size);
             });
     }
 
-    public get(id: string): Promise<M> {
-        return new Promise<M>((resolve, reject) => {
+    public get(id: string): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
             this.collectionRef.doc(id).get()
                 .then((docSnap) => {
-                    const dto = FirebaseDtoMapper.mapDocToObject<T>(docSnap);
-                    const model = this.mapDtoToModel(dto);
-                    resolve(model);
+                    const mappedDoc = FirebaseModelMapper.mapDocToObject<T>(docSnap);
+                    resolve(mappedDoc);
                 })
                 .catch((error) => {
                     this.catchErrorDev(error);
@@ -103,8 +100,6 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable, M extends F
             console.log(error);
         }
     }
-
-    protected abstract mapDtoToModel(dto: T): M;
 
     private cleanUndefinedAndWhitespaceFieldsInObjects(obj: IObjectToClean): object {
         Object.keys(obj).forEach((key) => {

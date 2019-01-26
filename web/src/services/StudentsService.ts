@@ -1,14 +1,13 @@
 import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
-import { Student } from "../models/Student";
-import { FirebaseDtoMapper } from "./FirebaseDtoMapper";
 import { Firebase } from "./FirebaseInitializer";
+import { FirebaseModelMapper } from "./FirebaseModelMapper";
 import { FirestoreServiceBase } from "./FirestoreServiceBase";
 
-export class StudentsService extends FirestoreServiceBase<IStudent, Student> {
+export class StudentsService extends FirestoreServiceBase<IStudent> {
     protected readonly collectionRef = Firebase.firestore().collection("students");
 
-    public getNotPlannedStudents(): Promise<Student[]> {
-        return new Promise<Student[]>((resolve, reject) => {
+    public getNotPlannedStudents(): Promise<IStudent[]> {
+        return new Promise<IStudent[]>((resolve, reject) => {
             const isPlannedField: keyof IStudent = "isPlanned";
             const firstNameField: keyof IStudent = "firstName";
             const lastNameField: keyof IStudent = "lastName";
@@ -18,9 +17,8 @@ export class StudentsService extends FirestoreServiceBase<IStudent, Student> {
                 .orderBy(lastNameField, "asc")
                 .get()
                 .then((querySnapshot) => {
-                    const dtos = FirebaseDtoMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
-                    const models = dtos.map((dto) => this.mapDtoToModel(dto));
-                    resolve(models);
+                    const students = FirebaseModelMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
+                    resolve(students);
                 })
                 .catch((error) => {
                     this.catchErrorDev(error);
@@ -29,7 +27,8 @@ export class StudentsService extends FirestoreServiceBase<IStudent, Student> {
         });
     }
 
-    protected mapDtoToModel(dto: IStudent): Student {
-        return new Student(dto);
+    public add(student: IStudent): Promise<void> {
+        student.isPlanned = student.isPlanned || false; // Make sure this field is not empty.
+        return super.add(student);
     }
 }
