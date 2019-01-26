@@ -146,7 +146,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                             validateTrigger: this.state.formValidateTrigger,
                             valuePropName: "checked",
                         })(
-                            <Checkbox>Student is bevestigd door de school</Checkbox>,
+                            <Checkbox disabled={this.state.isSubmitting}>Student is bevestigd door de school</Checkbox>,
                         )}
                     </FormItem>
                 </Form>
