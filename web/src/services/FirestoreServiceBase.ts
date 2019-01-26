@@ -40,14 +40,14 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
     public add(obj: T): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (obj.id !== undefined) {
-                return reject("Cannot add a object which already has an id!");
+                return reject("Cannot add an object which already has an id!");
             }
 
             const now = Firebase.firestore.Timestamp.now();
             obj.createdTimestamp = now;
             obj.updatedTimestamp = now;
 
-            const cleanedObj = this.cleanUndefinedFieldsInObjects(obj, false);
+            const cleanedObj = this.cleanUndefinedAndWhitespaceFieldsInObjects(obj);
 
             this.collectionRef.add(cleanedObj)
                 .then(() => resolve())
@@ -68,7 +68,7 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             delete obj.id;
             obj.updatedTimestamp = Firebase.firestore.Timestamp.now();
 
-            const cleanedObj = this.cleanUndefinedFieldsInObjects(obj, true);
+            const cleanedObj = this.cleanUndefinedAndWhitespaceFieldsInObjects(obj);
 
             this.collectionRef.doc(id).update(cleanedObj)
                 .then(() => resolve())
@@ -101,14 +101,10 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
         }
     }
 
-    private cleanUndefinedFieldsInObjects(obj: IObjectToClean, forceDeleteInFirestore: boolean): object {
+    private cleanUndefinedAndWhitespaceFieldsInObjects(obj: IObjectToClean): object {
         Object.keys(obj).forEach((key) => {
-            if (obj[key] === undefined) {
-                if (forceDeleteInFirestore) {
-                    obj[key] = Firebase.firestore.FieldValue.delete();
-                } else {
-                    delete obj[key];
-                }
+            if (obj[key] === undefined || obj[key] === "") {
+                obj[key] = null;
             }
         });
         return obj;
