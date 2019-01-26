@@ -16,3 +16,7 @@ body {
 .ant-modal {
     margin: auto; // Fix to always center a modal.
 }
+
+.ant-fullcalendar-header > .ant-radio-group {
+    display: none; // Fix to not show the month/year switch on the calendar component.
+}

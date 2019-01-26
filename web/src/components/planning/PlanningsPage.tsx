@@ -40,7 +40,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         return (
             <Row type="flex">
                 <Col span={24} xl={16}>
-                    <Calendar />
+                    <Calendar mode="month" />
                 </Col>
                 <Col span={24} xl={8}>
                     <List
