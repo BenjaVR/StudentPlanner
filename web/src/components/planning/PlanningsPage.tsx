@@ -1,4 +1,4 @@
-import { Badge, Button, Calendar, Col, List, notification, Row, Tag, Tooltip, Anchor } from "antd";
+import { Badge, Button, Calendar, Col, List, notification, Row, Tag, Tooltip } from "antd";
 import React from "react";
 import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { AnyRouteComponentProps } from "../../routes";

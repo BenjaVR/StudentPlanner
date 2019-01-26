@@ -21,6 +21,7 @@ export class FirebaseInitializer {
         } else {
             firebase.firestore.setLogLevel("silent");
         }
+        firebase.firestore().enablePersistence();
     }
 }
 
