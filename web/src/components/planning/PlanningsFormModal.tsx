@@ -5,10 +5,10 @@ import moment from "moment";
 import React from "react";
 import { IDepartment } from "studentplanner-functions/shared/contract/IDepartment";
 import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
+import { isMomentDayAfterOtherDay } from "../../helpers/comparers";
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
 import { Internship } from "../../models/Internship";
-import { isMomentDayAfterOtherDay } from "../../helpers/comparers";
 
 interface IPlanningsFormModalProps {
     title: string;

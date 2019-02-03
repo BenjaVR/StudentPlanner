@@ -5,6 +5,7 @@ export interface IStudent extends IFirestoreEntityBase {
     lastName: string | undefined;
     isConfirmed: boolean;
     isPlanned: boolean;
+    isArchived: boolean;
     schoolId: string | undefined;
     educationId: string | undefined;
 }

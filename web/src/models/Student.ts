@@ -15,6 +15,7 @@ export class Student extends ModelBase<IStudent> {
         public lastName: string | undefined,
         public isConfirmed: boolean,
         public isPlanned: boolean,
+        public isArchived: boolean,
         public schoolId: string | undefined,
         public educationId: string | undefined,
     ) {
@@ -27,6 +28,7 @@ export class Student extends ModelBase<IStudent> {
             entity.lastName,
             entity.isConfirmed,
             entity.isPlanned,
+            entity.isArchived,
             entity.schoolId,
             entity.educationId,
         );
@@ -40,6 +42,7 @@ export class Student extends ModelBase<IStudent> {
             lastName: this.lastName,
             isConfirmed: this.isConfirmed || false,
             isPlanned: this.isPlanned || false,
+            isArchived: this.isArchived || false,
             schoolId: this.schoolId,
             educationId: this.educationId,
         };
