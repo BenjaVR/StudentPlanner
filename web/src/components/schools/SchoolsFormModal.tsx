@@ -41,9 +41,11 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
         if (this.props.schoolToEdit !== undefined
             && this.props.isVisible === true
             && prevProps.isVisible === false) {
-            this.props.form.setFieldsValue({
+
+            const schoolFields: Partial<School> = {
                 name: this.props.schoolToEdit.name,
-            });
+            };
+            this.props.form.setFieldsValue(schoolFields);
         }
     }
 

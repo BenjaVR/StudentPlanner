@@ -49,14 +49,15 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
             && prevProps.isVisible === false
             && this.props.studentToPlan !== undefined
             && this.props.internshipToEdit !== undefined) {
+
             const internship = this.props.internshipToEdit;
-            const fields: Partial<Internship> = {
+            const internshipFields: Partial<Internship> = {
                 hours: internship.hours,
                 startDate: internship.startDate,
                 endDate: internship.endDate,
                 departmentId: internship.departmentId,
             };
-            this.props.form.setFieldsValue(fields);
+            this.props.form.setFieldsValue(internshipFields);
         }
     }
 

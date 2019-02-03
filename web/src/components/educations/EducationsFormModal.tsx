@@ -41,9 +41,11 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
         if (this.props.educationToEdit !== undefined
             && this.props.isVisible === true
             && prevProps.isVisible === false) {
-            this.props.form.setFieldsValue({
+
+            const educationFields: Partial<Education> = {
                 name: this.props.educationToEdit.name,
-            });
+            };
+            this.props.form.setFieldsValue(educationFields);
         }
     }
 

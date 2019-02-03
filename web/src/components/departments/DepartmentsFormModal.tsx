@@ -68,7 +68,6 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                 initialValue: departmentToEdit.name,
             });
             capacityFieldIds.forEach((capacityFieldId) => {
-                // TODO: extract this string interpolation thing to a central place (it's being used multiple times)
                 this.props.form.getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.educationIdFieldName}`, {
                     initialValue: departmentToEdit.capacityPerEducation[capacityFieldId].educationId,
                 });

@@ -64,13 +64,15 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                     : undefined;
             }
 
-            this.props.form.setFieldsValue({ // TODO: fill these keys dynamically
+            const studentFields: Partial<Student> = {
                 firstName: this.props.studentToEdit.firstName,
                 lastName: this.props.studentToEdit.lastName,
                 isConfirmed: this.props.studentToEdit.isConfirmed,
                 schoolId,
                 educationId,
-            });
+            };
+
+            this.props.form.setFieldsValue(studentFields);
         }
     }
 
