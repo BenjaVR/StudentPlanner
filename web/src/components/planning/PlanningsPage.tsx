@@ -6,7 +6,7 @@ import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { Internship } from "../../models/Internship";
 import { Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
-import { DepartmentsService } from "../../services/DepartmentsService";
+import { DepartmentsRepository } from "../../services/DepartmentsRepository";
 import { InternshipsRepository } from "../../services/InternshipsRepository";
 import { StudentsRepository } from "../../services/StudentsRepository";
 import PlanningsFormModal from "./PlanningsFormModal";
@@ -30,7 +30,6 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private calendarRef: Calendar | null = null;
 
-    private readonly departmentsService = new DepartmentsService();
     private readonly studentLoadFailedNotificationKey = "studentLoadFailed";
     private readonly departmentLoadFailedNotificationKey = "departmentLoadFailed";
 
@@ -168,7 +167,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             if (this.state.selectedStudentToPlan === undefined) {
                 return reject("No student selected");
             }
-            InternshipsRepository.addOrUpdateInternshipForStudent(internship, this.state.selectedStudentToPlan)
+            InternshipsRepository.addInternshipForStudent(internship, this.state.selectedStudentToPlan)
                 .then(() => {
                     notification.success({
                         message: "Stage succesvol toegevoegd",
@@ -221,7 +220,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private loadDepartments(): void {
         this.setState({ areDepartmentsLoading: true });
-        this.departmentsService.list()
+        DepartmentsRepository.getDepartments()
             .then((departments) => {
                 notification.close(this.departmentLoadFailedNotificationKey);
                 this.setState({ departments });

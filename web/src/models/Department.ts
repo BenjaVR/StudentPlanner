@@ -8,6 +8,10 @@ export class Department extends ModelBase<IDepartment> {
         public capacityPerEducation: IDepartmentEducationCapacity[],
     ) {
         super();
+
+        // Make sure there is an array, and no empty values are in it.
+        this.capacityPerEducation = (this.capacityPerEducation || [])
+            .filter((capacity) => capacity !== undefined && capacity !== null);
     }
 
     public static fromEntity(entity: IDepartment): Department {

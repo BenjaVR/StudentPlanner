@@ -14,7 +14,6 @@ export class StudentsRepository {
             .get();
 
         const studentEntities = FirebaseModelMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
-
         const students = studentEntities.map((entity) => Student.fromEntity(entity));
         return students;
     }

@@ -1,9 +1,9 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
-import { IDepartment } from "studentplanner-functions/shared/contract/IDepartment";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
+import { Department } from "../../models/Department";
 import { AnyRouteComponentProps } from "../../routes";
-import { DepartmentsService } from "../../services/DepartmentsService";
+import { DepartmentsRepository } from "../../services/DepartmentsRepository";
 import { EducationsService } from "../../services/EducationsService";
 import DepartmentFormModal from "./DepartmentsFormModal";
 import DepartmentsTable from "./DepartmentsTable";
@@ -11,20 +11,19 @@ import DepartmentsTable from "./DepartmentsTable";
 type DepartmentsPageProps = AnyRouteComponentProps;
 
 interface IDepartmentsPageState {
-    departments: IDepartment[];
+    departments: Department[];
     isFetching: boolean;
     isAddDepartmentModalVisible: boolean;
     isEditDepartmentModalVisible: boolean;
-    departmentToEdit: IDepartment | undefined;
+    departmentToEdit: Department | undefined;
     educations: IEducation[];
     areEducationsFetching: boolean;
 }
 
 export default class DepartmentsPage extends React.Component<DepartmentsPageProps, IDepartmentsPageState> {
 
-    private readonly departmentsService = new DepartmentsService();
     private readonly educationsService = new EducationsService();
-    private unsubscribeDepartment: () => void;
+    private unsubscribeFromDepartments: () => void;
     private unsubscribeEducation: () => void;
 
     constructor(props: DepartmentsPageProps) {
@@ -40,7 +39,7 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
             areEducationsFetching: true,
         };
 
-        this.unsubscribeDepartment = () => { return; };
+        this.unsubscribeFromDepartments = () => { return; };
         this.unsubscribeEducation = () => { return; };
 
         this.openAddDepartmentModal = this.openAddDepartmentModal.bind(this);
@@ -53,7 +52,7 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
     }
 
     public componentDidMount(): void {
-        this.unsubscribeDepartment = this.departmentsService.subscribe((departments) => {
+        this.unsubscribeFromDepartments = DepartmentsRepository.subscribeToDepartments((departments) => {
             this.setState({
                 isFetching: false,
                 departments,
@@ -68,7 +67,7 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
     }
 
     public componentWillUnmount(): void {
-        this.unsubscribeDepartment();
+        this.unsubscribeFromDepartments();
         this.unsubscribeEducation();
     }
 
@@ -118,7 +117,7 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
         this.setState({ isAddDepartmentModalVisible: false });
     }
 
-    private openEditDepartmentModal(department: IDepartment): void {
+    private openEditDepartmentModal(department: Department): void {
         this.setState({
             isEditDepartmentModalVisible: true,
             departmentToEdit: department,
@@ -129,9 +128,9 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
         this.setState({ isEditDepartmentModalVisible: false });
     }
 
-    private addDepartment(department: IDepartment): Promise<void> {
+    private addDepartment(department: Department): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            this.departmentsService.add(department)
+            DepartmentsRepository.addDepartment(department)
                 .then(() => {
                     notification.success({
                         message: `Afdeling "${department.name}" succesvol toegevoegd`,
@@ -147,10 +146,10 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
         });
     }
 
-    private editDepartment(department: IDepartment): Promise<void> {
+    private editDepartment(department: Department): Promise<void> {
         department.id = this.state.departmentToEdit!.id;
         return new Promise<void>((resolve, reject): void => {
-            this.departmentsService.update(department)
+            DepartmentsRepository.updateDepartment(department)
                 .then(() => {
                     notification.success({
                         message: `Afdeling "${department.name}" succesvol bewerkt`,
@@ -166,9 +165,9 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
         });
     }
 
-    private deleteDepartment(department: IDepartment): Promise<void> {
+    private deleteDepartment(department: Department): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            this.departmentsService.delete(department)
+            DepartmentsRepository.deleteDepartment(department)
                 .then(() => {
                     notification.success({
                         message: `Afdeling "${department.name}" succesvol verwijderd`,

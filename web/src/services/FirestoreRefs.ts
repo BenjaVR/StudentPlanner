@@ -21,4 +21,14 @@ export class FirestoreRefs {
             ? this.getStudentCollectionRef().doc()
             : this.getStudentCollectionRef().doc(docId);
     }
+
+    public static getDepartmentCollectionRef(): firebase.firestore.CollectionReference {
+        return Firebase.firestore().collection("departments");
+    }
+
+    public static getDepartmentDocRef(docId?: string): firebase.firestore.DocumentReference {
+        return docId === undefined
+            ? this.getDepartmentCollectionRef().doc()
+            : this.getDepartmentCollectionRef().doc(docId);
+    }
 }

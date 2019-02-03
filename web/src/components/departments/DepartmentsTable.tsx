@@ -1,21 +1,21 @@
 import { Button, Col, Popconfirm, Row, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import React from "react";
-import { IDepartment } from "studentplanner-functions/shared/contract/IDepartment";
 import { stringSorter } from "../../helpers/sorters";
+import { Department } from "../../models/Department";
 import styles from "../DataTable.module.scss";
 
 interface IDepartmentsTableProps {
     isLoading: boolean;
-    departments: IDepartment[];
-    deleteDepartment: (department: IDepartment) => Promise<void>;
+    departments: Department[];
+    deleteDepartment: (department: Department) => Promise<void>;
     onAddDepartmentRequest: () => void;
-    onEditDepartmentRequest: (department: IDepartment) => void;
+    onEditDepartmentRequest: (department: Department) => void;
 }
 
 class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
 
-    private columns: Array<ColumnProps<IDepartment>> = [
+    private columns: Array<ColumnProps<Department>> = [
         {
             title: "Naam",
             dataIndex: "name",
@@ -27,7 +27,7 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
             key: "actions",
             width: 120,
             align: "center",
-            render: (record: IDepartment) => this.renderActions(record),
+            render: (record: Department) => this.renderActions(record),
         },
     ];
 
@@ -54,7 +54,7 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
         );
     }
 
-    private renderActions(department: IDepartment): React.ReactNode {
+    private renderActions(department: Department): React.ReactNode {
         const deleteFunc = () => this.props.deleteDepartment(department);
         const editFunc = () => this.props.onEditDepartmentRequest(department);
         return (
@@ -99,7 +99,7 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
         );
     }
 
-    private generateTableRowKey(record: IDepartment, index: number): string {
+    private generateTableRowKey(record: Department, index: number): string {
         return record.id || index.toString();
     }
 }

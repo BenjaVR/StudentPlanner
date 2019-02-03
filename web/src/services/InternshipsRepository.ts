@@ -5,12 +5,12 @@ import { FirestoreRefs } from "./FirestoreRefs";
 
 export class InternshipsRepository {
 
-    public static async addOrUpdateInternshipForStudent(internship: Internship, student: Student): Promise<void> {
+    public static async addInternshipForStudent(internship: Internship, student: Student): Promise<void> {
         if (student.isPlanned === true) {
-            throw new Error("Student is already planned");
+            return Promise.reject(Error("Student is already planned"));
         }
         if (student.id === undefined) {
-            throw new Error("Student should have an id");
+            return Promise.reject(Error("Student should have an id"));
         }
 
         const studentDocRef = FirestoreRefs.getStudentDocRef(student.id);

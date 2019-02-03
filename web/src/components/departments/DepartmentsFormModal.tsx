@@ -2,20 +2,22 @@ import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Tooltip } fr
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
-import { IDepartment, IDepartmentEducationCapacity } from "studentplanner-functions/shared/contract/IDepartment";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
+import { IDepartmentEducationCapacity } from "../../entities/IDepartment";
 import { FormValidationTrigger } from "../../helpers/types";
+import { Department } from "../../models/Department";
 import styles from "./DepartmentsFormModal.module.scss";
+import { nameof } from "../../helpers/nameof";
 
 interface IDepartmentFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
-    departmentToEdit: IDepartment | undefined;
+    departmentToEdit: Department | undefined;
     educations: IEducation[];
     isEducationsLoading: boolean;
     onCloseRequest: () => void;
-    submitDepartment(department: IDepartment): Promise<void>;
+    submitDepartment(department: Department): Promise<void>;
 }
 
 type DepartmentFormModalProps = IDepartmentFormModalProps & FormComponentProps;
@@ -29,7 +31,7 @@ interface IDepartmentFormModalState {
 class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDepartmentFormModalState> {
 
     private capacityKeysId = 0;
-    private capacityPerEducationFieldName: keyof IDepartment = "capacityPerEducation";
+    private capacityPerEducationFieldName: keyof Department = "capacityPerEducation";
     private educationIdFieldName: keyof IDepartmentEducationCapacity = "educationId";
     private capacityFieldName: keyof IDepartmentEducationCapacity = "capacity";
 
@@ -62,7 +64,7 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
             this.setState({
                 capacityFieldIds,
             });
-            this.props.form.getFieldDecorator<IDepartment>("name", {
+            this.props.form.getFieldDecorator<Department>("name", {
                 initialValue: departmentToEdit.name,
             });
             capacityFieldIds.forEach((capacityFieldId) => {
@@ -153,7 +155,7 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
             >
                 <Form>
                     <FormItem label="Naam">
-                        {getFieldDecorator<IDepartment>("name", {
+                        {getFieldDecorator<Department>("name", {
                             validateTrigger: this.state.formValidateTrigger,
                             rules: [
                                 { required: true, message: "Naam mag niet leeg zijn" },
@@ -199,19 +201,17 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
             formValidateTrigger: "onChange",
         });
 
-        const fields: Array<keyof IDepartment> = ["name", "capacityPerEducation"];
+        const fields: Array<keyof Department> = ["name", "capacityPerEducation"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
                 this.setState({
                     isSubmitting: true,
                 });
 
-                const department: IDepartment = {
-                    ...values,
-                };
-                // Make sure there is an array, and no empty values are in it.
-                department.capacityPerEducation = (department.capacityPerEducation || [])
-                    .filter((c) => c !== undefined && c !== null);
+                const department = new Department(
+                    values[nameof<Department>("name")],
+                    values[nameof<Department>("capacityPerEducation")],
+                );
 
                 this.props.submitDepartment(department)
                     .then(() => {
