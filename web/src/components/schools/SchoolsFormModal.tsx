@@ -2,16 +2,17 @@ import { Form, Input, Modal } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
-import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
+import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
+import { School } from "../../models/School";
 
 interface ISchoolsFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
-    schoolToEdit: ISchool | undefined;
+    schoolToEdit: School | undefined;
     onCloseRequest: () => void;
-    submitSchool(school: ISchool): Promise<void>;
+    submitSchool(school: School): Promise<void>;
 }
 
 type SchoolFormModalProps = ISchoolsFormModalProps & FormComponentProps;
@@ -61,7 +62,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
             >
                 <Form>
                     <FormItem label="Naam">
-                        {getFieldDecorator<ISchool>("name", {
+                        {getFieldDecorator<School>("name", {
                             validateTrigger: this.state.formValidateTrigger,
                             rules: [
                                 { required: true, message: "Naam mag niet leeg zijn" },
@@ -88,16 +89,17 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
             formValidateTrigger: "onChange",
         });
 
-        const fields: Array<keyof ISchool> = ["name"];
+        const fields: Array<keyof School> = ["name"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
                 this.setState({
                     isSubmitting: true,
                 });
 
-                const school: ISchool = {
-                    ...values,
-                };
+                const school = new School(
+                    nameof<School>("name"),
+                );
+
                 this.props.submitSchool(school)
                     .then(() => {
                         this.handleClose();

@@ -1,11 +1,11 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
-import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
+import { School } from "../../models/School";
 import { AnyRouteComponentProps } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
-import { SchoolsService } from "../../services/SchoolsService";
+import { SchoolsRepository } from "../../services/SchoolsRepository";
 import { StudentsService } from "../../services/StudentsService";
 import StudentFormModal from "./StudentsFormModal";
 import StudentsTable from "./StudentsTable";
@@ -18,7 +18,7 @@ interface IStudentsPageState {
     isAddStudentsModalVisible: boolean;
     isEditStudentsModalVisible: boolean;
     studentToEdit: IStudent | undefined;
-    schools: ISchool[];
+    schools: School[];
     isFetchingSchools: boolean;
     educations: IEducation[];
     isFetchingEducations: boolean;
@@ -27,10 +27,8 @@ interface IStudentsPageState {
 export default class StudentsPage extends React.Component<StudentsPageProps, IStudentsPageState> {
 
     private readonly studentsService = new StudentsService();
-    private readonly schoolsService = new SchoolsService();
     private readonly educationsService = new EducationsService();
     private unsubscribeStudent: () => void;
-    private unsubscribeSchool: () => void;
     private unsubscribeEducation: () => void;
 
     constructor(props: StudentsPageProps) {
@@ -49,7 +47,6 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
         };
 
         this.unsubscribeStudent = () => { return; };
-        this.unsubscribeSchool = () => { return; };
         this.unsubscribeEducation = () => { return; };
 
         this.openAddStudentModal = this.openAddStudentModal.bind(this);
@@ -68,12 +65,13 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                 students,
             });
         });
-        this.unsubscribeSchool = this.schoolsService.subscribe((schools) => {
-            this.setState({
-                isFetchingSchools: false,
-                schools,
+        SchoolsRepository.getSchoolsByName()
+            .then((schools) => {
+                this.setState({
+                    isFetchingSchools: false,
+                    schools,
+                });
             });
-        }, "name", "asc");
         this.unsubscribeEducation = this.educationsService.subscribe((educations) => {
             this.setState({
                 isFetchingEducations: false,
@@ -84,7 +82,6 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
 
     public componentWillUnmount(): void {
         this.unsubscribeStudent();
-        this.unsubscribeSchool();
         this.unsubscribeEducation();
     }
 

@@ -1,21 +1,21 @@
 import { Button, Col, Popconfirm, Row, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import React from "react";
-import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
 import { stringSorter } from "../../helpers/sorters";
+import { School } from "../../models/School";
 import styles from "../DataTable.module.scss";
 
 interface ISchoolsTableProps {
     isLoading: boolean;
-    schools: ISchool[];
-    deleteSchool: (school: ISchool) => Promise<void>;
+    schools: School[];
+    deleteSchool: (school: School) => Promise<void>;
     onAddSchoolRequest: () => void;
-    onEditSchoolRequest: (school: ISchool) => void;
+    onEditSchoolRequest: (school: School) => void;
 }
 
 class SchoolsTable extends React.Component<ISchoolsTableProps> {
 
-    private columns: Array<ColumnProps<ISchool>> = [
+    private columns: Array<ColumnProps<School>> = [
         {
             title: "Naam",
             dataIndex: "name",
@@ -27,7 +27,7 @@ class SchoolsTable extends React.Component<ISchoolsTableProps> {
             key: "actions",
             width: 120,
             align: "center",
-            render: (record: ISchool) => this.renderActions(record),
+            render: (record: School) => this.renderActions(record),
         },
     ];
 
@@ -54,7 +54,7 @@ class SchoolsTable extends React.Component<ISchoolsTableProps> {
         );
     }
 
-    private renderActions(school: ISchool): React.ReactNode {
+    private renderActions(school: School): React.ReactNode {
         const deleteFunc = () => this.props.deleteSchool(school);
         const editFunc = () => this.props.onEditSchoolRequest(school);
         return (
@@ -99,7 +99,7 @@ class SchoolsTable extends React.Component<ISchoolsTableProps> {
         );
     }
 
-    private generateTableRowKey(record: ISchool, index: number): string {
+    private generateTableRowKey(record: School, index: number): string {
         return record.id || index.toString();
     }
 }

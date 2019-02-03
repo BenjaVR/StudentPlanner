@@ -1,25 +1,24 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
-import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
+import { School } from "../../models/School";
 import { AnyRouteComponentProps } from "../../routes";
-import { SchoolsService } from "../../services/SchoolsService";
+import { SchoolsRepository } from "../../services/SchoolsRepository";
 import SchoolFormModal from "./SchoolsFormModal";
 import SchoolsTable from "./SchoolsTable";
 
 type SchoolsPageProps = AnyRouteComponentProps;
 
 interface ISchoolsPageState {
-    schools: ISchool[];
+    schools: School[];
     isFetching: boolean;
     isAddSchoolsModalVisible: boolean;
     isEditSchoolsModalVisible: boolean;
-    schoolToEdit: ISchool | undefined;
+    schoolToEdit: School | undefined;
 }
 
 export default class SchoolsPage extends React.Component<SchoolsPageProps, ISchoolsPageState> {
 
-    private readonly schoolsService = new SchoolsService();
-    private unsubscribeSchool: () => void;
+    private unsubscribeFromSchool: () => void;
 
     constructor(props: SchoolsPageProps) {
         super(props);
@@ -32,7 +31,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
             schoolToEdit: undefined,
         };
 
-        this.unsubscribeSchool = () => { return; };
+        this.unsubscribeFromSchool = () => { return; };
 
         this.openAddSchoolModal = this.openAddSchoolModal.bind(this);
         this.closeAddSchoolModal = this.closeAddSchoolModal.bind(this);
@@ -44,7 +43,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     }
 
     public componentDidMount(): void {
-        this.unsubscribeSchool = this.schoolsService.subscribe((schools) => {
+        this.unsubscribeFromSchool = SchoolsRepository.subscribeToSchools((schools) => {
             this.setState({
                 isFetching: false,
                 schools,
@@ -53,7 +52,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
     }
 
     public componentWillUnmount(): void {
-        this.unsubscribeSchool();
+        this.unsubscribeFromSchool();
     }
 
     public render(): React.ReactNode {
@@ -98,7 +97,7 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
         this.setState({ isAddSchoolsModalVisible: false });
     }
 
-    private openEditSchoolModal(school: ISchool): void {
+    private openEditSchoolModal(school: School): void {
         this.setState({
             isEditSchoolsModalVisible: true,
             schoolToEdit: school,
@@ -109,9 +108,9 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
         this.setState({ isEditSchoolsModalVisible: false });
     }
 
-    private addSchool(school: ISchool): Promise<void> {
+    private addSchool(school: School): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            this.schoolsService.add(school)
+            SchoolsRepository.addSchool(school)
                 .then(() => {
                     notification.success({
                         message: `School "${school.name}" succesvol toegevoegd`,
@@ -127,10 +126,10 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
         });
     }
 
-    private editSchool(school: ISchool): Promise<void> {
+    private editSchool(school: School): Promise<void> {
         school.id = this.state.schoolToEdit!.id;
         return new Promise<void>((resolve, reject): void => {
-            this.schoolsService.update(school)
+            SchoolsRepository.updateSchool(school)
                 .then(() => {
                     notification.success({
                         message: `School "${school.name}" succesvol bewerkt`,
@@ -146,9 +145,9 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
         });
     }
 
-    private deleteSchool(school: ISchool): Promise<void> {
+    private deleteSchool(school: School): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            this.schoolsService.delete(school)
+            SchoolsRepository.deleteSchool(school)
                 .then(() => {
                     notification.success({
                         message: `School "${school.name}" succesvol verwijderd`,
