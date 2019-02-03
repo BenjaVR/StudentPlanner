@@ -23,77 +23,103 @@ export abstract class FirestoreServiceBase<T extends IFirebaseTable> {
             });
     }
 
-    public get(id: string): Promise<T> {
-        return new Promise<T>((resolve, reject) => {
-            this.collectionRef.doc(id).get()
-                .then((docSnap) => {
-                    const mappedDoc = FirebaseModelMapper.mapDocToObject<T>(docSnap);
-                    resolve(mappedDoc);
-                })
-                .catch((error) => {
-                    this.catchErrorDev(error);
-                    reject(error);
+    public list(): Promise<T[]> {
+        return new Promise<T[]>((resolve, reject) => {
+            this.collectionRef.get()
+                .then((querySnap) => {
+                    const mappedDocs = FirebaseModelMapper.mapDocsToObjects<T>(querySnap.docs);
+                    return resolve(mappedDocs);
                 });
         });
     }
 
-    public add(obj: T): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            if (obj.id !== undefined) {
-                return reject("Cannot add an object which already has an id!");
-            }
+    public async get(id: string, transaction?: firebase.firestore.Transaction): Promise<T> {
+        const docRef = this.collectionRef.doc(id);
 
-            const now = Firebase.firestore.Timestamp.now();
-            obj.createdTimestamp = now;
-            obj.updatedTimestamp = now;
-
-            obj = this.cleanBeforePersistToFirestore(obj);
-            const cleanedObj = this.cleanUndefinedAndWhitespaceFieldsInObjects(obj);
-
-            this.collectionRef.add(cleanedObj)
-                .then(() => resolve())
-                .catch((error) => {
-                    this.catchErrorDev(error);
-                    reject(error);
-                });
-        });
+        try {
+            const docSnap = transaction === undefined
+                ? await docRef.get()
+                : await transaction.get(docRef);
+            const mappedDoc = FirebaseModelMapper.mapDocToObject<T>(docSnap);
+            return Promise.resolve(mappedDoc);
+        } catch (error) {
+            this.catchErrorDev(error);
+            return Promise.reject(error);
+        }
     }
 
-    public update(obj: T): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            if (obj.id === undefined) {
-                return reject("Id is undefined");
+    public async add(obj: T, transaction?: firebase.firestore.Transaction): Promise<void> {
+        if (obj.id !== undefined) {
+            return Promise.reject("Cannot add an object which already has an id!");
+        }
+
+        const now = Firebase.firestore.FieldValue.serverTimestamp();
+        obj.createdTimestamp = now as firebase.firestore.Timestamp;
+        obj.updatedTimestamp = now as firebase.firestore.Timestamp;
+
+        obj = this.cleanBeforePersistToFirestore(obj);
+        const cleanedObj = this.cleanUndefinedAndWhitespaceFieldsInObjects(obj);
+
+        if (transaction === undefined) {
+            try {
+                await this.collectionRef.add(cleanedObj);
+                return Promise.resolve();
+            } catch (error) {
+                this.catchErrorDev(error);
+                return Promise.reject(error);
             }
-
-            const id = obj.id;
-            delete obj.id;
-            obj.updatedTimestamp = Firebase.firestore.Timestamp.now();
-
-            obj = this.cleanBeforePersistToFirestore(obj);
-            const cleanedObj = this.cleanUndefinedAndWhitespaceFieldsInObjects(obj);
-
-            this.collectionRef.doc(id).update(cleanedObj)
-                .then(() => resolve())
-                .catch((error) => {
-                    this.catchErrorDev(error);
-                    reject(error);
-                });
-        });
+        } else {
+            const newDocRef = this.collectionRef.doc();
+            transaction.set(newDocRef, cleanedObj);
+            return Promise.resolve();
+        }
     }
 
-    public delete(obj: T): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            if (obj.id === undefined) {
-                return reject("Id is undefined");
-            }
+    public async update(obj: T, transaction?: firebase.firestore.Transaction): Promise<void> {
+        if (obj.id === undefined) {
+            return Promise.reject("Id is undefined");
+        }
 
-            this.collectionRef.doc(obj.id).delete()
-                .then(resolve)
-                .catch((error) => {
-                    this.catchErrorDev(error);
-                    reject(error);
-                });
-        });
+        const id = obj.id;
+        delete obj.id;
+        obj.updatedTimestamp = Firebase.firestore.Timestamp.now();
+
+        obj = this.cleanBeforePersistToFirestore(obj);
+        const cleanedObj = this.cleanUndefinedAndWhitespaceFieldsInObjects(obj);
+
+        if (transaction === undefined) {
+            try {
+                await this.collectionRef.doc(id).update(cleanedObj);
+                return Promise.resolve();
+            } catch (error) {
+                this.catchErrorDev(error);
+                return Promise.reject(error);
+            }
+        } else {
+            const docRef = this.collectionRef.doc(id);
+            transaction.update(docRef, cleanedObj);
+            return Promise.resolve();
+        }
+    }
+
+    public async delete(obj: T, transaction?: firebase.firestore.Transaction): Promise<void> {
+        if (obj.id === undefined) {
+            return Promise.reject("Id is undefined");
+        }
+
+        if (transaction === undefined) {
+            try {
+                await this.collectionRef.doc(obj.id).delete();
+                return Promise.resolve();
+            } catch (error) {
+                this.catchErrorDev(error);
+                return Promise.reject();
+            }
+        } else {
+            const docRef = this.collectionRef.doc(obj.id);
+            transaction.delete(docRef);
+            return Promise.resolve();
+        }
     }
 
     protected catchErrorDev(error: any): void {
