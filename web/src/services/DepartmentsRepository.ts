@@ -7,16 +7,18 @@ import { FirestoreRefs } from "./FirestoreRefs";
 export class DepartmentsRepository {
 
     public static subscribeToDepartments(onListen: (departments: Department[]) => void): () => void {
-        return FirestoreRefs.getDepartmentCollectionRef().onSnapshot((querySnapshot) => {
-            const departmentEntities = FirebaseModelMapper.mapDocsToObjects<IDepartment>(querySnapshot.docs);
-            const departments = departmentEntities.map((entity) => Department.fromEntity(entity));
-            onListen(departments);
-        });
+        return FirestoreRefs.getDepartmentCollectionRef()
+            .orderBy(nameof<IDepartment>("updatedTimestamp"), "desc")
+            .onSnapshot((querySnapshot) => {
+                const departmentEntities = FirebaseModelMapper.mapDocsToObjects<IDepartment>(querySnapshot.docs);
+                const departments = departmentEntities.map((entity) => Department.fromEntity(entity));
+                onListen(departments);
+            });
     }
 
-    public static async getDepartments(): Promise<Department[]> {
+    public static async getDepartmentsByName(): Promise<Department[]> {
         const querySnapshot = await FirestoreRefs.getDepartmentCollectionRef()
-            .orderBy(nameof<Department>("updatedDate"), "desc")
+            .orderBy(nameof<IDepartment>("name"), "asc")
             .get();
 
         const departmentEntities = FirebaseModelMapper.mapDocsToObjects<IDepartment>(querySnapshot.docs);

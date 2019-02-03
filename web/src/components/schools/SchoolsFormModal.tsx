@@ -97,7 +97,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
                 });
 
                 const school = new School(
-                    nameof<School>("name"),
+                    values[nameof<School>("name")],
                 );
 
                 this.props.submitSchool(school)

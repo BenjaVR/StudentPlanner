@@ -41,4 +41,14 @@ export class FirestoreRefs {
             ? this.getSchoolCollectionRef().doc()
             : this.getSchoolCollectionRef().doc(docId);
     }
+
+    public static getEducationCollectionRef(): firebase.firestore.CollectionReference {
+        return Firebase.firestore().collection("educations");
+    }
+
+    public static getEducationDocRef(docId?: string): firebase.firestore.DocumentReference {
+        return docId === undefined
+            ? this.getEducationCollectionRef().doc()
+            : this.getEducationCollectionRef().doc(docId);
+    }
 }

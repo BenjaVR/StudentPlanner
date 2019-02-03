@@ -89,7 +89,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                 <PlanningsFormModal
                     title={this.state.selectedStudentToPlan === undefined
                         ? "Nieuwe stage toevoegen"
-                        : `Nieuwe stage toevoegen voor ${this.state.selectedStudentToPlan.firstName}`}
+                        : `Nieuwe stage toevoegen voor ${this.state.selectedStudentToPlan.fullName}`}
                     okText="Voeg toe"
                     isVisible={this.state.isAddInternshipModalVisible}
                     submitInternship={this.addInternship}
@@ -126,7 +126,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         const onListItemClickFn = () => this.handlePlanStudent(student);
         return (
             <List.Item actions={[<a key={0} onClick={onListItemClickFn}>Inplannen</a>]}>
-                {student.firstName} {student.lastName}
+                {student.fullName}
                 &nbsp;
                 {!student.isConfirmed &&
                     <Tag className={styles.notClickableTag} color="volcano">Niet bevestigd</Tag>
@@ -220,7 +220,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private loadDepartments(): void {
         this.setState({ areDepartmentsLoading: true });
-        DepartmentsRepository.getDepartments()
+        DepartmentsRepository.getDepartmentsByName()
             .then((departments) => {
                 notification.close(this.departmentLoadFailedNotificationKey);
                 this.setState({ departments });

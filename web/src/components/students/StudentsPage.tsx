@@ -1,23 +1,23 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
-import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { School } from "../../models/School";
+import { Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
 import { EducationsService } from "../../services/EducationsService";
 import { SchoolsRepository } from "../../services/SchoolsRepository";
-import { StudentsService } from "../../services/StudentsService";
+import { StudentsRepository } from "../../services/StudentsRepository";
 import StudentFormModal from "./StudentsFormModal";
 import StudentsTable from "./StudentsTable";
 
 type StudentsPageProps = AnyRouteComponentProps;
 
 interface IStudentsPageState {
-    students: IStudent[];
+    students: Student[];
     isFetching: boolean;
     isAddStudentsModalVisible: boolean;
     isEditStudentsModalVisible: boolean;
-    studentToEdit: IStudent | undefined;
+    studentToEdit: Student | undefined;
     schools: School[];
     isFetchingSchools: boolean;
     educations: IEducation[];
@@ -26,9 +26,9 @@ interface IStudentsPageState {
 
 export default class StudentsPage extends React.Component<StudentsPageProps, IStudentsPageState> {
 
-    private readonly studentsService = new StudentsService();
+    private unsubscribeFromStudents: () => void;
+
     private readonly educationsService = new EducationsService();
-    private unsubscribeStudent: () => void;
     private unsubscribeEducation: () => void;
 
     constructor(props: StudentsPageProps) {
@@ -46,7 +46,7 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
             isFetchingEducations: true,
         };
 
-        this.unsubscribeStudent = () => { return; };
+        this.unsubscribeFromStudents = () => { return; };
         this.unsubscribeEducation = () => { return; };
 
         this.openAddStudentModal = this.openAddStudentModal.bind(this);
@@ -59,7 +59,7 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
     }
 
     public componentDidMount(): void {
-        this.unsubscribeStudent = this.studentsService.subscribe((students) => {
+        this.unsubscribeFromStudents = StudentsRepository.subscribeToStudents((students) => {
             this.setState({
                 isFetching: false,
                 students,
@@ -81,7 +81,7 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
     }
 
     public componentWillUnmount(): void {
-        this.unsubscribeStudent();
+        this.unsubscribeFromStudents();
         this.unsubscribeEducation();
     }
 
@@ -139,7 +139,7 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
         this.setState({ isAddStudentsModalVisible: false });
     }
 
-    private openEditStudentModal(student: IStudent): void {
+    private openEditStudentModal(student: Student): void {
         this.setState({
             isEditStudentsModalVisible: true,
             studentToEdit: student,
@@ -150,9 +150,9 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
         this.setState({ isEditStudentsModalVisible: false });
     }
 
-    private addStudent(student: IStudent): Promise<void> {
+    private addStudent(student: Student): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            this.studentsService.add(student)
+            StudentsRepository.addStudent(student)
                 .then(() => {
                     notification.success({
                         message: `Student "${student.firstName}" succesvol toegevoegd`,
@@ -168,10 +168,10 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
         });
     }
 
-    private editStudent(student: IStudent): Promise<void> {
+    private editStudent(student: Student): Promise<void> {
         student.id = this.state.studentToEdit!.id;
         return new Promise<void>((resolve, reject): void => {
-            this.studentsService.update(student)
+            StudentsRepository.updateStudent(student)
                 .then(() => {
                     notification.success({
                         message: `Student "${student.firstName}" succesvol bewerkt`,
@@ -187,9 +187,9 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
         });
     }
 
-    private deleteStudent(student: IStudent): Promise<void> {
+    private deleteStudent(student: Student): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            this.studentsService.delete(student)
+            StudentsRepository.deleteStudent(student)
                 .then(() => {
                     notification.success({
                         message: `Student "${student.firstName}" succesvol verwijderd`,

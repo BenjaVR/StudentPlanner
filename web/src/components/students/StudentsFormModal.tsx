@@ -3,21 +3,22 @@ import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
 import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
-import { ISchool } from "studentplanner-functions/shared/contract/ISchool";
-import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { FormValidationTrigger } from "../../helpers/types";
+import { School } from "../../models/School";
+import { Student } from "../../models/Student";
+import { nameof } from "../../helpers/nameof";
 
 interface IStudentsFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
-    studentToEdit: IStudent | undefined;
-    schools: ISchool[];
+    studentToEdit: Student | undefined;
+    schools: School[];
     isLoadingSchools: boolean;
     educations: IEducation[];
     isLoadingEducations: boolean;
     onCloseRequest: () => void;
-    submitStudent(student: IStudent): Promise<void>;
+    submitStudent(student: Student): Promise<void>;
 }
 
 type StudentFormModalProps = IStudentsFormModalProps & FormComponentProps;
@@ -88,7 +89,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
             >
                 <Form layout="horizontal">
                     <FormItem label="Voornaam">
-                        {getFieldDecorator<IStudent>("firstName", {
+                        {getFieldDecorator<Student>("firstName", {
                             validateTrigger: this.state.formValidateTrigger,
                             rules: [
                                 { required: true, message: "Voornaam mag niet leeg zijn" },
@@ -101,7 +102,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                         )}
                     </FormItem>
                     <FormItem label="Familienaam">
-                        {getFieldDecorator<IStudent>("lastName", {
+                        {getFieldDecorator<Student>("lastName", {
                             validateTrigger: this.state.formValidateTrigger,
                         })(
                             <Input
@@ -110,7 +111,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                         )}
                     </FormItem>
                     <FormItem label="School">
-                        {getFieldDecorator<IStudent>("schoolId", {
+                        {getFieldDecorator<Student>("schoolId", {
                             validateTrigger: this.state.formValidateTrigger,
                         })(
                             <Select
@@ -126,7 +127,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                         )}
                     </FormItem>
                     <FormItem label="Opleiding">
-                        {getFieldDecorator<IStudent>("educationId", {
+                        {getFieldDecorator<Student>("educationId", {
                             validateTrigger: this.state.formValidateTrigger,
                         })(
                             <Select
@@ -142,7 +143,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                         )}
                     </FormItem>
                     <FormItem label="Bevestiging">
-                        {getFieldDecorator<IStudent>("isConfirmed", {
+                        {getFieldDecorator<Student>("isConfirmed", {
                             validateTrigger: this.state.formValidateTrigger,
                             valuePropName: "checked",
                         })(
@@ -154,7 +155,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
         );
     }
 
-    private renderSchoolSelectOption(school: ISchool): React.ReactNode {
+    private renderSchoolSelectOption(school: School): React.ReactNode {
         return (
             <Select.Option key={school.id} value={school.id}>{school.name}</Select.Option>
         );
@@ -176,16 +177,25 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
             formValidateTrigger: "onChange",
         });
 
-        const fields: Array<keyof IStudent> = ["firstName", "lastName", "schoolId", "educationId", "isConfirmed"];
+        const fields: Array<keyof Student> = ["firstName", "lastName", "schoolId", "educationId", "isConfirmed"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
                 this.setState({
                     isSubmitting: true,
                 });
 
-                const student: IStudent = {
-                    ...values,
-                };
+                const student = new Student(
+                    values[nameof<Student>("firstName")],
+                    values[nameof<Student>("lastName")],
+                    values[nameof<Student>("isConfirmed")],
+                    this.props.studentToEdit === undefined
+                        ? false
+                        : this.props.studentToEdit.isPlanned,
+                    false,
+                    values[nameof<Student>("schoolId")],
+                    values[nameof<Student>("educationId")],
+                );
+
                 this.props.submitStudent(student)
                     .then(() => {
                         this.handleClose();

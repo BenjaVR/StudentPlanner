@@ -7,11 +7,13 @@ import { FirestoreRefs } from "./FirestoreRefs";
 export class SchoolsRepository {
 
     public static subscribeToSchools(onListen: (schools: School[]) => void): () => void {
-        return FirestoreRefs.getSchoolCollectionRef().onSnapshot((querySnapshot) => {
-            const schoolEntities = FirebaseModelMapper.mapDocsToObjects<ISchool>(querySnapshot.docs);
-            const schools = schoolEntities.map((entity) => School.fromEntity(entity));
-            onListen(schools);
-        });
+        return FirestoreRefs.getSchoolCollectionRef()
+            .orderBy(nameof<ISchool>("updatedTimestamp"), "desc")
+            .onSnapshot((querySnapshot) => {
+                const schoolEntities = FirebaseModelMapper.mapDocsToObjects<ISchool>(querySnapshot.docs);
+                const schools = schoolEntities.map((entity) => School.fromEntity(entity));
+                onListen(schools);
+            });
     }
 
     public static async getSchoolsByName(): Promise<School[]> {
