@@ -1,11 +1,11 @@
-import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { Internship } from "../models/Internship";
+import { Student } from "../models/Student";
 import { Firebase } from "./FirebaseInitializer";
 import { FirestoreRefs } from "./FirestoreRefs";
 
-export class InternshipRepository {
+export class InternshipsRepository {
 
-    public static async addOrUpdateInternshipForStudent(internship: Internship, student: IStudent): Promise<void> {
+    public static async addOrUpdateInternshipForStudent(internship: Internship, student: Student): Promise<void> {
         if (student.isPlanned === true) {
             throw new Error("Student is already planned");
         }
@@ -19,17 +19,9 @@ export class InternshipRepository {
         internship.studentId = student.id;
         student.isPlanned = true;
 
-        // TODO: TMP
-        const entityObj = student as { [key: string]: any };
-        Object.keys(entityObj).forEach((key) => {
-            if (entityObj[key] === undefined || entityObj[key] === "") {
-                entityObj[key] = null;
-            }
-        });
-
         await Firebase.firestore().batch()
             .set(internshipDocRef, internship.getEntity("new"))
-            .update(studentDocRef, entityObj) // TODO: getEntity
+            .update(studentDocRef, student.getEntity("update"))
             .commit();
     }
 }

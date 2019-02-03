@@ -2,10 +2,14 @@ import { Button, Card, Form, Icon, Input, notification } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
-import { ILoginDetails } from "studentplanner-functions/shared/contract/ILoginDetails";
 import { FormValidationTrigger } from "../../../helpers/types";
 import { Firebase } from "../../../services/FirebaseInitializer";
 import styles from "./LoginForm.module.scss";
+
+interface ILoginDetails {
+    username: string;
+    password: string;
+}
 
 interface ILoginFormProps {
     loginSuccessfulCallback?: () => void;

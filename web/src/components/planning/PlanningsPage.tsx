@@ -4,10 +4,11 @@ import { IDepartment } from "studentplanner-functions/shared/contract/IDepartmen
 import { IInternship } from "studentplanner-functions/shared/contract/IInternship";
 import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { Internship } from "../../models/Internship";
+import { Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
 import { DepartmentsService } from "../../services/DepartmentsService";
-import { InternshipRepository } from "../../services/InternshipRepository";
-import { StudentsService } from "../../services/StudentsService";
+import { InternshipsRepository } from "../../services/InternshipsRepository";
+import { StudentsRepository } from "../../services/StudentsRepository";
 import PlanningsFormModal from "./PlanningsFormModal";
 import styles from "./PlanningsPage.module.scss";
 
@@ -16,7 +17,7 @@ type PlanningsPageProps = AnyRouteComponentProps;
 interface IPlanningsPageState {
     unplannedStudents: IStudent[];
     areStudentsLoading: boolean;
-    selectedStudentToPlan: IStudent | undefined;
+    selectedStudentToPlan: Student | undefined;
     showOnlyConfirmedStudents: boolean;
     isCalendarLoading: boolean;
     isAddInternshipModalVisible: boolean;
@@ -29,7 +30,6 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private calendarRef: Calendar | null = null;
 
-    private readonly studentsService = new StudentsService();
     private readonly departmentsService = new DepartmentsService();
     private readonly studentLoadFailedNotificationKey = "studentLoadFailed";
     private readonly departmentLoadFailedNotificationKey = "departmentLoadFailed";
@@ -60,23 +60,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     public componentWillMount(): void {
         this.loadStudents();
-
-        this.setState({ areDepartmentsLoading: true });
-        this.departmentsService.list()
-            .then((departments) => {
-                notification.close(this.departmentLoadFailedNotificationKey);
-                this.setState({ departments });
-            })
-            .catch(() => {
-                notification.error({
-                    key: this.departmentLoadFailedNotificationKey,
-                    message: "Kon de afdelingen niet ophalen. Probeer later opnieuw.",
-                    duration: null,
-                });
-            })
-            .finally(() => {
-                this.setState({ areDepartmentsLoading: false });
-            });
+        this.loadDepartments();
     }
 
     public render(): React.ReactNode {
@@ -139,7 +123,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         );
     }
 
-    private renderStudentListItem(student: IStudent): React.ReactNode {
+    private renderStudentListItem(student: Student): React.ReactNode {
         const onListItemClickFn = () => this.handlePlanStudent(student);
         return (
             <List.Item actions={[<a key={0} onClick={onListItemClickFn}>Inplannen</a>]}>
@@ -156,7 +140,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.loadStudents();
     }
 
-    private handlePlanStudent(student: IStudent): void {
+    private handlePlanStudent(student: Student): void {
         this.openAddInternshipModal(student);
     }
 
@@ -168,7 +152,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.doMonthChange("prev");
     }
 
-    private openAddInternshipModal(student: IStudent): void {
+    private openAddInternshipModal(student: Student): void {
         this.setState({
             selectedStudentToPlan: student,
             isAddInternshipModalVisible: true,
@@ -184,11 +168,12 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             if (this.state.selectedStudentToPlan === undefined) {
                 return reject("No student selected");
             }
-            InternshipRepository.addOrUpdateInternshipForStudent(internship, this.state.selectedStudentToPlan)
+            InternshipsRepository.addOrUpdateInternshipForStudent(internship, this.state.selectedStudentToPlan)
                 .then(() => {
                     notification.success({
                         message: "Stage succesvol toegevoegd",
                     });
+                    this.loadStudents();
                     return resolve();
                 })
                 .catch((error) => {
@@ -217,7 +202,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private loadStudents(): void {
         this.setState({ areStudentsLoading: true });
-        this.studentsService.getNotPlannedStudents()
+        StudentsRepository.getNotPlannedStudents()
             .then((students) => {
                 this.setState({ unplannedStudents: students });
                 notification.close(this.studentLoadFailedNotificationKey);
@@ -231,6 +216,25 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             })
             .finally(() => {
                 this.setState({ areStudentsLoading: false });
+            });
+    }
+
+    private loadDepartments(): void {
+        this.setState({ areDepartmentsLoading: true });
+        this.departmentsService.list()
+            .then((departments) => {
+                notification.close(this.departmentLoadFailedNotificationKey);
+                this.setState({ departments });
+            })
+            .catch(() => {
+                notification.error({
+                    key: this.departmentLoadFailedNotificationKey,
+                    message: "Kon de afdelingen niet ophalen. Probeer later opnieuw.",
+                    duration: null,
+                });
+            })
+            .finally(() => {
+                this.setState({ areDepartmentsLoading: false });
             });
     }
 }

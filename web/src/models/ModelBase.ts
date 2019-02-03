@@ -46,5 +46,15 @@ export abstract class ModelBase<T extends IFirestoreEntityBase> {
         return entityObj as T;
     }
 
+    protected fillBaseFields(entity: T): void {
+        this.id = entity.id;
+        this.createdDate = entity.createdTimestamp === undefined
+            ? undefined
+            : moment(entity.createdTimestamp.toDate());
+        this.updatedDate = entity.updatedTimestamp === undefined
+            ? undefined
+            : moment(entity.updatedTimestamp.toDate());
+    }
+
     protected abstract getEntityInternal(): T;
 }
