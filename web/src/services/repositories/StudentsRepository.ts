@@ -1,8 +1,8 @@
-import { IStudent } from "../entities/IStudent";
-import { nameof } from "../helpers/nameof";
-import { Student } from "../models/Student";
-import { FirebaseModelMapper } from "./FirebaseModelMapper";
-import { FirestoreRefs } from "./FirestoreRefs";
+import { IStudent } from "../../entities/IStudent";
+import { nameof } from "../../helpers/nameof";
+import { Student } from "../../models/Student";
+import { FirebaseModelMapper } from "../FirebaseModelMapper";
+import { FirestoreRefs } from "../FirestoreRefs";
 
 export class StudentsRepository {
 

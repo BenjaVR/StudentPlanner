@@ -1,9 +1,9 @@
 import { Button, Col, Popconfirm, Row, Spin, Table, Tooltip } from "antd";
 import { ColumnFilterItem, ColumnProps } from "antd/lib/table";
 import React from "react";
-import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { emptyFilterOptionValue, exactMatchOrDefaultOptionFilter, hasElementWithId } from "../../helpers/filters";
 import { stringSorter } from "../../helpers/sorters";
+import { Education } from "../../models/Education";
 import { School } from "../../models/School";
 import { Student } from "../../models/Student";
 import styles from "../DataTable.module.scss";
@@ -13,7 +13,7 @@ interface IStudentsTableProps {
     students: Student[];
     schools: School[];
     isLoadingSchools: boolean;
-    educations: IEducation[];
+    educations: Education[];
     isLoadingEducations: boolean;
     deleteStudent: (student: Student) => Promise<void>;
     onAddStudentRequest: () => void;

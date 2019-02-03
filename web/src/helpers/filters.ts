@@ -1,4 +1,4 @@
-import { IFirebaseTable } from "studentplanner-functions/shared/contract/IFirebaseTable";
+import { IFirestoreEntityBase } from "../entities/IFirestoreEntityBase";
 
 export const emptyFilterOptionValue = "@@__";
 
@@ -9,6 +9,6 @@ export function exactMatchOrDefaultOptionFilter(filterValue: string, recordValue
     return filterValue === recordValue;
 }
 
-export function hasElementWithId<T extends IFirebaseTable>(elements: T[], id: string | undefined): boolean {
+export function hasElementWithId<T extends IFirestoreEntityBase>(elements: T[], id: string | undefined): boolean {
     return elements.filter((e) => e.id !== undefined).some((e) => e.id === id);
 }

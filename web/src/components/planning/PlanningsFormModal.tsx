@@ -3,20 +3,20 @@ import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import moment from "moment";
 import React from "react";
-import { IDepartment } from "studentplanner-functions/shared/contract/IDepartment";
-import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
 import { isMomentDayAfterOtherDay } from "../../helpers/comparers";
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
+import { Department } from "../../models/Department";
 import { Internship } from "../../models/Internship";
+import { Student } from "../../models/Student";
 
 interface IPlanningsFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
     internshipToEdit: Internship | undefined;
-    studentToPlan: IStudent | undefined;
-    departments: IDepartment[];
+    studentToPlan: Student | undefined;
+    departments: Department[];
     areDepartmentsLoading: boolean;
     onCloseRequest: () => void;
     submitInternship(internship: Internship): Promise<void>;
@@ -157,7 +157,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
         );
     }
 
-    private renderDepartmentSelectOption(department: IDepartment): React.ReactNode {
+    private renderDepartmentSelectOption(department: Department): React.ReactNode {
         return (
             <Select.Option key={department.id} value={department.id}>{department.name}</Select.Option>
         );

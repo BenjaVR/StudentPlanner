@@ -1,12 +1,12 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
-import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
+import { Education } from "../../models/Education";
 import { School } from "../../models/School";
 import { Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
-import { EducationsRepository } from "../../services/EducationsRepository";
-import { SchoolsRepository } from "../../services/SchoolsRepository";
-import { StudentsRepository } from "../../services/StudentsRepository";
+import { EducationsRepository } from "../../services/repositories/EducationsRepository";
+import { SchoolsRepository } from "../../services/repositories/SchoolsRepository";
+import { StudentsRepository } from "../../services/repositories/StudentsRepository";
 import StudentFormModal from "./StudentsFormModal";
 import StudentsTable from "./StudentsTable";
 
@@ -20,7 +20,7 @@ interface IStudentsPageState {
     studentToEdit: Student | undefined;
     schools: School[];
     isFetchingSchools: boolean;
-    educations: IEducation[];
+    educations: Education[];
     isFetchingEducations: boolean;
 }
 

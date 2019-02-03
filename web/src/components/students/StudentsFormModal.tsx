@@ -2,11 +2,11 @@ import { Checkbox, Form, Input, Modal, Select } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
-import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
+import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
+import { Education } from "../../models/Education";
 import { School } from "../../models/School";
 import { Student } from "../../models/Student";
-import { nameof } from "../../helpers/nameof";
 
 interface IStudentsFormModalProps {
     title: string;
@@ -15,7 +15,7 @@ interface IStudentsFormModalProps {
     studentToEdit: Student | undefined;
     schools: School[];
     isLoadingSchools: boolean;
-    educations: IEducation[];
+    educations: Education[];
     isLoadingEducations: boolean;
     onCloseRequest: () => void;
     submitStudent(student: Student): Promise<void>;
@@ -161,7 +161,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
         );
     }
 
-    private renderEducationSelectOption(education: IEducation): React.ReactNode {
+    private renderEducationSelectOption(education: Education): React.ReactNode {
         return (
             <Select.Option key={education.id} value={education.id}>{education.name}</Select.Option>
         );

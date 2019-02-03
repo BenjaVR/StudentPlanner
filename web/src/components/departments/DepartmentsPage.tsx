@@ -3,8 +3,8 @@ import React from "react";
 import { Department } from "../../models/Department";
 import { Education } from "../../models/Education";
 import { AnyRouteComponentProps } from "../../routes";
-import { DepartmentsRepository } from "../../services/DepartmentsRepository";
-import { EducationsRepository } from "../../services/EducationsRepository";
+import { DepartmentsRepository } from "../../services/repositories/DepartmentsRepository";
+import { EducationsRepository } from "../../services/repositories/EducationsRepository";
 import DepartmentFormModal from "./DepartmentsFormModal";
 import DepartmentsTable from "./DepartmentsTable";
 

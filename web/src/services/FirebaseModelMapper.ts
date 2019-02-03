@@ -1,13 +1,12 @@
-
-import { IFirebaseTable } from "studentplanner-functions/shared/contract/IFirebaseTable";
+import { IFirestoreEntityBase } from "../entities/IFirestoreEntityBase";
 
 export class FirebaseModelMapper {
 
-    public static mapDocsToObjects<T extends IFirebaseTable>(docSnaps: firebase.firestore.DocumentSnapshot[]): T[] {
+    public static mapDocsToObjects<T extends IFirestoreEntityBase>(docSnaps: firebase.firestore.DocumentSnapshot[]): T[] {
         return docSnaps.map((docSnap) => FirebaseModelMapper.mapDocToObject<T>(docSnap));
     }
 
-    public static mapDocToObject<T extends IFirebaseTable>(docSnap: firebase.firestore.DocumentSnapshot): T {
+    public static mapDocToObject<T extends IFirestoreEntityBase>(docSnap: firebase.firestore.DocumentSnapshot): T {
         const obj = {
             ...FirebaseModelMapper.nullToUndefined(docSnap.data()),
             id: docSnap.id,

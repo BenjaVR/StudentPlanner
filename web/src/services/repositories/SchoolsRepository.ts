@@ -1,8 +1,8 @@
-import { ISchool } from "../entities/ISchool";
-import { nameof } from "../helpers/nameof";
-import { School } from "../models/School";
-import { FirebaseModelMapper } from "./FirebaseModelMapper";
-import { FirestoreRefs } from "./FirestoreRefs";
+import { ISchool } from "../../entities/ISchool";
+import { nameof } from "../../helpers/nameof";
+import { School } from "../../models/School";
+import { FirebaseModelMapper } from "../FirebaseModelMapper";
+import { FirestoreRefs } from "../FirestoreRefs";
 
 export class SchoolsRepository {
 

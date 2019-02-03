@@ -1,7 +1,7 @@
-import { Internship } from "../models/Internship";
-import { Student } from "../models/Student";
-import { Firebase } from "./FirebaseInitializer";
-import { FirestoreRefs } from "./FirestoreRefs";
+import { Internship } from "../../models/Internship";
+import { Student } from "../../models/Student";
+import { Firebase } from "../FirebaseInitializer";
+import { FirestoreRefs } from "../FirestoreRefs";
 
 export class InternshipsRepository {
 

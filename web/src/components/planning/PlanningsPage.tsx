@@ -1,28 +1,26 @@
 import { Button, Calendar, Col, List, notification, Row, Spin, Tag, Tooltip } from "antd";
 import React from "react";
-import { IDepartment } from "studentplanner-functions/shared/contract/IDepartment";
-import { IInternship } from "studentplanner-functions/shared/contract/IInternship";
-import { IStudent } from "studentplanner-functions/shared/contract/IStudent";
+import { Department } from "../../models/Department";
 import { Internship } from "../../models/Internship";
 import { Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
-import { DepartmentsRepository } from "../../services/DepartmentsRepository";
-import { InternshipsRepository } from "../../services/InternshipsRepository";
-import { StudentsRepository } from "../../services/StudentsRepository";
+import { DepartmentsRepository } from "../../services/repositories/DepartmentsRepository";
+import { InternshipsRepository } from "../../services/repositories/InternshipsRepository";
+import { StudentsRepository } from "../../services/repositories/StudentsRepository";
 import PlanningsFormModal from "./PlanningsFormModal";
 import styles from "./PlanningsPage.module.scss";
 
 type PlanningsPageProps = AnyRouteComponentProps;
 
 interface IPlanningsPageState {
-    unplannedStudents: IStudent[];
+    unplannedStudents: Student[];
     areStudentsLoading: boolean;
     selectedStudentToPlan: Student | undefined;
     showOnlyConfirmedStudents: boolean;
     isCalendarLoading: boolean;
     isAddInternshipModalVisible: boolean;
-    internshipToEdit: IInternship | undefined;
-    departments: IDepartment[];
+    internshipToEdit: Internship | undefined;
+    departments: Department[];
     areDepartmentsLoading: boolean;
 }
 

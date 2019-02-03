@@ -2,9 +2,9 @@ import { Col, notification, Row } from "antd";
 import React from "react";
 import { Education } from "../../models/Education";
 import { AnyRouteComponentProps } from "../../routes";
+import { EducationsRepository } from "../../services/repositories/EducationsRepository";
 import EducationsTable from "../educations/EducationsTable";
 import EducationFormModal from "./EducationsFormModal";
-import { EducationsRepository } from "../../services/EducationsRepository";
 
 type EducationsPageProps = AnyRouteComponentProps;
 

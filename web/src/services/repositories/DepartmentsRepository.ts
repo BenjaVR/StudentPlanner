@@ -1,8 +1,8 @@
-import { IDepartment } from "../entities/IDepartment";
-import { nameof } from "../helpers/nameof";
-import { Department } from "../models/Department";
-import { FirebaseModelMapper } from "./FirebaseModelMapper";
-import { FirestoreRefs } from "./FirestoreRefs";
+import { IDepartment } from "../../entities/IDepartment";
+import { nameof } from "../../helpers/nameof";
+import { Department } from "../../models/Department";
+import { FirebaseModelMapper } from "../FirebaseModelMapper";
+import { FirestoreRefs } from "../FirestoreRefs";
 
 export class DepartmentsRepository {
 

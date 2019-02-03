@@ -2,7 +2,7 @@ import { Col, notification, Row } from "antd";
 import React from "react";
 import { School } from "../../models/School";
 import { AnyRouteComponentProps } from "../../routes";
-import { SchoolsRepository } from "../../services/SchoolsRepository";
+import { SchoolsRepository } from "../../services/repositories/SchoolsRepository";
 import SchoolFormModal from "./SchoolsFormModal";
 import SchoolsTable from "./SchoolsTable";
 
