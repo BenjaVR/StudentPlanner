@@ -1,25 +1,24 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
-import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
+import { Education } from "../../models/Education";
 import { AnyRouteComponentProps } from "../../routes";
-import { EducationsService } from "../../services/EducationsService";
 import EducationsTable from "../educations/EducationsTable";
 import EducationFormModal from "./EducationsFormModal";
+import { EducationsRepository } from "../../services/EducationsRepository";
 
 type EducationsPageProps = AnyRouteComponentProps;
 
 interface IEducationsPageState {
-    educations: IEducation[];
+    educations: Education[];
     isFetching: boolean;
     isAddEducationModalVisible: boolean;
     isEditEducationModalVisible: boolean;
-    educationToEdit: IEducation | undefined;
+    educationToEdit: Education | undefined;
 }
 
 export default class EducationsPage extends React.Component<EducationsPageProps, IEducationsPageState> {
 
-    private readonly educationsService = new EducationsService();
-    private unsubscribeEducation: () => void;
+    private unsubscribeFromEducations: () => void;
 
     constructor(props: EducationsPageProps) {
         super(props);
@@ -32,7 +31,7 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
             educationToEdit: undefined,
         };
 
-        this.unsubscribeEducation = () => { return; };
+        this.unsubscribeFromEducations = () => { return; };
 
         this.openAddEducationModal = this.openAddEducationModal.bind(this);
         this.closeAddEducationModal = this.closeAddEducationModal.bind(this);
@@ -44,7 +43,7 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
     }
 
     public componentDidMount(): void {
-        this.unsubscribeEducation = this.educationsService.subscribe((educations) => {
+        this.unsubscribeFromEducations = EducationsRepository.subscribeToEducations((educations) => {
             this.setState({
                 isFetching: false,
                 educations,
@@ -53,7 +52,7 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
     }
 
     public componentWillUnmount(): void {
-        this.unsubscribeEducation();
+        this.unsubscribeFromEducations();
     }
 
     public render(): React.ReactNode {
@@ -98,7 +97,7 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
         this.setState({ isAddEducationModalVisible: false });
     }
 
-    private openEditEducationModal(education: IEducation): void {
+    private openEditEducationModal(education: Education): void {
         this.setState({
             isEditEducationModalVisible: true,
             educationToEdit: education,
@@ -109,9 +108,9 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
         this.setState({ isEditEducationModalVisible: false });
     }
 
-    private addEducation(education: IEducation): Promise<void> {
+    private addEducation(education: Education): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            this.educationsService.add(education)
+            EducationsRepository.addEducation(education)
                 .then(() => {
                     notification.success({
                         message: `Opleiding "${education.name}" succesvol toegevoegd`,
@@ -127,10 +126,10 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
         });
     }
 
-    private editEducation(education: IEducation): Promise<void> {
+    private editEducation(education: Education): Promise<void> {
         education.id = this.state.educationToEdit!.id;
         return new Promise<void>((resolve, reject): void => {
-            this.educationsService.update(education)
+            EducationsRepository.updateEducation(education)
                 .then(() => {
                     notification.success({
                         message: `Opleiding "${education.name}" succesvol bewerkt`,
@@ -146,9 +145,9 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
         });
     }
 
-    private deleteEducation(education: IEducation): Promise<void> {
+    private deleteEducation(education: Education): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            this.educationsService.delete(education)
+            EducationsRepository.deleteEducation(education)
                 .then(() => {
                     notification.success({
                         message: `Opleiding "${education.name}" succesvol verwijderd`,

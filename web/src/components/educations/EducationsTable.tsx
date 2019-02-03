@@ -1,21 +1,21 @@
 import { Button, Col, Popconfirm, Row, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import React from "react";
-import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { stringSorter } from "../../helpers/sorters";
+import { Education } from "../../models/Education";
 import styles from "../DataTable.module.scss";
 
 interface IEducationsTableProps {
     isLoading: boolean;
-    educations: IEducation[];
-    deleteEducation: (education: IEducation) => Promise<void>;
+    educations: Education[];
+    deleteEducation: (education: Education) => Promise<void>;
     onAddEducationRequest: () => void;
-    onEditEducationRequest: (education: IEducation) => void;
+    onEditEducationRequest: (education: Education) => void;
 }
 
 class EducationsTable extends React.Component<IEducationsTableProps> {
 
-    private columns: Array<ColumnProps<IEducation>> = [
+    private columns: Array<ColumnProps<Education>> = [
         {
             title: "Naam",
             dataIndex: "name",
@@ -27,7 +27,7 @@ class EducationsTable extends React.Component<IEducationsTableProps> {
             key: "actions",
             width: 120,
             align: "center",
-            render: (record: IEducation) => this.renderActions(record),
+            render: (record: Education) => this.renderActions(record),
         },
     ];
 
@@ -54,7 +54,7 @@ class EducationsTable extends React.Component<IEducationsTableProps> {
         );
     }
 
-    private renderActions(education: IEducation): React.ReactNode {
+    private renderActions(education: Education): React.ReactNode {
         const deleteFunc = () => this.props.deleteEducation(education);
         const editFunc = () => this.props.onEditEducationRequest(education);
         return (
@@ -99,7 +99,7 @@ class EducationsTable extends React.Component<IEducationsTableProps> {
         );
     }
 
-    private generateTableRowKey(record: IEducation, index: number): string {
+    private generateTableRowKey(record: Education, index: number): string {
         return record.id || index.toString();
     }
 }

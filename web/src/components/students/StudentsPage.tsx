@@ -4,7 +4,7 @@ import { IEducation } from "studentplanner-functions/shared/contract/IEducation"
 import { School } from "../../models/School";
 import { Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
-import { EducationsService } from "../../services/EducationsService";
+import { EducationsRepository } from "../../services/EducationsRepository";
 import { SchoolsRepository } from "../../services/SchoolsRepository";
 import { StudentsRepository } from "../../services/StudentsRepository";
 import StudentFormModal from "./StudentsFormModal";
@@ -28,9 +28,6 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
 
     private unsubscribeFromStudents: () => void;
 
-    private readonly educationsService = new EducationsService();
-    private unsubscribeEducation: () => void;
-
     constructor(props: StudentsPageProps) {
         super(props);
 
@@ -47,7 +44,6 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
         };
 
         this.unsubscribeFromStudents = () => { return; };
-        this.unsubscribeEducation = () => { return; };
 
         this.openAddStudentModal = this.openAddStudentModal.bind(this);
         this.closeAddStudentModal = this.closeAddStudentModal.bind(this);
@@ -72,17 +68,17 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                     schools,
                 });
             });
-        this.unsubscribeEducation = this.educationsService.subscribe((educations) => {
-            this.setState({
-                isFetchingEducations: false,
-                educations,
+        EducationsRepository.getEducationsByName()
+            .then((educations) => {
+                this.setState({
+                    isFetchingEducations: false,
+                    educations,
+                });
             });
-        }, "name", "asc");
     }
 
     public componentWillUnmount(): void {
         this.unsubscribeFromStudents();
-        this.unsubscribeEducation();
     }
 
     public render(): React.ReactNode {

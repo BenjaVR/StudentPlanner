@@ -2,19 +2,19 @@ import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Tooltip } fr
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
-import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { IDepartmentEducationCapacity } from "../../entities/IDepartment";
+import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
 import { Department } from "../../models/Department";
+import { Education } from "../../models/Education";
 import styles from "./DepartmentsFormModal.module.scss";
-import { nameof } from "../../helpers/nameof";
 
 interface IDepartmentFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
     departmentToEdit: Department | undefined;
-    educations: IEducation[];
+    educations: Education[];
     isEducationsLoading: boolean;
     onCloseRequest: () => void;
     submitDepartment(department: Department): Promise<void>;
@@ -179,7 +179,7 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
         );
     }
 
-    private renderEducationSelectOption(education: IEducation): React.ReactNode {
+    private renderEducationSelectOption(education: Education): React.ReactNode {
         return (
             <Select.Option key={education.id} value={education.id}>{education.name}</Select.Option>
         );

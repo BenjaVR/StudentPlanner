@@ -1,10 +1,10 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
-import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
 import { Department } from "../../models/Department";
+import { Education } from "../../models/Education";
 import { AnyRouteComponentProps } from "../../routes";
 import { DepartmentsRepository } from "../../services/DepartmentsRepository";
-import { EducationsService } from "../../services/EducationsService";
+import { EducationsRepository } from "../../services/EducationsRepository";
 import DepartmentFormModal from "./DepartmentsFormModal";
 import DepartmentsTable from "./DepartmentsTable";
 
@@ -16,15 +16,13 @@ interface IDepartmentsPageState {
     isAddDepartmentModalVisible: boolean;
     isEditDepartmentModalVisible: boolean;
     departmentToEdit: Department | undefined;
-    educations: IEducation[];
+    educations: Education[];
     areEducationsFetching: boolean;
 }
 
 export default class DepartmentsPage extends React.Component<DepartmentsPageProps, IDepartmentsPageState> {
 
-    private readonly educationsService = new EducationsService();
     private unsubscribeFromDepartments: () => void;
-    private unsubscribeEducation: () => void;
 
     constructor(props: DepartmentsPageProps) {
         super(props);
@@ -40,7 +38,6 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
         };
 
         this.unsubscribeFromDepartments = () => { return; };
-        this.unsubscribeEducation = () => { return; };
 
         this.openAddDepartmentModal = this.openAddDepartmentModal.bind(this);
         this.closeAddDepartmentModal = this.closeAddDepartmentModal.bind(this);
@@ -58,17 +55,17 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
                 departments,
             });
         });
-        this.unsubscribeEducation = this.educationsService.subscribe((educations) => {
-            this.setState({
-                areEducationsFetching: false,
-                educations,
+        EducationsRepository.getEducationsByName()
+            .then((educations) => {
+                this.setState({
+                    areEducationsFetching: false,
+                    educations,
+                });
             });
-        }, "name", "asc");
     }
 
     public componentWillUnmount(): void {
         this.unsubscribeFromDepartments();
-        this.unsubscribeEducation();
     }
 
     public render(): React.ReactNode {

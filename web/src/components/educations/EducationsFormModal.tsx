@@ -2,16 +2,17 @@ import { Form, Input, Modal } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
-import { IEducation } from "studentplanner-functions/shared/contract/IEducation";
+import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
+import { Education } from "../../models/Education";
 
 interface IEducationFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
-    educationToEdit: IEducation | undefined;
+    educationToEdit: Education | undefined;
     onCloseRequest: () => void;
-    submitEducation(education: IEducation): Promise<void>;
+    submitEducation(education: Education): Promise<void>;
 }
 
 type EducationFormModalProps = IEducationFormModalProps & FormComponentProps;
@@ -61,7 +62,7 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
             >
                 <Form>
                     <FormItem label="Naam">
-                        {getFieldDecorator<IEducation>("name", {
+                        {getFieldDecorator<Education>("name", {
                             validateTrigger: this.state.formValidateTrigger,
                             rules: [
                                 { required: true, message: "Naam mag niet leeg zijn" },
@@ -88,16 +89,17 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
             formValidateTrigger: "onChange",
         });
 
-        const fields: Array<keyof IEducation> = ["name"];
+        const fields: Array<keyof Education> = ["name"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
                 this.setState({
                     isSubmitting: true,
                 });
 
-                const education: IEducation = {
-                    ...values,
-                };
+                const education = new Education(
+                    values[nameof<Education>("name")],
+                );
+
                 this.props.submitEducation(education)
                     .then(() => {
                         this.handleClose();
