@@ -6,11 +6,11 @@ import { FirestoreRefs } from "./FirestoreRefs";
 
 export class SchoolsRepository {
 
-    public static subscribeToSchools(onListen: (departments: School[]) => void): () => void {
+    public static subscribeToSchools(onListen: (schools: School[]) => void): () => void {
         return FirestoreRefs.getSchoolCollectionRef().onSnapshot((querySnapshot) => {
-            const departmentEntities = FirebaseModelMapper.mapDocsToObjects<ISchool>(querySnapshot.docs);
-            const departments = departmentEntities.map((entity) => School.fromEntity(entity));
-            onListen(departments);
+            const schoolEntities = FirebaseModelMapper.mapDocsToObjects<ISchool>(querySnapshot.docs);
+            const schools = schoolEntities.map((entity) => School.fromEntity(entity));
+            onListen(schools);
         });
     }
 
@@ -19,29 +19,29 @@ export class SchoolsRepository {
             .orderBy(nameof<School>("name"), "asc")
             .get();
 
-        const departmentEntities = FirebaseModelMapper.mapDocsToObjects<ISchool>(querySnapshot.docs);
-        const departments = departmentEntities.map((entity) => School.fromEntity(entity));
-        return departments;
+        const schoolEntities = FirebaseModelMapper.mapDocsToObjects<ISchool>(querySnapshot.docs);
+        const schools = schoolEntities.map((entity) => School.fromEntity(entity));
+        return schools;
     }
 
-    public static async addSchool(department: School): Promise<void> {
+    public static async addSchool(school: School): Promise<void> {
         await FirestoreRefs.getSchoolCollectionRef()
-            .add(department.getEntity("new"));
+            .add(school.getEntity("new"));
     }
 
-    public static async updateSchool(department: School): Promise<void> {
-        if (department.id === undefined) {
+    public static async updateSchool(school: School): Promise<void> {
+        if (school.id === undefined) {
             return Promise.reject(Error("School should have an id"));
         }
-        await FirestoreRefs.getSchoolDocRef(department.id)
-            .update(department.getEntity("update"));
+        await FirestoreRefs.getSchoolDocRef(school.id)
+            .update(school.getEntity("update"));
     }
 
-    public static async deleteSchool(department: School): Promise<void> {
-        if (department.id === undefined) {
+    public static async deleteSchool(school: School): Promise<void> {
+        if (school.id === undefined) {
             return Promise.reject(Error("School should have an id"));
         }
-        await FirestoreRefs.getSchoolDocRef(department.id)
+        await FirestoreRefs.getSchoolDocRef(school.id)
             .delete();
     }
 }
