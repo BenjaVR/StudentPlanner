@@ -1,4 +1,4 @@
-import { Button, Col, Popconfirm, Row, Table, Tooltip } from "antd";
+import { Button, Col, Popconfirm, Row, Table, Tag, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import React from "react";
 import { stringSorter } from "../../helpers/sorters";
@@ -17,6 +17,12 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
 
     private columns: Array<ColumnProps<Department>> = [
         {
+            title: "",
+            key: "color",
+            render: (record: Department) => this.renderColorTag(record),
+            width: "20px",
+        },
+        {
             title: "Naam",
             dataIndex: "name",
             key: "name",
@@ -34,6 +40,7 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
     constructor(props: IDepartmentsTableProps) {
         super(props);
 
+        this.renderColorTag = this.renderColorTag.bind(this);
         this.renderActions = this.renderActions.bind(this);
         this.renderTableTitle = this.renderTableTitle.bind(this);
     }
@@ -51,6 +58,14 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
                 scroll={{ x: true }}
                 className={styles.table}
             />
+        );
+    }
+
+    private renderColorTag(department: Department): React.ReactNode {
+        return (
+            <div className={styles.colorTagContainer}>
+                <Tag className={styles.colorTag} color={department.color} />
+            </div>
         );
     }
 

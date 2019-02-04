@@ -11,3 +11,13 @@
 .tableTitleText {
     margin: 0;
 }
+
+.colorTagContainer {
+    text-align: center;
+}
+
+.colorTag {
+    pointer-events: none;
+    display: inline !important;
+    margin: 0 !important;
+}

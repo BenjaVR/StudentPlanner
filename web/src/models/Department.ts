@@ -5,6 +5,7 @@ export class Department extends ModelBase<IDepartment> {
 
     constructor(
         public name: string,
+        public color: string,
         public capacityPerEducation: IDepartmentEducationCapacity[],
     ) {
         super();
@@ -17,6 +18,7 @@ export class Department extends ModelBase<IDepartment> {
     public static fromEntity(entity: IDepartment): Department {
         const department = new Department(
             entity.name,
+            entity.color,
             entity.capacityPerEducation,
         );
         department.fillBaseFields(entity);
@@ -26,6 +28,7 @@ export class Department extends ModelBase<IDepartment> {
     protected getEntityInternal(): IDepartment {
         return {
             name: this.name,
+            color: this.color,
             capacityPerEducation: this.capacityPerEducation || [],
         };
     }

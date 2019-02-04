@@ -2,6 +2,7 @@ import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Tooltip } fr
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import React from "react";
+import { CirclePicker, ColorResult } from "react-color";
 import { IDepartmentEducationCapacity } from "../../entities/IDepartment";
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
@@ -26,6 +27,7 @@ interface IDepartmentFormModalState {
     isSubmitting: boolean;
     formValidateTrigger: FormValidationTrigger;
     capacityFieldIds: number[];
+    selectedColor: string | undefined;
 }
 
 class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDepartmentFormModalState> {
@@ -42,9 +44,11 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
             isSubmitting: false,
             formValidateTrigger: "",
             capacityFieldIds: [],
+            selectedColor: undefined,
         };
 
         this.renderEducationSelectOption = this.renderEducationSelectOption.bind(this);
+        this.handleColorChange = this.handleColorChange.bind(this);
         this.handleAfterClose = this.handleAfterClose.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleOk = this.handleOk.bind(this);
@@ -67,6 +71,11 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
             this.props.form.getFieldDecorator<Department>("name", {
                 initialValue: departmentToEdit.name,
             });
+            const fields: Partial<Department> = {
+                color: departmentToEdit.color,
+            };
+            this.setState({ selectedColor: departmentToEdit.color });
+            this.props.form.setFieldsValue(fields);
             capacityFieldIds.forEach((capacityFieldId) => {
                 this.props.form.getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.educationIdFieldName}`, {
                     initialValue: departmentToEdit.capacityPerEducation[capacityFieldId].educationId,
@@ -166,6 +175,16 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                             />,
                         )}
                     </FormItem>
+                    <FormItem label="Kleur">
+                        {getFieldDecorator<Department>("color", {
+                            validateTrigger: this.state.formValidateTrigger,
+                            rules: [
+                                { required: true, message: "Kies een kleur" },
+                            ],
+                        })(
+                            <CirclePicker color={this.state.selectedColor} onChange={this.handleColorChange} />,
+                        )}
+                    </FormItem>
 
                     <h4>Capaciteit per opleiding</h4>
                     <p>Max. aantal studenten per opleiding voor deze afdeling</p>
@@ -184,9 +203,14 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
         );
     }
 
+    private handleColorChange(color: ColorResult): void {
+        this.setState({ selectedColor: color.hex });
+    }
+
     private handleAfterClose(): void {
         this.setState({
             capacityFieldIds: [],
+            selectedColor: undefined,
         });
     }
 
@@ -200,7 +224,7 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
             formValidateTrigger: "onChange",
         });
 
-        const fields: Array<keyof Department> = ["name", "capacityPerEducation"];
+        const fields: Array<keyof Department> = ["name", "color", "capacityPerEducation"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
                 this.setState({
@@ -209,6 +233,7 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
 
                 const department = new Department(
                     values[nameof<Department>("name")],
+                    values[nameof<Department>("color")].hex,
                     values[nameof<Department>("capacityPerEducation")],
                 );
 
