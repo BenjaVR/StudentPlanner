@@ -10,7 +10,7 @@ export class Internship extends ModelBase<IInternship> {
         public endDate: moment.Moment,
         public hours: number,
         public studentId: string,
-        public departmentId: string,
+        public departmentId: string | undefined,
     ) {
         super();
     }
@@ -21,7 +21,7 @@ export class Internship extends ModelBase<IInternship> {
             moment.utc(entity.endDate.toDate()),
             entity.hours || 0,
             entity.studentId!,
-            entity.departmentId!,
+            entity.departmentId,
         );
         internship.fillBaseFields(entity);
         return internship;

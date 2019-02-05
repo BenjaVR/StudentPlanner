@@ -4,6 +4,7 @@ import { Department } from "../../models/Department";
 import { Education } from "../../models/Education";
 import { FirebaseModelMapper } from "../FirebaseModelMapper";
 import { FirestoreRefs } from "../FirestoreRefs";
+import { InternshipsRepository } from "./InternshipsRepository";
 
 export class DepartmentsRepository {
 
@@ -55,6 +56,13 @@ export class DepartmentsRepository {
         }
         await FirestoreRefs.getDepartmentDocRef(department.id)
             .delete();
+
+        // Delete relations with internships
+        const internships = await InternshipsRepository.getInternshipsForDepartment(department);
+        internships.forEach(async (internship) => {
+            internship.departmentId = undefined;
+            InternshipsRepository.updateInternship(internship, true);
+        });
     }
 
     public static async deleteEducationRelations(education: Education): Promise<void> {

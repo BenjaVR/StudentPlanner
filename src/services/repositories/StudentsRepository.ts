@@ -5,6 +5,7 @@ import { School } from "../../models/School";
 import { Student } from "../../models/Student";
 import { FirebaseModelMapper } from "../FirebaseModelMapper";
 import { FirestoreRefs } from "../FirestoreRefs";
+import { InternshipsRepository } from "./InternshipsRepository";
 
 export class StudentsRepository {
 
@@ -69,5 +70,11 @@ export class StudentsRepository {
         }
         await FirestoreRefs.getStudentDocRef(student.id)
             .delete();
+
+        // Delete internships for this student
+        const internships = await InternshipsRepository.getInternshipsForStudent(student);
+        internships.forEach(async (internship) => {
+            await InternshipsRepository.deleteInternship(internship);
+        });
     }
 }

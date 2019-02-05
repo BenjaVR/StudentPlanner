@@ -1,28 +1,50 @@
 {
-    "name": "studentplanner",
-    "private": true,
+    "name": "studentplanner-web",
     "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "@types/react-color": "^2.14.0",
+        "antd": "3.12.1",
+        "classnames": "2.2.6",
+        "core-js": "2.6.1",
+        "firebase": "5.7.1",
+        "jest": "23.6.0",
+        "moment": "2.23.0",
+        "react": "16.7.0",
+        "react-color": "2.17.0",
+        "react-dom": "16.7.0",
+        "react-helmet": "5.2.0",
+        "react-router": "4.3.1",
+        "react-router-dom": "4.3.1",
+        "whatwg-fetch": "3.0.0"
+    },
     "scripts": {
-        "build-web": "npm --prefix web run start",
-        "build-functions": "npm --prefix functions run build:watch",
-        "build": "npm-run-all --continue-on-error --parallel build-functions build-web",
-        "lint-web": "npm --prefix web run lint",
-        "lint-functions": "npm --prefix functions run lint",
-        "lint": "npm-run-all --continue-on-error --parallel lint-functions lint-web",
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "lint": "tslint --project tsconfig.json",
         "deploy": "firebase deploy"
     },
-    "repository": "git+https://github.com/BenjaVR/StudentPlanner.git",
-    "author": "Benjamin Van Renterghem",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/BenjaVR/StudentPlanner/issues"
-    },
-    "homepage": "https://github.com/BenjaVR/StudentPlanner#readme",
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie < 11",
+        "not op_mini all"
+    ],
     "devDependencies": {
-        "npm-run-all": "4.1.5"
-    },
-    "workspaces": [
-        "web",
-        "functions"
-    ]
+        "@types/classnames": "2.2.7",
+        "@types/jest": "23.3.10",
+        "@types/node": "10.12.18",
+        "@types/react": "16.7.18",
+        "@types/react-dom": "16.0.11",
+        "@types/react-helmet": "5.0.7",
+        "@types/react-router": "4.4.3",
+        "@types/react-router-dom": "4.3.1",
+        "node-sass": "4.11.0",
+        "react-scripts": "2.1.1",
+        "tslint": "5.12.0",
+        "tslint-react": "3.6.0",
+        "typescript": "3.2.2",
+        "typescript-plugin-css-modules": "1.0.5"
+    }
 }
