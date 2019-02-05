@@ -86,7 +86,7 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
                 </Tooltip>
                 <Tooltip title="Verwijderen">
                     <Popconfirm
-                        title="Weet u zeker dat u deze opleiding wilt verwijderen?"
+                        title="Weet u zeker dat u deze afdeling wilt verwijderen?"
                         onConfirm={deleteFunc}
                     >
                         <Button
@@ -107,7 +107,7 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
             <Row type="flex" justify="space-between" align="middle">
                 <Col>
                     <Button icon="plus" type="primary" onClick={this.props.onAddDepartmentRequest}>
-                        Nieuwe opleiding
+                        Nieuwe afdeling
                     </Button>
                 </Col>
             </Row>
