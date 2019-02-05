@@ -3,6 +3,7 @@ import { nameof } from "../../helpers/nameof";
 import { School } from "../../models/School";
 import { FirebaseModelMapper } from "../FirebaseModelMapper";
 import { FirestoreRefs } from "../FirestoreRefs";
+import { StudentsRepository } from "./StudentsRepository";
 
 export class SchoolsRepository {
 
@@ -45,5 +46,12 @@ export class SchoolsRepository {
         }
         await FirestoreRefs.getSchoolDocRef(school.id)
             .delete();
+
+        // Delete relations on students
+        const students = await StudentsRepository.getStudentsWithSchool(school);
+        students.forEach(async (student) => {
+            student.schoolId = undefined;
+            await StudentsRepository.updateStudent(student, true);
+        });
     }
 }

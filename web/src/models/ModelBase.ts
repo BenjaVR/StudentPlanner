@@ -2,7 +2,7 @@ import moment from "moment";
 import { IFirestoreEntityBase } from "../entities/IFirestoreEntityBase";
 import { Firebase } from "../services/FirebaseInitializer";
 
-type DatabaseAction = "new" | "update";
+type DatabaseAction = "new" | "update" | "updateWithoutTime";
 
 export abstract class ModelBase<T extends IFirestoreEntityBase> {
 
@@ -22,14 +22,20 @@ export abstract class ModelBase<T extends IFirestoreEntityBase> {
             ...this.getEntityInternal(),
         };
 
+        delete entity.id;
+
         switch (databaseAction) {
             case "new":
-                delete entity.id;
                 entity.createdTimestamp = Firebase.firestore.FieldValue.serverTimestamp() as firebase.firestore.Timestamp;
                 entity.updatedTimestamp = Firebase.firestore.FieldValue.serverTimestamp() as firebase.firestore.Timestamp;
                 break;
             case "update":
+                // Make sure to not overwrite the createdTimestamp.
+                delete entity.createdTimestamp;
                 entity.updatedTimestamp = Firebase.firestore.FieldValue.serverTimestamp() as firebase.firestore.Timestamp;
+                break;
+            case "updateWithoutTime":
+                delete entity.createdTimestamp;
                 break;
             default:
                 throw new Error("Unsupported database action");

@@ -1,6 +1,5 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import { IDepartment } from "../shared/contract/IDepartment";
 import { IStudent } from "../shared/contract/IStudent";
 import { ModelMapper } from "./ModelMapper";
 
@@ -8,42 +7,6 @@ admin.initializeApp();
 const firestore = admin.firestore();
 firestore.settings({
     timestampsInSnapshots: true,
-});
-
-exports.onEducationDelete = functions.firestore.document("/educations/{id}").onDelete((snapshot) => {
-    const educationId = snapshot.id;
-
-    // Delete relations on departments
-    const departmentsPromise = firestore.collection("/departments")
-        .get()
-        .then((querySnapshot) => {
-            const innerPromises = [];
-
-            const mappedDepartments = ModelMapper.mapDocsToObjects<IDepartment>(querySnapshot.docs);
-            mappedDepartments.forEach((department) => {
-                const educations = department.capacityPerEducation;
-                if (educations === undefined || educations === null || educations.length === 0) {
-                    return;
-                }
-
-                const updatedEducations = educations.filter((edu) => edu.educationId !== educationId);
-                if (updatedEducations.length === 0) {
-                    return;
-                }
-
-                if (educations.some((edu) => edu.educationId === educationId)) {
-
-                    const updatedDepartment: Partial<IDepartment> = {
-                        capacityPerEducation: updatedEducations,
-                    };
-                    innerPromises.push(firestore.doc(`/departments/${department.id}`).update(updatedDepartment));
-                }
-            });
-
-            return Promise.all([innerPromises]);
-        });
-
-    return Promise.all([departmentsPromise]);
 });
 
 exports.onSchoolDelete = functions.firestore.document("/schools/{id}").onDelete((snapshot) => {

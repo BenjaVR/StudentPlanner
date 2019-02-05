@@ -3,6 +3,8 @@ import { nameof } from "../../helpers/nameof";
 import { Education } from "../../models/Education";
 import { FirebaseModelMapper } from "../FirebaseModelMapper";
 import { FirestoreRefs } from "../FirestoreRefs";
+import { DepartmentsRepository } from "./DepartmentsRepository";
+import { StudentsRepository } from "./StudentsRepository";
 
 export class EducationsRepository {
 
@@ -43,7 +45,18 @@ export class EducationsRepository {
         if (education.id === undefined) {
             return Promise.reject(Error("Education should have an id"));
         }
+
         await FirestoreRefs.getEducationDocRef(education.id)
             .delete();
+
+        // Delete relations on departments
+        await DepartmentsRepository.deleteEducationRelations(education);
+
+        // Delete relations on students
+        const students = await StudentsRepository.getStudentsWithEducation(education);
+        students.forEach(async (student) => {
+            student.educationId = undefined;
+            await StudentsRepository.updateStudent(student, true);
+        });
     }
 }
