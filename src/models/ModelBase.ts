@@ -15,10 +15,10 @@ export abstract class ModelBase<T extends IFirestoreEntityBase> {
             id: this.id,
             createdTimestamp: this.createdDate === undefined
                 ? null
-                : Firebase.firestore.Timestamp.fromDate(this.createdDate.utc().toDate()),
+                : Firebase.firestore.Timestamp.fromDate(this.createdDate.toDate()),
             updatedTimestamp: this.updatedDate === undefined
                 ? null
-                : Firebase.firestore.Timestamp.fromDate(this.updatedDate.utc().toDate()),
+                : Firebase.firestore.Timestamp.fromDate(this.updatedDate.toDate()),
             ...this.getEntityInternal(),
         };
 

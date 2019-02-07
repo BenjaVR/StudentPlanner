@@ -9,6 +9,7 @@ export class Internship extends ModelBase<IInternship> {
         public startDate: moment.Moment,
         public endDate: moment.Moment,
         public hours: number,
+        public isArchived: boolean,
         public studentId: string,
         public departmentId: string | undefined,
     ) {
@@ -17,9 +18,10 @@ export class Internship extends ModelBase<IInternship> {
 
     public static fromEntity(entity: IInternship): Internship {
         const internship = new Internship(
-            moment.utc(entity.startDate.toDate()),
-            moment.utc(entity.endDate.toDate()),
+            moment(entity.startDate.toDate()),
+            moment(entity.endDate.toDate()),
             entity.hours || 0,
+            entity.isArchived || false,
             entity.studentId!,
             entity.departmentId,
         );
@@ -30,12 +32,13 @@ export class Internship extends ModelBase<IInternship> {
     protected getEntityInternal(): IInternship {
         return {
             startDate: Firebase.firestore.Timestamp.fromDate(
-                moment.utc(this.startDate.toDate()).startOf("day").toDate(),
+                this.startDate.startOf("day").toDate(),
             ),
             endDate: Firebase.firestore.Timestamp.fromDate(
-                moment.utc(this.endDate.toDate()).startOf("day").toDate(),
+                this.endDate.startOf("day").toDate(),
             ),
             hours: this.hours,
+            isArchived: this.isArchived,
             studentId: this.studentId,
             departmentId: this.departmentId,
         };

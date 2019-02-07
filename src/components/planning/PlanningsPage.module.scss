@@ -4,7 +4,21 @@
     pointer-events: none;
 }
 
+.calendarTag {
+    display: block !important;
+    font-size: 0.7rem !important;
+    height: 15px !important;
+    margin: 1px 0 !important;
+    line-height: 10px !important;
+
+    &Outline {
+        background-color: transparent !important;
+        color: black !important;
+    }
+}
+
 .buttonsInCalendarComponent {
+    z-index: 100;
     padding: 11px 16px;
     position: absolute;
 

@@ -1,4 +1,6 @@
 import { Button, Calendar, Col, List, notification, Row, Spin, Tag, Tooltip } from "antd";
+import classNames from "classnames";
+import moment from "moment";
 import React from "react";
 import { Department } from "../../models/Department";
 import { Internship } from "../../models/Internship";
@@ -20,6 +22,8 @@ interface IPlanningsPageState {
     isCalendarLoading: boolean;
     isAddInternshipModalVisible: boolean;
     internshipToEdit: Internship | undefined;
+    internships: Internship[];
+    areInternshipsLoading: boolean;
     departments: Department[];
     areDepartmentsLoading: boolean;
 }
@@ -27,6 +31,7 @@ interface IPlanningsPageState {
 class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageState> {
 
     private calendarRef: Calendar | null = null;
+    private unsubscribeFromInternships: () => void;
 
     private readonly studentLoadFailedNotificationKey = "studentLoadFailed";
     private readonly departmentLoadFailedNotificationKey = "departmentLoadFailed";
@@ -42,12 +47,17 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             isCalendarLoading: false,
             isAddInternshipModalVisible: false,
             internshipToEdit: undefined,
+            internships: [],
+            areInternshipsLoading: true,
             departments: [],
             areDepartmentsLoading: false,
         };
 
+        this.unsubscribeFromInternships = () => { return; };
+
         this.renderStudentListHeader = this.renderStudentListHeader.bind(this);
         this.renderStudentListItem = this.renderStudentListItem.bind(this);
+        this.renderDateCell = this.renderDateCell.bind(this);
         this.handleReloadStudents = this.handleReloadStudents.bind(this);
         this.handleNextMonth = this.handleNextMonth.bind(this);
         this.handlePrevMonth = this.handlePrevMonth.bind(this);
@@ -55,25 +65,37 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.closeAddInternshipModal = this.closeAddInternshipModal.bind(this);
     }
 
-    public componentWillMount(): void {
+    public componentDidMount(): void {
+        this.unsubscribeFromInternships = InternshipsRepository.subscribeToInternships((internships) => {
+            this.setState({
+                areInternshipsLoading: false,
+                internships,
+            });
+        });
         this.loadStudents();
         this.loadDepartments();
+    }
+
+    public componentWillUnmount(): void {
+        this.unsubscribeFromInternships();
     }
 
     public render(): React.ReactNode {
         return (
             <React.Fragment>
                 <Row type="flex">
-                    <Col span={24} xl={16}>
+                    <Col span={24} xl={16} xxl={18}>
                         <Spin spinning={this.state.isCalendarLoading}>
                             <div className={styles.buttonsInCalendarComponent}>
                                 <Button icon="left" onClick={this.handlePrevMonth} />
                                 <Button icon="right" onClick={this.handleNextMonth} />
                             </div>
-                            <Calendar mode="month" ref={(ref) => this.calendarRef = ref} />
+                            <Spin spinning={this.state.areInternshipsLoading}>
+                                <Calendar mode="month" ref={(ref) => this.calendarRef = ref} dateCellRender={this.renderDateCell} />
+                            </Spin>
                         </Spin>
                     </Col>
-                    <Col span={24} xl={8}>
+                    <Col span={24} xl={8} xxl={6}>
                         <List
                             dataSource={this.state.unplannedStudents}
                             header={this.renderStudentListHeader()}
@@ -130,6 +152,36 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     <Tag className={styles.notClickableTag} color="volcano">Niet bevestigd</Tag>
                 }
             </List.Item>
+        );
+    }
+
+    private renderDateCell(date: moment.Moment): React.ReactNode {
+        const internshipsToday = this.state.internships.filter((internship) => {
+            return date.startOf("day").isBetween(
+                internship.startDate.startOf("day"),
+                internship.endDate.startOf("day"),
+                "day",
+                "[]",
+            );
+        });
+        const departmentsRows = this.state.departments.map((department) => {
+            const usedCapacity = internshipsToday.filter((internship) => internship.departmentId === department.id).length;
+            const totalCapacity = department.totalCapacity;
+            return (
+                <Tag
+                    key={department.id}
+                    color={department.color}
+                    style={{ border: `2px solid ${department.color}` }}
+                    className={classNames(styles.notClickableTag, styles.calendarTag, { [styles.calendarTagOutline]: usedCapacity < totalCapacity })}
+                >
+                    {usedCapacity} / {totalCapacity}
+                </Tag>
+            );
+        });
+        return (
+            <React.Fragment>
+                {departmentsRows}
+            </React.Fragment>
         );
     }
 

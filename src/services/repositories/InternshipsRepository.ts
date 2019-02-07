@@ -9,6 +9,17 @@ import { FirestoreRefs } from "../FirestoreRefs";
 
 export class InternshipsRepository {
 
+    public static subscribeToInternships(onListen: (internships: Internship[]) => void): () => void {
+        return FirestoreRefs.getInternshipCollectionRef()
+            .where(nameof<IInternship>("isArchived"), "==", false)
+            .orderBy(nameof<IInternship>("updatedTimestamp"), "desc")
+            .onSnapshot((querySnapshot) => {
+                const internshipEntities = FirebaseModelMapper.mapDocsToObjects<IInternship>(querySnapshot.docs);
+                const internships = internshipEntities.map((entity) => Internship.fromEntity(entity));
+                onListen(internships);
+            });
+    }
+
     public static async getInternshipsForStudent(student: Student): Promise<Internship[]> {
         const querySnapshot = await FirestoreRefs.getInternshipCollectionRef()
             .where(nameof<IInternship>("studentId"), "==", student.id)

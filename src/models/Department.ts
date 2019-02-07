@@ -1,7 +1,14 @@
 import { IDepartment, IDepartmentEducationCapacity } from "../entities/IDepartment";
+import { Education } from "./Education";
 import { ModelBase } from "./ModelBase";
 
 export class Department extends ModelBase<IDepartment> {
+
+    public get totalCapacity(): number {
+        return this.capacityPerEducation
+            .map((capacity) => capacity.capacity)
+            .reduce((capacity, total) => capacity + total, 0);
+    }
 
     constructor(
         public name: string,
@@ -23,6 +30,13 @@ export class Department extends ModelBase<IDepartment> {
         );
         department.fillBaseFields(entity);
         return department;
+    }
+
+    public getCapacityForEducation(education: Education): number {
+        const educationCapacity = this.capacityPerEducation.find((capacity) => capacity.educationId === education.id);
+        return educationCapacity === undefined
+            ? 0
+            : educationCapacity.capacity;
     }
 
     protected getEntityInternal(): IDepartment {

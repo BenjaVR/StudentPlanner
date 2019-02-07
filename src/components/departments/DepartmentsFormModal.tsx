@@ -68,10 +68,8 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
             this.setState({
                 capacityFieldIds,
             });
-            this.props.form.getFieldDecorator<Department>("name", {
-                initialValue: departmentToEdit.name,
-            });
             const fields: Partial<Department> = {
+                name: departmentToEdit.name,
                 color: departmentToEdit.color,
             };
             this.setState({ selectedColor: departmentToEdit.color });
@@ -231,9 +229,10 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                     isSubmitting: true,
                 });
 
+                const color = values[nameof<Department>("color")];
                 const department = new Department(
                     values[nameof<Department>("name")],
-                    values[nameof<Department>("color")].hex,
+                    color.hex === undefined ? color : color.hex,
                     values[nameof<Department>("capacityPerEducation")],
                 );
 

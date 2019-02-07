@@ -185,6 +185,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                     values[nameof<Internship>("startDate")] as moment.Moment,
                     values[nameof<Internship>("endDate")] as moment.Moment,
                     values[nameof<Internship>("hours")] as number,
+                    false,
                     this.props.studentToPlan!.id!,
                     values[nameof<Internship>("departmentId") as string],
                 );
