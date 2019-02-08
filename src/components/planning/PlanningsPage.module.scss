@@ -5,15 +5,20 @@
 }
 
 .calendarTag {
-    display: block !important;
-    font-size: 0.7rem !important;
     height: 15px !important;
-    margin: 1px 0 !important;
-    line-height: 10px !important;
+    vertical-align: middle;
+
+    &Container {
+        height: 15px;
+        margin: 1px 0;
+    }
+
+    &Text {
+        vertical-align: middle;
+    }
 
     &Outline {
         background-color: transparent !important;
-        color: black !important;
     }
 }
 

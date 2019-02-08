@@ -168,14 +168,14 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             const usedCapacity = internshipsToday.filter((internship) => internship.departmentId === department.id).length;
             const totalCapacity = department.totalCapacity;
             return (
-                <Tag
-                    key={department.id}
-                    color={department.color}
-                    style={{ border: `2px solid ${department.color}` }}
-                    className={classNames(styles.notClickableTag, styles.calendarTag, { [styles.calendarTagOutline]: usedCapacity < totalCapacity })}
-                >
-                    {usedCapacity} / {totalCapacity}
-                </Tag>
+                <div key={department.id} className={styles.calendarTagContainer}>
+                    <Tag
+                        color={department.color}
+                        style={{ border: `2px solid ${department.color}` }}
+                        className={classNames(styles.notClickableTag, styles.calendarTag, { [styles.calendarTagOutline]: usedCapacity < totalCapacity })}
+                    />
+                    <span className={styles.calendarTagText}>{usedCapacity} / {totalCapacity}</span>
+                </div>
             );
         });
         return (
