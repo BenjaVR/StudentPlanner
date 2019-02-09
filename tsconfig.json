@@ -20,6 +20,9 @@
     "plugins": [
       {
         "name": "typescript-plugin-css-modules"
+      },
+      {
+        "name": "typescript-tslint-plugin"
       }
     ],
     "forceConsistentCasingInFileNames": false
