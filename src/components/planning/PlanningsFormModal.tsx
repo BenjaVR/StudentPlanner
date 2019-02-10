@@ -122,7 +122,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                                 }
                                                 return callback(false);
                                             },
-                                            message: "Eind datum mag niet voor de startdatum liggen",
+                                            message: "Eind datum mag niet voor de start datum liggen",
                                         },
                                     ],
                                 })(
