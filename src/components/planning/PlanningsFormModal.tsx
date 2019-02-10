@@ -7,20 +7,18 @@ import { isMomentDayAfterOrTheSameAsOtherDay } from "../../helpers/comparers";
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
 import { Department } from "../../models/Department";
-import { Internship } from "../../models/Internship";
-import { Student } from "../../models/Student";
+import { IStudentInternship, Student } from "../../models/Student";
 import styles from "./PlanningsFormModal.module.scss";
 
 interface IPlanningsFormModalProps {
     title: string;
     okText: string;
     isVisible: boolean;
-    internshipToEdit: Internship | undefined;
     studentToPlan: Student | undefined;
     departments: Department[];
     areDepartmentsLoading: boolean;
     onCloseRequest: () => void;
-    submitInternship(internship: Internship): Promise<void>;
+    submitInternship(internship: IStudentInternship): Promise<void>;
 }
 
 type PlanningsFormModalProps = IPlanningsFormModalProps & FormComponentProps;
@@ -55,17 +53,19 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
     public componentDidUpdate(prevProps: PlanningsFormModalProps): void {
         if (this.props.isVisible === true
             && prevProps.isVisible === false
-            && this.props.studentToPlan !== undefined
-            && this.props.internshipToEdit !== undefined) {
+            && this.props.studentToPlan !== undefined) {
 
-            const internship = this.props.internshipToEdit;
+            const internship = this.props.studentToPlan.internship;
+            if (internship === undefined) {
+                return;
+            }
 
             this.setState({
                 selectedStartDate: internship.startDate || null,
                 selectedEndDate: internship.endDate || null,
             });
 
-            const internshipFields: Partial<Internship> = {
+            const internshipFields: Partial<IStudentInternship> = {
                 hours: internship.hours,
                 startDate: internship.startDate,
                 endDate: internship.endDate,
@@ -93,7 +93,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                     <Row type="flex" align="middle" gutter={4}>
                         <Col span={10}>
                             <FormItem label="Start datum">
-                                {getFieldDecorator<Internship>("startDate", {
+                                {getFieldDecorator<IStudentInternship>("startDate", {
                                     validateTrigger: this.state.formValidateTrigger,
                                     rules: [
                                         { required: true, message: "Start datum mag niet leeg zijn" },
@@ -109,14 +109,14 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                         </Col>
                         <Col span={10}>
                             <FormItem label="Eind datum">
-                                {getFieldDecorator<Internship>("endDate", {
+                                {getFieldDecorator<IStudentInternship>("endDate", {
                                     validateTrigger: this.state.formValidateTrigger,
                                     validateFirst: true,
                                     rules: [
                                         { required: true, message: "Eind datum mag niet leeg zijn" },
                                         {
                                             validator: (_, endDate: moment.Moment | undefined, callback) => {
-                                                const startDate = this.props.form.getFieldValue(nameof<Internship>("startDate"));
+                                                const startDate = this.props.form.getFieldValue(nameof<IStudentInternship>("startDate"));
                                                 if (isMomentDayAfterOrTheSameAsOtherDay(endDate, startDate)) {
                                                     return callback();
                                                 }
@@ -141,7 +141,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                         </Col>
                     </Row>
                     <FormItem label="Stage uren">
-                        {getFieldDecorator<Internship>("hours", {
+                        {getFieldDecorator<IStudentInternship>("hours", {
                             validateTrigger: this.state.formValidateTrigger,
                             rules: [
                                 { required: true, message: "Geef een aantal stage uren in" },
@@ -155,7 +155,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                         )}
                     </FormItem>
                     <FormItem label="Afdeling">
-                        {getFieldDecorator<Internship>("departmentId", {
+                        {getFieldDecorator<IStudentInternship>("departmentId", {
                             validateTrigger: this.state.formValidateTrigger,
                             rules: [
                                 {
@@ -211,21 +211,19 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
             formValidateTrigger: "onChange",
         });
 
-        const fields: Array<keyof Internship> = ["startDate", "endDate", "hours", "departmentId"];
+        const fields: Array<keyof IStudentInternship> = ["startDate", "endDate", "hours", "departmentId"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
                 this.setState({
                     isSubmitting: true,
                 });
 
-                const internship = new Internship(
-                    values[nameof<Internship>("startDate")] as moment.Moment,
-                    values[nameof<Internship>("endDate")] as moment.Moment,
-                    values[nameof<Internship>("hours")] as number,
-                    false,
-                    this.props.studentToPlan!.id!,
-                    values[nameof<Internship>("departmentId") as string],
-                );
+                const internship: IStudentInternship = {
+                    startDate: values[nameof<IStudentInternship>("startDate")] as moment.Moment,
+                    endDate: values[nameof<IStudentInternship>("endDate")] as moment.Moment,
+                    hours: values[nameof<IStudentInternship>("hours")] as number,
+                    departmentId: values[nameof<IStudentInternship>("departmentId") as string],
+                };
 
                 this.props.submitInternship(internship)
                     .then(() => {

@@ -1,6 +1,6 @@
 import moment from "moment";
 import { IFirestoreEntityBase } from "../entities/IFirestoreEntityBase";
-import { Internship } from "../models/internship";
+import { Student } from "../models/Student";
 
 export const emptyFilterOptionValue = "@@__";
 
@@ -15,13 +15,14 @@ export function hasElementWithId<T extends IFirestoreEntityBase>(elements: T[], 
     return elements.filter((e) => e.id !== undefined).some((e) => e.id === id);
 }
 
-export function internshipsInDay(internships: Internship[], date: moment.Moment): Internship[] {
-    return internships.filter((internship) => {
-        return date.startOf("day").isBetween(
-            internship.startDate.startOf("day"),
-            internship.endDate.startOf("day"),
-            "day",
-            "[]",
-        );
+export function studentsPlannedInDay(students: Student[], date: moment.Moment): Student[] {
+    return students.filter((student) => {
+        return student.internship !== undefined
+            && date.startOf("day").isBetween(
+                student.internship.startDate.startOf("day"),
+                student.internship.endDate.startOf("day"),
+                "day",
+                "[]",
+            );
     });
 }

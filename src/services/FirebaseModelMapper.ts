@@ -22,6 +22,14 @@ export class FirebaseModelMapper {
             if (data[key] === null) {
                 data[key] = undefined;
             }
+            // Support one level object nesting:
+            if (typeof data[key] === "object" && data[key] !== null) {
+                Object.keys(data[key]).forEach((nestedKey) => {
+                    if (data[key][nestedKey] === null) {
+                        data[key][nestedKey] = undefined;
+                    }
+                });
+            }
         });
         return data;
     }

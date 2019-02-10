@@ -2,15 +2,13 @@ import { Button, Calendar, Col, List, Modal, notification, Row, Spin, Tag, Toolt
 import classNames from "classnames";
 import moment from "moment";
 import React from "react";
-import { internshipsInDay } from "../../helpers/filters";
+import { studentsPlannedInDay } from "../../helpers/filters";
 import { Department } from "../../models/Department";
 import { Education } from "../../models/Education";
-import { Internship } from "../../models/Internship";
-import { Student } from "../../models/Student";
+import { IStudentInternship, Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
 import { DepartmentsRepository } from "../../services/repositories/DepartmentsRepository";
 import { EducationsRepository } from "../../services/repositories/EducationsRepository";
-import { InternshipsRepository } from "../../services/repositories/InternshipsRepository";
 import { StudentsRepository } from "../../services/repositories/StudentsRepository";
 import PlanningsFormModal from "./PlanningsFormModal";
 import styles from "./PlanningsPage.module.scss";
@@ -18,28 +16,28 @@ import styles from "./PlanningsPage.module.scss";
 type PlanningsPageProps = AnyRouteComponentProps;
 
 interface IPlanningsPageState {
+    plannedStudents: Student[];
+    plannedStudentToEdit: Student | undefined;
+    arePlannedStudentsLoading: boolean;
     unplannedStudents: Student[];
     areStudentsLoading: boolean;
     selectedStudentToPlan: Student | undefined;
     showOnlyConfirmedStudents: boolean;
     isCalendarLoading: boolean;
     isAddInternshipModalVisible: boolean;
-    internshipToEdit: Internship | undefined;
-    internships: Internship[];
-    areInternshipsLoading: boolean;
     departments: Department[];
     areDepartmentsLoading: boolean;
     educations: Education[];
     areEducationsLoading: boolean;
     isPlanningsDetailVisible: boolean;
-    internshipsForPlanningsDetail: Internship[];
+    studentsForPlanningsDetail: Student[];
     selectedDateForPlanningDetail: moment.Moment | undefined;
 }
 
 class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageState> {
 
     private calendarRef: Calendar | null = null;
-    private unsubscribeFromInternships: () => void;
+    private unsubscribeFromPlannedStudents: () => void;
 
     private readonly studentLoadFailedNotificationKey = "studentLoadFailed";
     private readonly departmentLoadFailedNotificationKey = "departmentLoadFailed";
@@ -49,25 +47,25 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         super(props);
 
         this.state = {
+            plannedStudents: [],
+            plannedStudentToEdit: undefined,
+            arePlannedStudentsLoading: true,
             unplannedStudents: [],
             areStudentsLoading: false,
             selectedStudentToPlan: undefined,
             showOnlyConfirmedStudents: true,
             isCalendarLoading: false,
             isAddInternshipModalVisible: false,
-            internshipToEdit: undefined,
-            internships: [],
-            areInternshipsLoading: true,
             departments: [],
             areDepartmentsLoading: false,
             educations: [],
             areEducationsLoading: false,
             isPlanningsDetailVisible: false,
-            internshipsForPlanningsDetail: [],
+            studentsForPlanningsDetail: [],
             selectedDateForPlanningDetail: undefined,
         };
 
-        this.unsubscribeFromInternships = () => { return; };
+        this.unsubscribeFromPlannedStudents = () => { return; };
 
         this.renderPlanningsDetailModalContent = this.renderPlanningsDetailModalContent.bind(this);
         this.renderStudentListHeader = this.renderStudentListHeader.bind(this);
@@ -78,24 +76,24 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.handleReloadStudents = this.handleReloadStudents.bind(this);
         this.handleNextMonth = this.handleNextMonth.bind(this);
         this.handlePrevMonth = this.handlePrevMonth.bind(this);
-        this.addInternship = this.addInternship.bind(this);
+        this.addInternshipForStudent = this.addInternshipForStudent.bind(this);
         this.closeAddInternshipModal = this.closeAddInternshipModal.bind(this);
     }
 
     public componentDidMount(): void {
-        this.unsubscribeFromInternships = InternshipsRepository.subscribeToInternships((internships) => {
+        this.unsubscribeFromPlannedStudents = StudentsRepository.subscribeToPlannedStudents((students) => {
             this.setState({
-                areInternshipsLoading: false,
-                internships,
+                arePlannedStudentsLoading: false,
+                plannedStudents: students,
             });
         });
-        this.loadStudents();
+        this.loadNotPlannedStudents();
         this.loadDepartments();
         this.loadEducations();
     }
 
     public componentWillUnmount(): void {
-        this.unsubscribeFromInternships();
+        this.unsubscribeFromPlannedStudents();
     }
 
     public render(): React.ReactNode {
@@ -108,7 +106,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                                 <Button icon="left" onClick={this.handlePrevMonth} />
                                 <Button icon="right" onClick={this.handleNextMonth} />
                             </div>
-                            <Spin spinning={this.state.areInternshipsLoading}>
+                            <Spin spinning={this.state.arePlannedStudentsLoading}>
                                 <Calendar
                                     mode="month"
                                     ref={(ref) => this.calendarRef = ref}
@@ -135,16 +133,14 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                         : `Nieuwe stage toevoegen voor ${this.state.selectedStudentToPlan.fullName}`}
                     okText="Voeg toe"
                     isVisible={this.state.isAddInternshipModalVisible}
-                    submitInternship={this.addInternship}
-                    studentToPlan={this.state.selectedStudentToPlan}
+                    submitInternship={this.addInternshipForStudent}
                     onCloseRequest={this.closeAddInternshipModal}
-                    internshipToEdit={undefined}
+                    studentToPlan={this.state.selectedStudentToPlan}
                     departments={this.state.departments}
                     areDepartmentsLoading={this.state.areDepartmentsLoading}
                 />
                 <Modal
                     visible={this.state.isPlanningsDetailVisible}
-                    destroyOnClose={true}
                     footer={null}
                     maskClosable={true}
                     onCancel={this.handlePlanningsDetailClose}
@@ -170,13 +166,16 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
                 }
                 {this.state.departments.map((department) => {
-                    const allInternshipsForDepartment = this.state.internshipsForPlanningsDetail.filter((internship) => internship.departmentId === department.id);
+                    const allPlannedStudentsForDepartment = this.state.studentsForPlanningsDetail.filter((student) => {
+                        return student.internship !== undefined
+                            && student.internship.departmentId === department.id;
+                    });
                     return (
                         <div key={department.id}>
                             <h2>
                                 {department.name}&nbsp;
                                 <small>
-                                    ({allInternshipsForDepartment.length}/{department.totalCapacity})
+                                    ({allPlannedStudentsForDepartment.length}/{department.totalCapacity})
                                 </small>
                             </h2>
                             {this.state.educations.map((education) => {
@@ -231,9 +230,12 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
     }
 
     private renderDateCell(date: moment.Moment): React.ReactNode {
-        const internshipsToday = internshipsInDay(this.state.internships, date);
+        const plannedStudentsToday = studentsPlannedInDay(this.state.plannedStudents, date);
         const departmentsRows = this.state.departments.map((department) => {
-            const usedCapacity = internshipsToday.filter((internship) => internship.departmentId === department.id).length;
+            const usedCapacity = plannedStudentsToday.filter((student) => {
+                return student.internship !== undefined
+                    && student.internship.departmentId === department.id;
+            }).length;
             const totalCapacity = department.totalCapacity;
             return (
                 <div key={department.id} className={styles.calendarTagContainer}>
@@ -265,13 +267,13 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         }
         this.setState({
             isPlanningsDetailVisible: true,
-            internshipsForPlanningsDetail: internshipsInDay(this.state.internships, date),
+            studentsForPlanningsDetail: studentsPlannedInDay(this.state.plannedStudents, date),
             selectedDateForPlanningDetail: date,
         });
     }
 
     private handleReloadStudents(): void {
-        this.loadStudents();
+        this.loadNotPlannedStudents();
     }
 
     private handlePlanStudent(student: Student): void {
@@ -297,17 +299,17 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.setState({ isAddInternshipModalVisible: false });
     }
 
-    private addInternship(internship: Internship): Promise<void> {
+    private addInternshipForStudent(internship: IStudentInternship): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
             if (this.state.selectedStudentToPlan === undefined) {
                 return reject("No student selected");
             }
-            InternshipsRepository.addInternshipForStudent(internship, this.state.selectedStudentToPlan)
+            StudentsRepository.addInternshipForStudent(internship, this.state.selectedStudentToPlan)
                 .then(() => {
                     notification.success({
                         message: "Stage succesvol toegevoegd",
                     });
-                    this.loadStudents();
+                    this.loadNotPlannedStudents();
                     return resolve();
                 })
                 .catch((error) => {
@@ -334,7 +336,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         }
     }
 
-    private loadStudents(): void {
+    private loadNotPlannedStudents(): void {
         this.setState({ areStudentsLoading: true });
         StudentsRepository.getNotPlannedStudents()
             .then((students) => {

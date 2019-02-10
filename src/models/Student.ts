@@ -1,5 +1,14 @@
+import moment from "moment";
 import { IStudent } from "../entities/IStudent";
+import { Firebase } from "../services/FirebaseInitializer";
 import { ModelBase } from "./ModelBase";
+
+export interface IStudentInternship {
+    startDate: moment.Moment;
+    endDate: moment.Moment;
+    hours: number;
+    departmentId: string | undefined;
+}
 
 export class Student extends ModelBase<IStudent> {
 
@@ -14,10 +23,10 @@ export class Student extends ModelBase<IStudent> {
         public firstName: string,
         public lastName: string | undefined,
         public isConfirmed: boolean,
-        public isPlanned: boolean,
-        public isArchived: boolean,
         public schoolId: string | undefined,
         public educationId: string | undefined,
+        public isPlanned: boolean,
+        public internship: IStudentInternship | undefined,
     ) {
         super();
     }
@@ -27,10 +36,17 @@ export class Student extends ModelBase<IStudent> {
             entity.firstName,
             entity.lastName,
             entity.isConfirmed,
-            entity.isPlanned,
-            entity.isArchived,
             entity.schoolId,
             entity.educationId,
+            entity.isPlanned,
+            entity.internship === undefined
+                ? undefined
+                : {
+                    startDate: moment(entity.internship.startDate.toDate()),
+                    endDate: moment(entity.internship.endDate.toDate()),
+                    hours: entity.internship.hours,
+                    departmentId: entity.internship.departmentId,
+                },
         );
         student.fillBaseFields(entity);
         return student;
@@ -41,10 +57,21 @@ export class Student extends ModelBase<IStudent> {
             firstName: this.firstName,
             lastName: this.lastName,
             isConfirmed: this.isConfirmed || false,
-            isPlanned: this.isPlanned || false,
-            isArchived: this.isArchived || false,
             schoolId: this.schoolId,
             educationId: this.educationId,
+            isPlanned: this.isPlanned,
+            internship: this.internship === undefined
+                ? undefined
+                : {
+                    startDate: Firebase.firestore.Timestamp.fromDate(
+                        this.internship.startDate.startOf("day").toDate(),
+                    ),
+                    endDate: Firebase.firestore.Timestamp.fromDate(
+                        this.internship.endDate.startOf("day").toDate(),
+                    ),
+                    hours: this.internship.hours,
+                    departmentId: this.internship.departmentId,
+                },
         };
     }
 }

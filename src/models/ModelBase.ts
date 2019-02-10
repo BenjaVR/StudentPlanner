@@ -47,6 +47,14 @@ export abstract class ModelBase<T extends IFirestoreEntityBase> {
             if (entityObj[key] === undefined || entityObj[key] === "") {
                 entityObj[key] = null;
             }
+            // Support one level object nesting:
+            if (typeof entityObj[key] === "object" && entityObj[key] !== null) {
+                Object.keys(entityObj[key]).forEach((nestedKey) => {
+                    if (entityObj[key][nestedKey] === undefined || entityObj[key][nestedKey] === "") {
+                        entityObj[key][nestedKey] = null;
+                    }
+                });
+            }
         });
 
         return entityObj as T;

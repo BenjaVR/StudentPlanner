@@ -190,12 +190,10 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                     values[nameof<Student>("firstName")],
                     values[nameof<Student>("lastName")],
                     values[nameof<Student>("isConfirmed")],
-                    this.props.studentToEdit === undefined
-                        ? false
-                        : this.props.studentToEdit.isPlanned,
-                    false,
                     values[nameof<Student>("schoolId")],
                     values[nameof<Student>("educationId")],
+                    this.props.studentToEdit !== undefined ? this.props.studentToEdit.isPlanned : false,
+                    this.props.studentToEdit !== undefined ? this.props.studentToEdit.internship : undefined,
                 );
 
                 this.props.submitStudent(student)
