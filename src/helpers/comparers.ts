@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export function isMomentDayAfterOtherDay(date: moment.Moment | undefined, otherDate: moment.Moment | undefined): boolean {
+export function isMomentDayAfterOrTheSameAsOtherDay(date: moment.Moment | undefined, otherDate: moment.Moment | undefined): boolean {
     if (date === undefined || otherDate === undefined) {
         return false;
     }
@@ -8,5 +8,5 @@ export function isMomentDayAfterOtherDay(date: moment.Moment | undefined, otherD
         return false;
     }
 
-    return date.startOf("day").isAfter(otherDate.startOf("day"));
+    return date.startOf("day").isSameOrAfter(otherDate.startOf("day"));
 }

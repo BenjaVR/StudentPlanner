@@ -3,7 +3,7 @@ import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import moment from "moment";
 import React from "react";
-import { isMomentDayAfterOtherDay } from "../../helpers/comparers";
+import { isMomentDayAfterOrTheSameAsOtherDay } from "../../helpers/comparers";
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
 import { Department } from "../../models/Department";
@@ -117,7 +117,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                         {
                                             validator: (_, endDate: moment.Moment | undefined, callback) => {
                                                 const startDate = this.props.form.getFieldValue(nameof<Internship>("startDate"));
-                                                if (isMomentDayAfterOtherDay(endDate, startDate)) {
+                                                if (isMomentDayAfterOrTheSameAsOtherDay(endDate, startDate)) {
                                                     return callback();
                                                 }
                                                 return callback(false);
