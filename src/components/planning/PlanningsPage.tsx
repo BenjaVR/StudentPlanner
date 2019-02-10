@@ -1,12 +1,15 @@
-import { Button, Calendar, Col, List, notification, Row, Spin, Tag, Tooltip } from "antd";
+import { Button, Calendar, Col, List, Modal, notification, Row, Spin, Tag, Tooltip } from "antd";
 import classNames from "classnames";
 import moment from "moment";
 import React from "react";
+import { internshipsInDay } from "../../helpers/filters";
 import { Department } from "../../models/Department";
+import { Education } from "../../models/Education";
 import { Internship } from "../../models/Internship";
 import { Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
 import { DepartmentsRepository } from "../../services/repositories/DepartmentsRepository";
+import { EducationsRepository } from "../../services/repositories/EducationsRepository";
 import { InternshipsRepository } from "../../services/repositories/InternshipsRepository";
 import { StudentsRepository } from "../../services/repositories/StudentsRepository";
 import PlanningsFormModal from "./PlanningsFormModal";
@@ -26,6 +29,11 @@ interface IPlanningsPageState {
     areInternshipsLoading: boolean;
     departments: Department[];
     areDepartmentsLoading: boolean;
+    educations: Education[];
+    areEducationsLoading: boolean;
+    isPlanningsDetailVisible: boolean;
+    internshipsForPlanningsDetail: Internship[];
+    selectedDateForPlanningDetail: moment.Moment | undefined;
 }
 
 class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageState> {
@@ -35,6 +43,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private readonly studentLoadFailedNotificationKey = "studentLoadFailed";
     private readonly departmentLoadFailedNotificationKey = "departmentLoadFailed";
+    private readonly educationLoadFailedNotificationKey = "educationLoadFailed";
 
     constructor(props: PlanningsPageProps) {
         super(props);
@@ -51,13 +60,21 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             areInternshipsLoading: true,
             departments: [],
             areDepartmentsLoading: false,
+            educations: [],
+            areEducationsLoading: false,
+            isPlanningsDetailVisible: false,
+            internshipsForPlanningsDetail: [],
+            selectedDateForPlanningDetail: undefined,
         };
 
         this.unsubscribeFromInternships = () => { return; };
 
+        this.renderPlanningsDetailModalContent = this.renderPlanningsDetailModalContent.bind(this);
         this.renderStudentListHeader = this.renderStudentListHeader.bind(this);
         this.renderStudentListItem = this.renderStudentListItem.bind(this);
         this.renderDateCell = this.renderDateCell.bind(this);
+        this.handlePlanningsDetailClose = this.handlePlanningsDetailClose.bind(this);
+        this.handleDateCellSelect = this.handleDateCellSelect.bind(this);
         this.handleReloadStudents = this.handleReloadStudents.bind(this);
         this.handleNextMonth = this.handleNextMonth.bind(this);
         this.handlePrevMonth = this.handlePrevMonth.bind(this);
@@ -74,6 +91,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         });
         this.loadStudents();
         this.loadDepartments();
+        this.loadEducations();
     }
 
     public componentWillUnmount(): void {
@@ -91,7 +109,12 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                                 <Button icon="right" onClick={this.handleNextMonth} />
                             </div>
                             <Spin spinning={this.state.areInternshipsLoading}>
-                                <Calendar mode="month" ref={(ref) => this.calendarRef = ref} dateCellRender={this.renderDateCell} />
+                                <Calendar
+                                    mode="month"
+                                    ref={(ref) => this.calendarRef = ref}
+                                    dateCellRender={this.renderDateCell}
+                                    onSelect={this.handleDateCellSelect}
+                                />
                             </Spin>
                         </Spin>
                     </Col>
@@ -119,6 +142,58 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     departments={this.state.departments}
                     areDepartmentsLoading={this.state.areDepartmentsLoading}
                 />
+                <Modal
+                    visible={this.state.isPlanningsDetailVisible}
+                    destroyOnClose={true}
+                    footer={null}
+                    maskClosable={true}
+                    onCancel={this.handlePlanningsDetailClose}
+                    width={700}
+                >
+                    {this.renderPlanningsDetailModalContent()}
+                </Modal>
+            </React.Fragment>
+        );
+    }
+
+    private renderPlanningsDetailModalContent(): React.ReactNode {
+        return (
+            <React.Fragment>
+                {this.state.selectedDateForPlanningDetail !== undefined &&
+                    <React.Fragment>
+                        <h1 className={styles.selectedPlanningTitle}>
+                            Planning voor&nbsp;
+                            <span className={styles.selectedPlanningTitleDate}>{this.state.selectedDateForPlanningDetail.format("dddd D MMMM YYYY")}</span>
+                        </h1>
+                        <hr />
+                    </React.Fragment>
+
+                }
+                {this.state.departments.map((department) => {
+                    const allInternshipsForDepartment = this.state.internshipsForPlanningsDetail.filter((internship) => internship.departmentId === department.id);
+                    return (
+                        <div key={department.id}>
+                            <h2>
+                                {department.name}&nbsp;
+                                <small>
+                                    ({allInternshipsForDepartment.length}/{department.totalCapacity})
+                                </small>
+                            </h2>
+                            {this.state.educations.map((education) => {
+                                return (
+                                    <div key={`${department.id}${education.id}`}>
+                                        <h3>
+                                            {education.name}&nbsp;
+                                            <small>
+                                                (???/{department.getCapacityForEducation(education)})
+                                            </small>
+                                        </h3>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    );
+                })}
             </React.Fragment>
         );
     }
@@ -156,14 +231,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
     }
 
     private renderDateCell(date: moment.Moment): React.ReactNode {
-        const internshipsToday = this.state.internships.filter((internship) => {
-            return date.startOf("day").isBetween(
-                internship.startDate.startOf("day"),
-                internship.endDate.startOf("day"),
-                "day",
-                "[]",
-            );
-        });
+        const internshipsToday = internshipsInDay(this.state.internships, date);
         const departmentsRows = this.state.departments.map((department) => {
             const usedCapacity = internshipsToday.filter((internship) => internship.departmentId === department.id).length;
             const totalCapacity = department.totalCapacity;
@@ -183,6 +251,23 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                 {departmentsRows}
             </React.Fragment>
         );
+    }
+
+    private handlePlanningsDetailClose(): void {
+        this.setState({
+            isPlanningsDetailVisible: false,
+        });
+    }
+
+    private handleDateCellSelect(date: moment.Moment | undefined): void {
+        if (date === undefined) {
+            return;
+        }
+        this.setState({
+            isPlanningsDetailVisible: true,
+            internshipsForPlanningsDetail: internshipsInDay(this.state.internships, date),
+            selectedDateForPlanningDetail: date,
+        });
     }
 
     private handleReloadStudents(): void {
@@ -285,6 +370,29 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             .finally(() => {
                 this.setState({ areDepartmentsLoading: false });
             });
+    }
+
+    private loadEducations(): void {
+        this.setState({ areEducationsLoading: true });
+        EducationsRepository.getEducationsByName()
+            .then((educations) => {
+                notification.close(this.educationLoadFailedNotificationKey);
+                this.setState({ educations });
+            })
+            .catch(() => {
+                notification.error({
+                    key: this.educationLoadFailedNotificationKey,
+                    message: "Kon de opleidingen niet ophalen. Probeer later opnieuw.",
+                    duration: null,
+                });
+            })
+            .finally(() => {
+                this.setState({ areEducationsLoading: false });
+            });
+    }
+
+    private getEducationById(educationId: string): Education | undefined {
+        return this.state.educations.find((education) => education.id === educationId);
     }
 }
 
