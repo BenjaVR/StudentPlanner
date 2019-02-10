@@ -103,7 +103,6 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                                 ],
                             })(
                                 <Select
-                                    autoFocus={true}
                                     disabled={this.state.isSubmitting}
                                     loading={this.props.isEducationsLoading}
                                     allowClear={true}
