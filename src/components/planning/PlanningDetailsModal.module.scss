@@ -1,0 +1,31 @@
+.title {
+    font-weight: 400;
+
+    &Date {
+        font-weight: 500;
+    }
+}
+
+.departmentCard {
+    margin: 4px !important;
+}
+
+.withoutDepartmentTitle {
+    font-style: italic;
+}
+
+.studentCard {
+    margin: 2px !important;
+}
+
+.studentName {
+    font-weight: bold;
+}
+
+.studentDateRangeCol {
+    text-align: right;
+}
+
+.internshipDays {
+    font-style: italic;
+}

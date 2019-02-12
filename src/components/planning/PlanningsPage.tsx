@@ -1,4 +1,4 @@
-import { Button, Calendar, Col, List, Modal, notification, Row, Spin, Tag, Tooltip } from "antd";
+import { Button, Calendar, Col, List, Modal, notification, Row, Spin, Tag, Tooltip, Popover } from "antd";
 import classNames from "classnames";
 import moment from "moment";
 import React from "react";
@@ -10,6 +10,7 @@ import { AnyRouteComponentProps } from "../../routes";
 import { DepartmentsRepository } from "../../services/repositories/DepartmentsRepository";
 import { EducationsRepository } from "../../services/repositories/EducationsRepository";
 import { StudentsRepository } from "../../services/repositories/StudentsRepository";
+import PlanningDetailsModal from "./PlanningDetailsModal";
 import PlanningsFormModal from "./PlanningsFormModal";
 import styles from "./PlanningsPage.module.scss";
 
@@ -67,7 +68,6 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
         this.unsubscribeFromPlannedStudents = () => { return; };
 
-        this.renderPlanningsDetailModalContent = this.renderPlanningsDetailModalContent.bind(this);
         this.renderStudentListHeader = this.renderStudentListHeader.bind(this);
         this.renderStudentListItem = this.renderStudentListItem.bind(this);
         this.renderDateCell = this.renderDateCell.bind(this);
@@ -139,60 +139,14 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     departments={this.state.departments}
                     areDepartmentsLoading={this.state.areDepartmentsLoading}
                 />
-                <Modal
-                    visible={this.state.isPlanningsDetailVisible}
-                    footer={null}
-                    maskClosable={true}
-                    onCancel={this.handlePlanningsDetailClose}
-                    width={700}
-                >
-                    {this.renderPlanningsDetailModalContent()}
-                </Modal>
-            </React.Fragment>
-        );
-    }
-
-    private renderPlanningsDetailModalContent(): React.ReactNode {
-        return (
-            <React.Fragment>
-                {this.state.selectedDateForPlanningDetail !== undefined &&
-                    <React.Fragment>
-                        <h1 className={styles.selectedPlanningTitle}>
-                            Planning voor&nbsp;
-                            <span className={styles.selectedPlanningTitleDate}>{this.state.selectedDateForPlanningDetail.format("dddd D MMMM YYYY")}</span>
-                        </h1>
-                        <hr />
-                    </React.Fragment>
-
-                }
-                {this.state.departments.map((department) => {
-                    const allPlannedStudentsForDepartment = this.state.studentsForPlanningsDetail.filter((student) => {
-                        return student.internship !== undefined
-                            && student.internship.departmentId === department.id;
-                    });
-                    return (
-                        <div key={department.id}>
-                            <h2>
-                                {department.name}&nbsp;
-                                <small>
-                                    ({allPlannedStudentsForDepartment.length}/{department.totalCapacity})
-                                </small>
-                            </h2>
-                            {this.state.educations.map((education) => {
-                                return (
-                                    <div key={`${department.id}${education.id}`}>
-                                        <h3>
-                                            {education.name}&nbsp;
-                                            <small>
-                                                (???/{department.getCapacityForEducation(education)})
-                                            </small>
-                                        </h3>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    );
-                })}
+                <PlanningDetailsModal
+                    departments={this.state.departments}
+                    educations={this.state.educations}
+                    students={this.state.plannedStudents}
+                    selectedDate={this.state.selectedDateForPlanningDetail}
+                    isVisible={this.state.isPlanningsDetailVisible}
+                    onCloseRequested={this.handlePlanningsDetailClose}
+                />
             </React.Fragment>
         );
     }
