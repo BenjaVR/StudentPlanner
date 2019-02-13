@@ -2,12 +2,12 @@ import { Card, Col, List, Modal, Row } from "antd";
 import moment from "moment";
 import React from "react";
 import { studentsPlannedInDay } from "../../helpers/filters";
+import { singleOrPlural } from "../../helpers/singlePlural";
 import { sortByProp } from "../../helpers/sorters";
 import { Department } from "../../models/Department";
 import { Education } from "../../models/Education";
 import { Student } from "../../models/Student";
 import styles from "./PlanningDetailsModal.module.scss";
-import { singleOrPlural } from "../../helpers/singlePlural";
 
 interface IPlanningDetailsModalProps {
     departments: Department[];
@@ -98,6 +98,9 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
             return student.internship !== undefined
                 && student.internship.departmentId === undefined;
         });
+        if (studentsWithoutDepartment.length === 0) {
+            return null;
+        }
         return (
             <Card key="noDepartment" bodyStyle={{ padding: 12 }} className={styles.departmentCard}>
                 <h2 className={styles.withoutDepartmentTitle}>Zonder afdeling</h2>

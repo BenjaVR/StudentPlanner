@@ -1,4 +1,4 @@
-import { Button, Calendar, Col, List, Modal, notification, Row, Spin, Tag, Tooltip, Popover } from "antd";
+import { Button, Calendar, Col, List, notification, Popover, Row, Spin, Tag, Tooltip } from "antd";
 import classNames from "classnames";
 import moment from "moment";
 import React from "react";
@@ -71,6 +71,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.renderStudentListHeader = this.renderStudentListHeader.bind(this);
         this.renderStudentListItem = this.renderStudentListItem.bind(this);
         this.renderDateCell = this.renderDateCell.bind(this);
+        this.renderDepartmentPopoverContent = this.renderDepartmentPopoverContent.bind(this);
         this.handlePlanningsDetailClose = this.handlePlanningsDetailClose.bind(this);
         this.handleDateCellSelect = this.handleDateCellSelect.bind(this);
         this.handleReloadStudents = this.handleReloadStudents.bind(this);
@@ -203,10 +204,55 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             );
         });
         return (
-            <React.Fragment>
-                {departmentsRows}
-            </React.Fragment>
+            <Popover
+                title={<b>Capaciteiten</b>}
+                content={this.renderDepartmentPopoverContent(plannedStudentsToday)}
+                mouseEnterDelay={0.5}
+            >
+                <div className={styles.calendarCellContainer}>
+                    {departmentsRows}
+                </div>
+            </Popover >
         );
+    }
+
+    private renderDepartmentPopoverContent(students: Student[]): React.ReactNode {
+        const departmentsRows = this.state.departments.map((department) => {
+            const totalCapacity = department.totalCapacity;
+            const studentsWithDepartment = students.filter((student) => {
+                return student.internship !== undefined
+                    && student.internship.departmentId === department.id;
+            });
+            const usedCapacity = studentsWithDepartment.length;
+            const departmentLine = (
+                <span className={styles.calendarPopoverSpanLine}>
+                    <b>{department.name}</b>
+                    &nbsp;
+                    <span>({usedCapacity}/{totalCapacity})</span>
+                </span>
+            );
+            const educationLines = this.state.educations.map((education) => {
+                const totalEducationCapacity = department.getCapacityForEducation(education);
+                const usedEducationCapacity = studentsWithDepartment.filter((student) => {
+                    return student.educationId === education.id;
+                }).length;
+                if (totalEducationCapacity === 0) {
+                    return null;
+                }
+                return (
+                    <span key={`${department.id}${education.id}`} className={styles.calendarPopoverSpanLine}>
+                        {education.name}: {usedEducationCapacity}/{totalEducationCapacity}
+                    </span>
+                );
+            });
+            return (
+                <div key={department.id} className={styles.calendarPopoverDepartmentContainer}>
+                    {departmentLine}
+                    {educationLines}
+                </div>
+            );
+        });
+        return departmentsRows;
     }
 
     private handlePlanningsDetailClose(): void {

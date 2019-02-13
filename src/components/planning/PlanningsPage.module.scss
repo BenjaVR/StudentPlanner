@@ -22,6 +22,24 @@
     }
 }
 
+.calendarCellContainer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-top: 30px;
+    padding-left: 15px;
+}
+
+.calendarPopoverDepartmentContainer {
+    margin-bottom: 4px;
+}
+
+.calendarPopoverSpanLine {
+    display: block;
+}
+
 .buttonsInCalendarComponent {
     z-index: 100;
     padding: 11px 16px;
