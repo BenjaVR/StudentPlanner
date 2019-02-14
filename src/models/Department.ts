@@ -40,10 +40,16 @@ export class Department extends ModelBase<IDepartment> {
     }
 
     protected getEntityInternal(): IDepartment {
+        const capacities = this.capacityPerEducation || [];
+        const capacitiesWithoutDuplicates = capacities.filter((capacity, index, capacitiesArray) => {
+            return capacitiesArray.map((capacityFromArray) => capacityFromArray.educationId)
+                .indexOf(capacity.educationId) === index;
+        });
+
         return {
             name: this.name,
             color: this.color,
-            capacityPerEducation: this.capacityPerEducation || [],
+            capacityPerEducation: capacitiesWithoutDuplicates,
         };
     }
 }
