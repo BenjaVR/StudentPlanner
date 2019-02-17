@@ -20,3 +20,9 @@ body {
 .ant-fullcalendar-header > .ant-radio-group {
     display: none; // Fix to not show the month/year switch on the calendar component.
 }
+
+.ant-fullcalendar.ant-fullcalendar-full.ant-fullcalendar-fullscreen {
+    // Fix to make calendar a little more responsive on mobile.
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
