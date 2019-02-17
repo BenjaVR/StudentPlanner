@@ -36,6 +36,12 @@
     margin-bottom: 4px;
 }
 
+.calendarPopoverDepartment {
+    @media screen and (max-width: $breakpoint_sm) {
+        display: none;
+    }
+}
+
 .calendarPopoverSpanLine {
     display: block;
 }

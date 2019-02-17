@@ -230,6 +230,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         });
         return (
             <Popover
+                overlayClassName={styles.calendarPopoverDepartment}
                 title={<b>Capaciteiten</b>}
                 content={this.renderDepartmentPopoverContent(plannedStudentsToday)}
                 mouseEnterDelay={0.5}
