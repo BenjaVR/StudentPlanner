@@ -1,4 +1,4 @@
-import { Button, Calendar, Card, Col, List, notification, Popover, Row, Spin, Tag, Tooltip } from "antd";
+import { Button, Calendar, Card, Col, List, notification, Popconfirm, Popover, Row, Spin, Tag, Tooltip } from "antd";
 import classNames from "classnames";
 import moment from "moment";
 import React from "react";
@@ -186,12 +186,15 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private renderStudentListItem(student: Student): React.ReactNode {
         const onListItemClickFn = () => this.handlePlanStudent(student);
+        const onConfirmStudentClickFn = () => this.handleConfirmStudent(student);
         return (
             <List.Item actions={[<a key={0} onClick={onListItemClickFn}>Inplannen</a>]}>
                 {student.fullName}
                 &nbsp;
                 {!student.isConfirmed &&
-                    <Tag className={styles.notClickableTag} color="volcano">Niet bevestigd</Tag>
+                    <Popconfirm title="Deze student bevestigen?" onConfirm={onConfirmStudentClickFn}>
+                        <Tag color="volcano">Niet bevestigd</Tag>
+                    </Popconfirm>
                 }
             </List.Item>
         );
@@ -213,7 +216,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                 <Row type="flex" justify="space-between" align="middle">
                     <Col className={styles.departmentNameColumn}>
                         <Tag className={styles.notClickableTag} color={department.color} />
-                        <span><b>{department.name}</b></span>
+                        <span>{department.name}</span>
                     </Col>
                     <Col>
                         <span>(<b>{department.totalCapacity}</b> totale capaciteit)</span>
@@ -317,6 +320,26 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private handlePlanStudent(student: Student): void {
         this.openAddInternshipModal(student);
+    }
+
+    private handleConfirmStudent(student: Student): void {
+        student.isConfirmed = true;
+        this.setState({ areStudentsLoading: true });
+        StudentsRepository.updateStudent(student)
+            .then(() => {
+                this.loadNotPlannedStudents();
+                notification.success({
+                    message: "Student succesvol bevestigd",
+                });
+            })
+            .catch(() => {
+                notification.error({
+                    message: "Kon student niet bevestigen, probeer later opnieuw",
+                });
+            })
+            .finally(() => {
+                this.setState({ areStudentsLoading: false });
+            });
     }
 
     private handleNextMonth(): void {
