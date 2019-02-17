@@ -23,7 +23,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "lint": "tslint --project tsconfig.json",
-        "deploy": "firebase deploy"
+        "deploy": "yarn run lint && yarn run build && firebase deploy"
     },
     "browserslist": [
         ">0.2%",
