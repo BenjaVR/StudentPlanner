@@ -29,6 +29,12 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
             sorter: (a, b) => stringSorter(a.name, b.name),
         },
         {
+            title: "Totale capaciteit",
+            dataIndex: "totalCapacity",
+            key: "totalCapacity",
+            width: 150,
+        },
+        {
             title: "Acties",
             key: "actions",
             width: 120,
