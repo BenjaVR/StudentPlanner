@@ -1,4 +1,4 @@
-import { Button, Calendar, Col, List, notification, Popover, Row, Spin, Tag, Tooltip } from "antd";
+import { Button, Calendar, Card, Col, List, notification, Popover, Row, Spin, Tag, Tooltip } from "antd";
 import classNames from "classnames";
 import moment from "moment";
 import React from "react";
@@ -66,10 +66,14 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             selectedDateForPlanningDetail: undefined,
         };
 
-        this.unsubscribeFromPlannedStudents = () => { return; };
+        this.unsubscribeFromPlannedStudents = () => {
+            return;
+        };
 
         this.renderStudentListHeader = this.renderStudentListHeader.bind(this);
         this.renderStudentListItem = this.renderStudentListItem.bind(this);
+        this.renderDepartmentsHeader = this.renderDepartmentsHeader.bind(this);
+        this.renderDepartmentsListItem = this.renderDepartmentsListItem.bind(this);
         this.renderDateCell = this.renderDateCell.bind(this);
         this.renderDepartmentPopoverContent = this.renderDepartmentPopoverContent.bind(this);
         this.handlePlanningsDetailClose = this.handlePlanningsDetailClose.bind(this);
@@ -119,12 +123,21 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     </Col>
                     <Col span={24} xl={8} xxl={6}>
                         <List
+                            className={styles.unplannedStudentsList}
                             dataSource={this.state.unplannedStudents}
                             header={this.renderStudentListHeader()}
                             renderItem={this.renderStudentListItem}
                             loading={this.state.areStudentsLoading}
                             bordered={true}
                             pagination={{ position: "bottom" }}
+                        />
+                        <List
+                            dataSource={this.state.departments}
+                            header={this.renderDepartmentsHeader()}
+                            renderItem={this.renderDepartmentsListItem}
+                            loading={this.state.areDepartmentsLoading}
+                            bordered={true}
+                            pagination={false}
                         />
                     </Col>
                 </Row>
@@ -184,6 +197,32 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         );
     }
 
+    private renderDepartmentsHeader(): React.ReactNode {
+        return (
+            <Row type="flex" justify="space-between">
+                <Col>
+                    <h2>Afdelingen</h2>
+                </Col>
+            </Row>
+        );
+    }
+
+    private renderDepartmentsListItem(department: Department): React.ReactNode {
+        return (
+            <Card bordered={false} bodyStyle={{ padding: "8px 16px" }}>
+                <Row type="flex" justify="space-between" align="middle">
+                    <Col className={styles.departmentNameColumn}>
+                        <Tag className={styles.notClickableTag} color={department.color} />
+                        <span><b>{department.name}</b></span>
+                    </Col>
+                    <Col>
+                        <span>(<b>{department.totalCapacity}</b> totale capaciteit)</span>
+                    </Col>
+                </Row>
+            </Card>
+        );
+    }
+
     private renderDateCell(date: moment.Moment): React.ReactNode {
         const plannedStudentsToday = studentsPlannedInDay(this.state.plannedStudents, date);
         const departmentsRows = this.state.departments.map((department) => {
@@ -212,7 +251,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                 <div className={styles.calendarCellContainer}>
                     {departmentsRows}
                 </div>
-            </Popover >
+            </Popover>
         );
     }
 
