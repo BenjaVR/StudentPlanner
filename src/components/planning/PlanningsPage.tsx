@@ -1,4 +1,4 @@
-import { Button, Calendar, Card, Col, List, notification, Popconfirm, Popover, Row, Spin, Tag, Tooltip } from "antd";
+import { Button, Calendar, Card, Col, List, notification, Popconfirm, Popover, Row, Spin, Tag } from "antd";
 import classNames from "classnames";
 import moment from "moment";
 import React from "react";
@@ -167,20 +167,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private renderStudentListHeader(): React.ReactNode {
         return (
-            <Row type="flex" justify="space-between">
-                <Col>
-                    <h2>In te plannen studenten</h2>
-                </Col>
-                <Col>
-                    <Tooltip title="Vernieuw de lijst" placement="bottomRight">
-                        <Button
-                            icon="reload"
-                            type="ghost"
-                            onClick={this.handleReloadStudents}
-                        />
-                    </Tooltip>
-                </Col>
-            </Row>
+            <h2>In te plannen studenten</h2>
         );
     }
 
@@ -202,11 +189,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private renderDepartmentsHeader(): React.ReactNode {
         return (
-            <Row type="flex" justify="space-between">
-                <Col>
-                    <h2>Afdelingen</h2>
-                </Col>
-            </Row>
+            <h2>Afdelingen</h2>
         );
     }
 
