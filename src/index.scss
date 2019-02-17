@@ -22,7 +22,5 @@ body {
 }
 
 .ant-fullcalendar.ant-fullcalendar-full.ant-fullcalendar-fullscreen {
-    // Fix to make calendar a little more responsive on mobile.
-    overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-y: hidden; // Fix to make calendar a little more responsive on mobile.
 }
