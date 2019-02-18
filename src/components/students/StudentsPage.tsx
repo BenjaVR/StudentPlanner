@@ -1,9 +1,11 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
+import { Department } from "../../models/Department";
 import { Education } from "../../models/Education";
 import { School } from "../../models/School";
 import { Student } from "../../models/Student";
 import { AnyRouteComponentProps } from "../../routes";
+import { DepartmentsRepository } from "../../services/repositories/DepartmentsRepository";
 import { EducationsRepository } from "../../services/repositories/EducationsRepository";
 import { SchoolsRepository } from "../../services/repositories/SchoolsRepository";
 import { StudentsRepository } from "../../services/repositories/StudentsRepository";
@@ -22,6 +24,8 @@ interface IStudentsPageState {
     isFetchingSchools: boolean;
     educations: Education[];
     isFetchingEducations: boolean;
+    departments: Department[];
+    isFetchingDepartments: boolean;
 }
 
 export default class StudentsPage extends React.Component<StudentsPageProps, IStudentsPageState> {
@@ -41,6 +45,8 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
             isFetchingSchools: true,
             educations: [],
             isFetchingEducations: true,
+            departments: [],
+            isFetchingDepartments: true,
         };
 
         this.unsubscribeFromStudents = () => { return; };
@@ -75,6 +81,13 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                     educations,
                 });
             });
+        DepartmentsRepository.getDepartmentsByName()
+            .then((departments) => {
+                this.setState({
+                    isFetchingDepartments: false,
+                    departments,
+                });
+            });
     }
 
     public componentWillUnmount(): void {
@@ -96,6 +109,8 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                             isLoadingSchools={this.state.isFetchingSchools}
                             educations={this.state.educations}
                             isLoadingEducations={this.state.isFetchingEducations}
+                            departments={this.state.departments}
+                            isLoadingDepartments={this.state.isFetchingDepartments}
                         />
                     </Col>
                 </Row>

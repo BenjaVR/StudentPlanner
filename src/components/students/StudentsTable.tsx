@@ -1,12 +1,15 @@
-import { Button, Col, Popconfirm, Row, Spin, Table, Tooltip, Modal } from "antd";
+import { Button, Col, Modal, notification, Popconfirm, Row, Spin, Table, Tooltip } from "antd";
 import { ColumnFilterItem, ColumnProps } from "antd/lib/table";
 import React from "react";
 import { emptyFilterOptionValue, exactMatchOrDefaultOptionFilter, hasElementWithId } from "../../helpers/filters";
 import { stringSorter } from "../../helpers/sorters";
+import { Department } from "../../models/Department";
 import { Education } from "../../models/Education";
 import { School } from "../../models/School";
 import { Student } from "../../models/Student";
+import { StudentsRepository } from "../../services/repositories/StudentsRepository";
 import styles from "../DataTable.module.scss";
+import specificStyles from "./StudentsTable.module.scss";
 
 interface IStudentsTableProps {
     isLoading: boolean;
@@ -15,6 +18,8 @@ interface IStudentsTableProps {
     isLoadingSchools: boolean;
     educations: Education[];
     isLoadingEducations: boolean;
+    departments: Department[];
+    isLoadingDepartments: boolean;
     deleteStudent: (student: Student) => Promise<void>;
     onAddStudentRequest: () => void;
     onEditStudentRequest: (student: Student) => void;
@@ -23,6 +28,7 @@ interface IStudentsTableProps {
 interface IStudentTableState {
     isPlanningDetailsOpen: boolean;
     selectedStudentPlanningDetails: Student | undefined;
+    isDeletingInternship: boolean;
 }
 
 class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableState> {
@@ -33,6 +39,7 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
         this.state = {
             isPlanningDetailsOpen: false,
             selectedStudentPlanningDetails: undefined,
+            isDeletingInternship: false,
         };
 
         this.renderSchoolName = this.renderSchoolName.bind(this);
@@ -40,10 +47,18 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
         this.renderTableTitle = this.renderTableTitle.bind(this);
         this.renderPlannedCell = this.renderPlannedCell.bind(this);
         this.handleClosePlanningDetails = this.handleClosePlanningDetails.bind(this);
+        this.handleDeleteInternshipForStudent = this.handleDeleteInternshipForStudent.bind(this);
     }
 
     public render(): React.ReactNode {
+        const selectedStudent = this.state.selectedStudentPlanningDetails;
+        const deleteStudentFn = () => selectedStudent !== undefined
+            ? this.handleDeleteInternshipForStudent(selectedStudent)
+            : {};
         const columns = this.getTableColumns();
+        const departmentsNameForStudent = selectedStudent !== undefined
+            ? this.getDepartmentNameForStudent(selectedStudent)
+            : undefined;
         return (
             <React.Fragment>
                 <Table
@@ -57,18 +72,35 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                     scroll={{ x: true }}
                     className={styles.table}
                 />
-                <Modal
-                    title={this.state.selectedStudentPlanningDetails === undefined
-                        ? "Stage"
-                        : `Stage voor ${this.state.selectedStudentPlanningDetails.fullName}`}
-                    visible={this.state.isPlanningDetailsOpen}
-                    closable={true}
-                    maskClosable={true}
-                    onCancel={this.handleClosePlanningDetails}
-                    footer={null}
-                >
-                    <span>heh</span>
-                </Modal>
+                {selectedStudent !== undefined && selectedStudent.internship !== undefined &&
+                    <Modal
+                        confirmLoading={this.props.isLoadingDepartments}
+                        title={`Stage voor ${selectedStudent.fullName}`}
+                        visible={this.state.isPlanningDetailsOpen}
+                        closable={true}
+                        maskClosable={true}
+                        onCancel={this.handleClosePlanningDetails}
+                        footer={(
+                            <div className={specificStyles.studentInternshipModalFooter}>
+                                <Popconfirm title="Ben je zeker dat je deze stage wilt verwijderen?" onConfirm={deleteStudentFn}>
+                                    <Button type="danger" ghost={true} loading={this.state.isDeletingInternship}>Stage verwijderen</Button>
+                                </Popconfirm>
+                            </div>
+                        )}
+                    >
+                        <p>
+                            Van <b>{selectedStudent.internship.startDate.format("DD/MM/YYYY")}</b> tot en met <b>{selectedStudent.internship.endDate.format("DD/MM/YYYY")}</b>
+                            &nbsp;
+                            <i>({selectedStudent.internshipNumberOfDays} {selectedStudent.internshipNumberOfDays === 1 ? "dag" : "dagen"})</i>
+                            {departmentsNameForStudent !== undefined &&
+                                <React.Fragment>
+                                    &nbsp;in <b>{departmentsNameForStudent}</b>
+                                </React.Fragment>
+                            }
+                            .
+                        </p>
+                    </Modal>
+                }
             </React.Fragment>
         );
     }
@@ -142,6 +174,21 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
         );
     }
 
+    private handleDeleteInternshipForStudent(student: Student): void {
+        StudentsRepository.removeInternshipForStudent(student)
+            .then(() => {
+                this.setState({
+                    isPlanningDetailsOpen: false,
+                    selectedStudentPlanningDetails: undefined,
+                });
+            })
+            .catch(() => {
+                notification.error({
+                    message: "Kon stage niet verwijderen, probeer later opnieuw",
+                });
+            });
+    }
+
     private generateTableRowKey(record: Student, index: number): string {
         return record.id || index.toString();
     }
@@ -160,8 +207,19 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
         if (education === undefined) {
             return "";
         }
-
         return education.name;
+    }
+
+    private getDepartmentNameForStudent(student: Student): string | undefined {
+        if (student.internship === undefined || student.internship.departmentId === undefined) {
+            return undefined;
+        }
+        const studentsDepartmentId = student.internship.departmentId;
+        const department = this.props.departments.find((d) => studentsDepartmentId === d.id);
+        if (department === undefined) {
+            return undefined;
+        }
+        return department.name;
     }
 
     private getTableColumns(): Array<ColumnProps<Student>> {

@@ -1,4 +1,4 @@
-import { Card, Col, List, Modal, Row } from "antd";
+import { Card, Col, Modal, Row } from "antd";
 import moment from "moment";
 import React from "react";
 import { studentsPlannedInDay } from "../../helpers/filters";
@@ -111,10 +111,6 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
 
     private renderStudent(student: Student): React.ReactNode {
         const education = this.getEducationById(student.educationId);
-        const internshipAmountOfDays = student.internship !== undefined
-            ? student.internship.endDate.diff(student.internship.startDate, "days") + 1
-            : 0;
-
         return (
             <Card key={student.id} className={styles.studentCard} bodyStyle={{ padding: 12 }}>
                 <Row type="flex" justify="space-between" align="middle">
@@ -132,7 +128,7 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
                             <React.Fragment>
                                 <span>{student.internship.startDate.format("DD/MM/YY")} - {student.internship.endDate.format("DD/MM/YY")}</span>
                                 &nbsp;
-                                <span className={styles.internshipDays}>({internshipAmountOfDays} {singleOrPlural(internshipAmountOfDays, "dag", "dagen")})</span>
+                                <span className={styles.internshipDays}>({student.internshipNumberOfDays} {singleOrPlural(student.internshipNumberOfDays, "dag", "dagen")})</span>
                             </React.Fragment>
                         }
                     </Col>

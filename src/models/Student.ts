@@ -19,6 +19,12 @@ export class Student extends ModelBase<IStudent> {
         return `${this.firstName} ${this.lastName}`;
     }
 
+    public get internshipNumberOfDays(): number {
+        return this.internship !== undefined
+            ? this.internship.endDate.diff(this.internship.startDate, "days") + 1
+            : 0;
+    }
+
     constructor(
         public firstName: string,
         public lastName: string | undefined,
