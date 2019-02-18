@@ -1,4 +1,4 @@
-import { Button, Col, Popconfirm, Row, Spin, Table, Tooltip } from "antd";
+import { Button, Col, Popconfirm, Row, Spin, Table, Tooltip, Modal } from "antd";
 import { ColumnFilterItem, ColumnProps } from "antd/lib/table";
 import React from "react";
 import { emptyFilterOptionValue, exactMatchOrDefaultOptionFilter, hasElementWithId } from "../../helpers/filters";
@@ -20,31 +20,56 @@ interface IStudentsTableProps {
     onEditStudentRequest: (student: Student) => void;
 }
 
-class StudentsTable extends React.Component<IStudentsTableProps> {
+interface IStudentTableState {
+    isPlanningDetailsOpen: boolean;
+    selectedStudentPlanningDetails: Student | undefined;
+}
+
+class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableState> {
 
     constructor(props: IStudentsTableProps) {
         super(props);
 
+        this.state = {
+            isPlanningDetailsOpen: false,
+            selectedStudentPlanningDetails: undefined,
+        };
+
         this.renderSchoolName = this.renderSchoolName.bind(this);
         this.renderActions = this.renderActions.bind(this);
         this.renderTableTitle = this.renderTableTitle.bind(this);
+        this.renderPlannedCell = this.renderPlannedCell.bind(this);
+        this.handleClosePlanningDetails = this.handleClosePlanningDetails.bind(this);
     }
 
     public render(): React.ReactNode {
         const columns = this.getTableColumns();
-
         return (
-            <Table
-                title={this.renderTableTitle}
-                columns={columns}
-                rowKey={this.generateTableRowKey}
-                dataSource={this.props.students}
-                loading={this.props.isLoading}
-                size="middle"
-                bordered={true}
-                scroll={{ x: true }}
-                className={styles.table}
-            />
+            <React.Fragment>
+                <Table
+                    title={this.renderTableTitle}
+                    columns={columns}
+                    rowKey={this.generateTableRowKey}
+                    dataSource={this.props.students}
+                    loading={this.props.isLoading}
+                    size="middle"
+                    bordered={true}
+                    scroll={{ x: true }}
+                    className={styles.table}
+                />
+                <Modal
+                    title={this.state.selectedStudentPlanningDetails === undefined
+                        ? "Stage"
+                        : `Stage voor ${this.state.selectedStudentPlanningDetails.fullName}`}
+                    visible={this.state.isPlanningDetailsOpen}
+                    closable={true}
+                    maskClosable={true}
+                    onCancel={this.handleClosePlanningDetails}
+                    footer={null}
+                >
+                    <span>heh</span>
+                </Modal>
+            </React.Fragment>
         );
     }
 
@@ -54,7 +79,7 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
         }
 
         if (student.schoolId === undefined) {
-            return "";
+            return null;
         }
 
         return this.getSchoolNameForStudent(student);
@@ -66,7 +91,7 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
         }
 
         if (student.educationId === undefined) {
-            return "";
+            return null;
         }
 
         return this.getEducationNameForStudent(student);
@@ -183,7 +208,7 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
             {
                 title: "Ingepland",
                 key: "isPlanned",
-                render: (record: Student) => record.isPlanned ? "Ja" : "",
+                render: (record: Student) => this.renderPlannedCell(record),
                 filters: [{ text: "Ingepland", value: "1" }, { text: "Niet ingepland", value: "0" }],
                 onFilter: (value, record: Student) => exactMatchOrDefaultOptionFilter(value, record.isPlanned ? "1" : "0"),
             },
@@ -195,6 +220,34 @@ class StudentsTable extends React.Component<IStudentsTableProps> {
                 render: (record: Student) => this.renderActions(record),
             },
         ];
+    }
+
+    private renderPlannedCell(student: Student): React.ReactNode {
+        if (!student.isPlanned) {
+            return null;
+        }
+        const openPlanningsDetailsFn = () => this.showPlanningDetails(student);
+        return (
+            <React.Fragment>
+                <span>Ja</span>
+                &nbsp;
+                (<a onClick={openPlanningsDetailsFn}>details</a>)
+            </React.Fragment>
+        );
+    }
+
+    private showPlanningDetails(student: Student): void {
+        this.setState({
+            isPlanningDetailsOpen: true,
+            selectedStudentPlanningDetails: student,
+        });
+    }
+
+    private handleClosePlanningDetails(): void {
+        this.setState({
+            isPlanningDetailsOpen: false,
+            selectedStudentPlanningDetails: undefined,
+        });
     }
 
     private getSchoolFilters(): ColumnFilterItem[] {
