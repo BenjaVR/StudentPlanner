@@ -10,7 +10,7 @@ export class DepartmentsRepository {
 
     public static subscribeToDepartments(onListen: (departments: Department[]) => void): () => void {
         return FirestoreRefs.getDepartmentCollectionRef()
-            .orderBy(nameof<IDepartment>("updatedTimestamp"), "desc")
+            .orderBy(nameof<IDepartment>("createdTimestamp"), "desc")
             .onSnapshot((querySnapshot) => {
                 const departmentEntities = FirebaseModelMapper.mapDocsToObjects<IDepartment>(querySnapshot.docs);
                 const departments = departmentEntities.map((entity) => Department.fromEntity(entity));

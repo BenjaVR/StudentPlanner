@@ -55,10 +55,10 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
         const deleteStudentFn = () => selectedStudent !== undefined
             ? this.handleDeleteInternshipForStudent(selectedStudent)
             : {};
-        const columns = this.getTableColumns();
         const departmentsNameForStudent = selectedStudent !== undefined
             ? this.getDepartmentNameForStudent(selectedStudent)
             : undefined;
+        const columns = this.getTableColumns();
         return (
             <React.Fragment>
                 <Table

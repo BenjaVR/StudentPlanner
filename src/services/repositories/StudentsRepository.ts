@@ -11,7 +11,7 @@ export class StudentsRepository {
 
     public static subscribeToStudents(onListen: (students: Student[]) => void): () => void {
         return FirestoreRefs.getStudentCollectionRef()
-            .orderBy(nameof<IStudent>("updatedTimestamp"), "desc")
+            .orderBy(nameof<IStudent>("createdTimestamp"), "desc")
             .onSnapshot((querySnapshot) => {
                 const studentEntities = FirebaseModelMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
                 const students = studentEntities.map((entity) => Student.fromEntity(entity));

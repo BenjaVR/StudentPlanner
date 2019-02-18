@@ -10,7 +10,7 @@ export class EducationsRepository {
 
     public static subscribeToEducations(onListen: (educations: Education[]) => void): () => void {
         return FirestoreRefs.getEducationCollectionRef()
-            .orderBy(nameof<IEducation>("updatedTimestamp"), "desc")
+            .orderBy(nameof<IEducation>("createdTimestamp"), "desc")
             .onSnapshot((querySnapshot) => {
                 const educationEntities = FirebaseModelMapper.mapDocsToObjects<IEducation>(querySnapshot.docs);
                 const educations = educationEntities.map((entity) => Education.fromEntity(entity));
