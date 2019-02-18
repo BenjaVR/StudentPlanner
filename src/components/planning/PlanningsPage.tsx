@@ -81,6 +81,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.handleReloadStudents = this.handleReloadStudents.bind(this);
         this.handleNextMonth = this.handleNextMonth.bind(this);
         this.handlePrevMonth = this.handlePrevMonth.bind(this);
+        this.handleToday = this.handleToday.bind(this);
         this.addInternshipForStudent = this.addInternshipForStudent.bind(this);
         this.closeAddInternshipModal = this.closeAddInternshipModal.bind(this);
     }
@@ -110,6 +111,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                             <div className={styles.buttonsInCalendarComponent}>
                                 <Button icon="left" onClick={this.handlePrevMonth} />
                                 <Button icon="right" onClick={this.handleNextMonth} />
+                                <Button onClick={this.handleToday}>Vandaag</Button>
                             </div>
                             <Spin spinning={this.state.arePlannedStudentsLoading}>
                                 <Calendar
@@ -332,6 +334,13 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private handlePrevMonth(): void {
         this.doMonthChange("prev");
+    }
+
+    private handleToday(): void {
+        if (this.calendarRef === null) {
+            return;
+        }
+        this.calendarRef.setValue(moment(), "changePanel");
     }
 
     private openAddInternshipModal(student: Student): void {
