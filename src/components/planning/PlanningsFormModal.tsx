@@ -100,6 +100,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                     ],
                                 })(
                                     <DatePicker
+                                        format="DD/MM/YYYY"
                                         allowClear={true}
                                         disabled={this.state.isSubmitting}
                                         onChange={this.handleStartDateChange}
@@ -127,6 +128,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                     ],
                                 })(
                                     <DatePicker
+                                        format="DD/MM/YYYY"
                                         allowClear={true}
                                         disabled={this.state.isSubmitting}
                                         onChange={this.handleEndDateChange}

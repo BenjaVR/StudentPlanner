@@ -1,7 +1,11 @@
 import { Col, notification, Row } from "antd";
 import React from "react";
+import { Department } from "../../models/Department";
+import { Education } from "../../models/Education";
 import { School } from "../../models/School";
 import { AnyRouteComponentProps } from "../../routes";
+import { DepartmentsRepository } from "../../services/repositories/DepartmentsRepository";
+import { EducationsRepository } from "../../services/repositories/EducationsRepository";
 import { SchoolsRepository } from "../../services/repositories/SchoolsRepository";
 import SchoolFormModal from "./SchoolsFormModal";
 import SchoolsTable from "./SchoolsTable";
@@ -10,6 +14,8 @@ type SchoolsPageProps = AnyRouteComponentProps;
 
 interface ISchoolsPageState {
     schools: School[];
+    educations: Education[];
+    departments: Department[];
     isFetching: boolean;
     isAddSchoolsModalVisible: boolean;
     isEditSchoolsModalVisible: boolean;
@@ -25,6 +31,8 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
 
         this.state = {
             schools: [],
+            educations: [],
+            departments: [],
             isFetching: true,
             isAddSchoolsModalVisible: false,
             isEditSchoolsModalVisible: false,
@@ -49,6 +57,14 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                 schools,
             });
         });
+        EducationsRepository.getEducationsByName()
+            .then((educations) => {
+                this.setState({ educations });
+            });
+        DepartmentsRepository.getDepartmentsByName()
+            .then((departments) => {
+                this.setState({ departments });
+            });
     }
 
     public componentWillUnmount(): void {
@@ -63,6 +79,8 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                         <SchoolsTable
                             isLoading={this.state.isFetching}
                             schools={this.state.schools}
+                            educations={this.state.educations}
+                            departments={this.state.departments}
                             deleteSchool={this.deleteSchool}
                             onAddSchoolRequest={this.openAddSchoolModal}
                             onEditSchoolRequest={this.openEditSchoolModal}

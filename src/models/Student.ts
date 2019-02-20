@@ -58,6 +58,34 @@ export class Student extends ModelBase<IStudent> {
         return student;
     }
 
+    public getInternshipNumberOfDaysInRange(from: moment.Moment | undefined, until: moment.Moment | undefined): number {
+        if (this.internship === undefined) {
+            return 0;
+        }
+
+        let days = this.internshipNumberOfDays;
+        if (from !== undefined) {
+            const diff = Math.max(from.startOf("day").diff(this.internship.startDate.startOf("day"), "day"), 0);
+            days -= diff;
+        }
+        if (until !== undefined) {
+            const diff = Math.max(this.internship.endDate.startOf("day").diff(until.startOf("day"), "day"), 0);
+            days -= diff;
+        }
+        return days;
+    }
+
+    public getInternshipNumberOfHoursInRange(from: moment.Moment | undefined, until: moment.Moment | undefined): number {
+        const totalDays = this.internshipNumberOfDays;
+        if (totalDays === 0 || this.internship === undefined) {
+            return 0;
+        }
+        const daysInRange = this.getInternshipNumberOfDaysInRange(from, until);
+
+        const percentageOfDays = daysInRange / totalDays;
+        return Math.round(percentageOfDays * this.internship.hours);
+    }
+
     protected getEntityInternal(): IStudent {
         return {
             firstName: this.firstName,

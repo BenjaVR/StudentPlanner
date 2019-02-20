@@ -59,6 +59,10 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
             ? this.getDepartmentNameForStudent(selectedStudent)
             : undefined;
         const columns = this.getTableColumns();
+        const startDate = selectedStudent !== undefined && selectedStudent.internship !== undefined ? selectedStudent.internship.startDate.format("DD/MM/YYYY") : "";
+        const endDate = selectedStudent !== undefined && selectedStudent.internship !== undefined ? selectedStudent.internship.endDate.format("DD/MM/YYYY") : "";
+        const internshipNumberOfDays = selectedStudent !== undefined ? selectedStudent.internshipNumberOfDays : 0;
+        const internshipNumberOfHours = selectedStudent !== undefined && selectedStudent.internship !== undefined ? selectedStudent.internship.hours : 0;
         return (
             <React.Fragment>
                 <Table
@@ -72,35 +76,36 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                     scroll={{ x: true }}
                     className={styles.table}
                 />
-                {selectedStudent !== undefined && selectedStudent.internship !== undefined &&
-                    <Modal
-                        confirmLoading={this.props.isLoadingDepartments}
-                        title={`Stage voor ${selectedStudent.fullName}`}
-                        visible={this.state.isPlanningDetailsOpen}
-                        closable={true}
-                        maskClosable={true}
-                        onCancel={this.handleClosePlanningDetails}
-                        footer={(
-                            <div className={specificStyles.studentInternshipModalFooter}>
-                                <Popconfirm title="Ben je zeker dat je deze stage wilt verwijderen?" onConfirm={deleteStudentFn}>
-                                    <Button type="danger" ghost={true} loading={this.state.isDeletingInternship}>Stage verwijderen</Button>
-                                </Popconfirm>
-                            </div>
-                        )}
-                    >
-                        <p>
-                            Van <b>{selectedStudent.internship.startDate.format("DD/MM/YYYY")}</b> tot en met <b>{selectedStudent.internship.endDate.format("DD/MM/YYYY")}</b>
-                            &nbsp;
-                            <i>({selectedStudent.internshipNumberOfDays} {selectedStudent.internshipNumberOfDays === 1 ? "dag" : "dagen"})</i>
-                            {departmentsNameForStudent !== undefined &&
-                                <React.Fragment>
-                                    &nbsp;in <b>{departmentsNameForStudent}</b>
-                                </React.Fragment>
-                            }
-                            .
-                        </p>
-                    </Modal>
-                }
+                <Modal
+                    confirmLoading={this.props.isLoadingDepartments}
+                    title={`Stage voor ${selectedStudent !== undefined ? selectedStudent.fullName : ""}`}
+                    visible={this.state.isPlanningDetailsOpen}
+                    closable={true}
+                    maskClosable={true}
+                    onCancel={this.handleClosePlanningDetails}
+                    footer={(
+                        <div className={specificStyles.studentInternshipModalFooter}>
+                            <Popconfirm title="Ben je zeker dat je deze stage wilt verwijderen?" onConfirm={deleteStudentFn}>
+                                <Button type="danger" ghost={true} loading={this.state.isDeletingInternship}>Stage verwijderen</Button>
+                            </Popconfirm>
+                        </div>
+                    )}
+                    destroyOnClose={true}
+                >
+                    <p>
+                        Van <b>{startDate}</b> tot en met <b>{endDate}</b>
+                        {departmentsNameForStudent !== undefined &&
+                            <React.Fragment>
+                                &nbsp;in <b>{departmentsNameForStudent}</b>
+                            </React.Fragment>
+                        }
+                        .
+                    </p>
+                    <p>
+                        <b>{internshipNumberOfDays}</b> {internshipNumberOfDays === 1 ? "dag" : "dagen"}
+                        (<b>{internshipNumberOfHours}</b> {internshipNumberOfHours === 1 ? "uur" : "uren"}).
+                    </p>
+                </Modal>
             </React.Fragment>
         );
     }
@@ -304,7 +309,6 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
     private handleClosePlanningDetails(): void {
         this.setState({
             isPlanningDetailsOpen: false,
-            selectedStudentPlanningDetails: undefined,
         });
     }
 
