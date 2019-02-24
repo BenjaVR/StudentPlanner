@@ -79,14 +79,14 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
 
     public render(): React.ReactNode {
         const studentsFullyInPeriod = this.state.studentsWithInternship.filter((student) => {
-            return this.state.selectedStartDate !== undefined && this.state.selectedEndDate && student.internship !== undefined
+            return this.state.selectedStartDate !== undefined && this.state.selectedEndDate !== undefined && student.internship !== undefined
                 && student.internship.startDate.isSameOrAfter(this.state.selectedStartDate)
                 && student.internship.endDate.isSameOrBefore(this.state.selectedEndDate);
         });
         const studentsNotFullyInPeriod = this.state.studentsWithInternship.filter((student) => {
-            return this.state.selectedStartDate !== undefined && this.state.selectedEndDate && student.internship !== undefined
-                && (student.internship.startDate.isBefore(this.state.selectedStartDate)
-                    || student.internship.endDate.isAfter(this.state.selectedEndDate));
+            return this.state.selectedStartDate !== undefined && this.state.selectedEndDate !== undefined && student.internship !== undefined
+                && ((student.internship.startDate.isBefore(this.state.selectedStartDate) && student.internship.endDate.isSameOrAfter(this.state.selectedStartDate))
+                    || (student.internship.endDate.isAfter(this.state.selectedEndDate) && student.internship.startDate.isSameOrBefore(this.state.selectedEndDate)));
         });
 
         const totalStudentsCount = studentsFullyInPeriod.length + studentsNotFullyInPeriod.length;
