@@ -85,7 +85,7 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                     onCancel={this.handleClosePlanningDetails}
                     footer={(
                         <div className={specificStyles.studentInternshipModalFooter}>
-                            <Popconfirm title="Ben je zeker dat je deze stage wilt verwijderen?" onConfirm={deleteStudentFn}>
+                            <Popconfirm title="Weet u zeker dat u deze stage wilt verwijderen?" onConfirm={deleteStudentFn}>
                                 <Button type="danger" ghost={true} loading={this.state.isDeletingInternship}>Stage verwijderen</Button>
                             </Popconfirm>
                         </div>
@@ -102,8 +102,7 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                         .
                     </p>
                     <p>
-                        <b>{internshipNumberOfDays}</b> {internshipNumberOfDays === 1 ? "dag" : "dagen"}
-                        (<b>{internshipNumberOfHours}</b> {internshipNumberOfHours === 1 ? "uur" : "uren"}).
+                        <b>{internshipNumberOfDays}</b> {internshipNumberOfDays === 1 ? "dag" : "dagen"} (<b>{internshipNumberOfHours}</b> {internshipNumberOfHours === 1 ? "uur" : "uren"}).
                     </p>
                 </Modal>
             </React.Fragment>

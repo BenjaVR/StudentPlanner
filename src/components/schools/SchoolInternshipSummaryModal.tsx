@@ -161,11 +161,11 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
                                     <b>Totalen voor geselecteerde periode</b>:
                                 </p>
                                 <p>
-                                    &nbsp;<b>{totalStudentsCount}</b> {totalStudentsCount === 1 ? "student" : "studenten"},
-                                    &nbsp;<b>{totalInternshipDaysCount}</b> {totalInternshipDaysCount === 1 ? "stage dag" : "stage dagen"},
-                                    &nbsp;<b>{totalInternshipHoursCount}</b> {totalInternshipHoursCount === 1 ? "stage uur" : "stage uren "}
+                                    <b>{totalStudentsCount}</b> {totalStudentsCount === 1 ? "student" : "studenten"},&nbsp;
+                                    <b>{totalInternshipDaysCount}</b> {totalInternshipDaysCount === 1 ? "stage dag" : "stage dagen"},&nbsp;
+                                    <b>{totalInternshipHoursCount}</b> {totalInternshipHoursCount === 1 ? "stage uur" : "stage uren "}
                                     <Tooltip title={this.renderHoursInformationalTooltip()} mouseEnterDelay={0.5}>
-                                        &nbsp;<Icon type="question-circle" />
+                                        <Icon type="question-circle" />
                                     </Tooltip>
                                 </p>
                             </Card>
