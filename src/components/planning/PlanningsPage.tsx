@@ -214,10 +214,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
     private renderDateCell(date: moment.Moment): React.ReactNode {
         const plannedStudentsToday = studentsPlannedInDay(this.state.plannedStudents, date);
         const departmentsRows = this.state.departments.map((department) => {
-            const usedCapacity = plannedStudentsToday.filter((student) => {
-                return student.internship !== undefined
-                    && student.internship.departmentId === department.id;
-            }).length;
+            const usedCapacity = department.getUsedCapacity(plannedStudentsToday);
             const totalCapacity = department.totalCapacity;
             return (
                 <div key={department.id} className={styles.calendarTagContainer}>

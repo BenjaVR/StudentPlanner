@@ -26,3 +26,19 @@ export function studentsPlannedInDay(students: Student[], date: moment.Moment): 
             );
     });
 }
+
+export function studentsPlannedFullyInRange(students: Student[], from: moment.Moment | undefined, until: moment.Moment | undefined): Student[] {
+    return students.filter((student) => {
+        return from !== undefined && until !== undefined && student.internship !== undefined
+            && student.internship.startDate.isSameOrAfter(from)
+            && student.internship.endDate.isSameOrBefore(until);
+    });
+}
+
+export function studentsPlannedPartiallyInRange(students: Student[], from: moment.Moment | undefined, until: moment.Moment | undefined): Student[] {
+    return students.filter((student) => {
+        return from !== undefined && until !== undefined && student.internship !== undefined
+            && ((student.internship.startDate.isBefore(from) && student.internship.endDate.isSameOrAfter(from))
+                || (student.internship.endDate.isAfter(until) && student.internship.startDate.isSameOrBefore(until)));
+    });
+}

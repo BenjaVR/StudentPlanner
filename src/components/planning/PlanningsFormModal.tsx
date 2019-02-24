@@ -1,13 +1,15 @@
-import { Col, DatePicker, Form, InputNumber, Modal, Row, Select } from "antd";
+import { Col, DatePicker, Form, InputNumber, Modal, notification, Row, Select } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import moment from "moment";
 import React from "react";
 import { isMomentDayAfterOrTheSameAsOtherDay } from "../../helpers/comparers";
+import { studentsPlannedFullyInRange, studentsPlannedPartiallyInRange, studentsPlannedInDay } from "../../helpers/filters";
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
 import { Department } from "../../models/Department";
 import { IStudentInternship, Student } from "../../models/Student";
+import { StudentsRepository } from "../../services/repositories/StudentsRepository";
 import styles from "./PlanningsFormModal.module.scss";
 
 interface IPlanningsFormModalProps {
@@ -225,10 +227,6 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
         const fields: Array<keyof IStudentInternship> = ["startDate", "endDate", "hours", "departmentId"];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!errors) {
-                this.setState({
-                    isSubmitting: true,
-                });
-
                 const internship: IStudentInternship = {
                     startDate: values[nameof<IStudentInternship>("startDate")] as moment.Moment,
                     endDate: values[nameof<IStudentInternship>("endDate")] as moment.Moment,
@@ -236,13 +234,62 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                     departmentId: values[nameof<IStudentInternship>("departmentId") as string],
                 };
 
-                this.props.submitInternship(internship)
-                    .then(() => {
-                        this.handleClose();
+                const department = this.props.departments.find((dep) => dep.id === internship.departmentId);
+                if (department === undefined) {
+                    notification.warning({
+                        message: "Er ging iets fout, probeer later opnieuw",
+                    });
+                    return;
+                }
+
+                this.setState({
+                    isSubmitting: true,
+                });
+                StudentsRepository.getPlannedStudentsWithDepartment(department)
+                    .then((studentsWithDepartment) => {
+                        const students = studentsPlannedFullyInRange(studentsWithDepartment, internship.startDate, internship.endDate)
+                            .concat(studentsPlannedPartiallyInRange(studentsWithDepartment, internship.startDate, internship.endDate));
+
+                        const isCrossingTheCapacityLimits = department.totalCapacity <= department.getUsedCapacity(students);
+
+                        if (isCrossingTheCapacityLimits) {
+                            const intersectingDates: moment.Moment[] = [];
+                            for (const m = moment(internship.startDate); m.diff(internship.endDate, "days") <= 0; m.add(1, "day")) {
+                                if (department.totalCapacity <= department.getUsedCapacity(studentsPlannedInDay(students, m))) {
+                                    intersectingDates.push(moment(m));
+                                }
+                            }
+                            Modal.confirm({
+                                title: "Capaciteit overschreden",
+                                content: (
+                                    <React.Fragment>
+                                        <p>Er is minstens één geselecteerde dag waar de capaciteit voor <b>{department.name}</b> werd overschreden.</p>
+                                        <p>Bent u zeker dat u wilt verdergaan?</p>
+                                        <ul>
+                                            {intersectingDates.map((intersectingDate) => {
+                                                return <li key={intersectingDate.unix()}>{intersectingDate.format("DD MMMM YYYY")}</li>;
+                                            })}
+                                        </ul>
+                                    </React.Fragment>
+                                ),
+                                cancelText: "Terugkeren",
+                                onCancel: () => {
+                                    this.setState({
+                                        isSubmitting: false,
+                                    });
+                                },
+                                okText: "Toch toevoegen",
+                                onOk: () => {
+                                    this.doSubmit(internship);
+                                },
+                            });
+                        } else {
+                            this.doSubmit(internship);
+                        }
                     })
-                    .finally(() => {
-                        this.setState({
-                            isSubmitting: false,
+                    .catch(() => {
+                        notification.warning({
+                            message: "Er ging iets fout, probeer later opnieuw",
                         });
                     });
             }
@@ -254,6 +301,18 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
             selectedStartDate: null,
             selectedEndDate: null,
         });
+    }
+
+    private async doSubmit(internship: IStudentInternship): Promise<void> {
+        return this.props.submitInternship(internship)
+            .then(() => {
+                this.handleClose();
+            })
+            .finally(() => {
+                this.setState({
+                    isSubmitting: false,
+                });
+            });
     }
 }
 

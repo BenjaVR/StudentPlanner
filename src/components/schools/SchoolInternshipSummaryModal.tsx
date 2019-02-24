@@ -4,6 +4,7 @@ import FormItem from "antd/lib/form/FormItem";
 import moment from "moment";
 import React from "react";
 import { isMomentDayAfterOrTheSameAsOtherDay } from "../../helpers/comparers";
+import { studentsPlannedFullyInRange, studentsPlannedPartiallyInRange } from "../../helpers/filters";
 import { nameof } from "../../helpers/nameof";
 import { Department } from "../../models/Department";
 import { Education } from "../../models/Education";
@@ -78,23 +79,15 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
     }
 
     public render(): React.ReactNode {
-        const studentsFullyInPeriod = this.state.studentsWithInternship.filter((student) => {
-            return this.state.selectedStartDate !== undefined && this.state.selectedEndDate !== undefined && student.internship !== undefined
-                && student.internship.startDate.isSameOrAfter(this.state.selectedStartDate)
-                && student.internship.endDate.isSameOrBefore(this.state.selectedEndDate);
-        });
-        const studentsNotFullyInPeriod = this.state.studentsWithInternship.filter((student) => {
-            return this.state.selectedStartDate !== undefined && this.state.selectedEndDate !== undefined && student.internship !== undefined
-                && ((student.internship.startDate.isBefore(this.state.selectedStartDate) && student.internship.endDate.isSameOrAfter(this.state.selectedStartDate))
-                    || (student.internship.endDate.isAfter(this.state.selectedEndDate) && student.internship.startDate.isSameOrBefore(this.state.selectedEndDate)));
-        });
+        const studentsFullyInPeriod = studentsPlannedFullyInRange(this.state.studentsWithInternship, this.state.selectedStartDate, this.state.selectedEndDate);
+        const studentsPartiallyInPeriod = studentsPlannedPartiallyInRange(this.state.studentsWithInternship, this.state.selectedStartDate, this.state.selectedEndDate);
 
-        const totalStudentsCount = studentsFullyInPeriod.length + studentsNotFullyInPeriod.length;
-        const totalInternshipDaysCount = [...studentsFullyInPeriod, ...studentsNotFullyInPeriod]
+        const totalStudentsCount = studentsFullyInPeriod.length + studentsPartiallyInPeriod.length;
+        const totalInternshipDaysCount = [...studentsFullyInPeriod, ...studentsPartiallyInPeriod]
             .map((student) => student.getInternshipNumberOfDaysInRange(this.state.selectedStartDate, this.state.selectedEndDate))
             .reduce((sum, days) => sum + days, 0);
 
-        const totalInternshipHoursCount = [...studentsFullyInPeriod, ...studentsNotFullyInPeriod]
+        const totalInternshipHoursCount = [...studentsFullyInPeriod, ...studentsPartiallyInPeriod]
             .map((student) => student.getInternshipNumberOfHoursInRange(this.state.selectedStartDate, this.state.selectedEndDate))
             .reduce((sum, hours) => sum + hours, 0);
 
@@ -173,7 +166,7 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
                             <Card>
                                 {this.renderStudentsFullyInPeriod(studentsFullyInPeriod)}
                                 <br />
-                                {this.renderStudentsNotFullyInPeriod(studentsNotFullyInPeriod)}
+                                {this.renderStudentsNotFullyInPeriod(studentsPartiallyInPeriod)}
                             </Card>
                         </React.Fragment>
                     }

@@ -1,6 +1,7 @@
 import { IDepartment, IDepartmentEducationCapacity } from "../entities/IDepartment";
 import { Education } from "./Education";
 import { ModelBase } from "./ModelBase";
+import { Student } from "./Student";
 
 export class Department extends ModelBase<IDepartment> {
 
@@ -30,6 +31,13 @@ export class Department extends ModelBase<IDepartment> {
         );
         department.fillBaseFields(entity);
         return department;
+    }
+
+    public getUsedCapacity(students: Student[]): number {
+        return students.filter((student) => {
+            return student.internship !== undefined
+                && student.internship.departmentId === this.id;
+        }).length;
     }
 
     public getCapacityForEducation(education: Education): number {
