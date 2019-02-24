@@ -48,6 +48,7 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
         };
 
         this.renderEducationSelectOption = this.renderEducationSelectOption.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleColorChange = this.handleColorChange.bind(this);
         this.handleAfterClose = this.handleAfterClose.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -148,49 +149,51 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
         });
 
         return (
-            <Modal
-                visible={this.props.isVisible}
-                title={this.props.title}
-                onCancel={this.handleClose}
-                onOk={this.handleOk}
-                okText={this.props.okText}
-                confirmLoading={this.state.isSubmitting}
-                destroyOnClose={true}
-                afterClose={this.handleAfterClose}
-            >
-                <Form>
-                    <FormItem label="Naam">
-                        {getFieldDecorator<Department>("name", {
-                            validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                { required: true, message: "Naam mag niet leeg zijn" },
-                            ],
-                        })(
-                            <Input
-                                autoFocus={true}
-                                disabled={this.state.isSubmitting}
-                            />,
-                        )}
-                    </FormItem>
-                    <FormItem label="Kleur">
-                        {getFieldDecorator<Department>("color", {
-                            validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                { required: true, message: "Kies een kleur" },
-                            ],
-                        })(
-                            <CirclePicker color={this.state.selectedColor} onChange={this.handleColorChange} />,
-                        )}
-                    </FormItem>
+            <div onKeyDown={this.handleKeyDown}>
+                <Modal
+                    visible={this.props.isVisible}
+                    title={this.props.title}
+                    onCancel={this.handleClose}
+                    onOk={this.handleOk}
+                    okText={this.props.okText}
+                    confirmLoading={this.state.isSubmitting}
+                    destroyOnClose={true}
+                    afterClose={this.handleAfterClose}
+                >
+                    <Form>
+                        <FormItem label="Naam">
+                            {getFieldDecorator<Department>("name", {
+                                validateTrigger: this.state.formValidateTrigger,
+                                rules: [
+                                    { required: true, message: "Naam mag niet leeg zijn" },
+                                ],
+                            })(
+                                <Input
+                                    autoFocus={true}
+                                    disabled={this.state.isSubmitting}
+                                />,
+                            )}
+                        </FormItem>
+                        <FormItem label="Kleur">
+                            {getFieldDecorator<Department>("color", {
+                                validateTrigger: this.state.formValidateTrigger,
+                                rules: [
+                                    { required: true, message: "Kies een kleur" },
+                                ],
+                            })(
+                                <CirclePicker color={this.state.selectedColor} onChange={this.handleColorChange} />,
+                            )}
+                        </FormItem>
 
-                    <h4>Capaciteit per opleiding</h4>
-                    <p>Max. aantal studenten per opleiding voor deze afdeling</p>
-                    {capacitiesFormItems}
-                    <Button type="dashed" onClick={this.handleAddCapacityField} className={styles.fullWidthInputField}>
-                        Voeg capaciteit toe
+                        <h4>Capaciteit per opleiding</h4>
+                        <p>Max. aantal studenten per opleiding voor deze afdeling</p>
+                        {capacitiesFormItems}
+                        <Button type="dashed" onClick={this.handleAddCapacityField} className={styles.fullWidthInputField}>
+                            Voeg capaciteit toe
                     </Button>
-                </Form>
-            </Modal>
+                    </Form>
+                </Modal>
+            </div>
         );
     }
 
@@ -198,6 +201,12 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
         return (
             <Select.Option key={education.id} value={education.id}>{education.name}</Select.Option>
         );
+    }
+
+    private handleKeyDown(event: React.KeyboardEvent): void {
+        if (event.key === "Enter") {
+            this.handleOk();
+        }
     }
 
     private handleColorChange(color: ColorResult): void {

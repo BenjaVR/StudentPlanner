@@ -38,6 +38,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
             formValidateTrigger: "",
         };
 
+        this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleOk = this.handleOk.bind(this);
     }
@@ -80,80 +81,82 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <Modal
-                visible={this.props.isVisible}
-                title={this.props.title}
-                onCancel={this.handleClose}
-                onOk={this.handleOk}
-                okText={this.props.okText}
-                confirmLoading={this.state.isSubmitting}
-                destroyOnClose={true}
-            >
-                <Form layout="horizontal">
-                    <FormItem label="Voornaam">
-                        {getFieldDecorator<Student>("firstName", {
-                            validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                { required: true, message: "Voornaam mag niet leeg zijn" },
-                            ],
-                        })(
-                            <Input
-                                autoFocus={true}
-                                disabled={this.state.isSubmitting}
-                            />,
-                        )}
-                    </FormItem>
-                    <FormItem label="Familienaam">
-                        {getFieldDecorator<Student>("lastName", {
-                            validateTrigger: this.state.formValidateTrigger,
-                        })(
-                            <Input
-                                disabled={this.state.isSubmitting}
-                            />,
-                        )}
-                    </FormItem>
-                    <FormItem label="School">
-                        {getFieldDecorator<Student>("schoolId", {
-                            validateTrigger: this.state.formValidateTrigger,
-                        })(
-                            <Select
-                                disabled={this.state.isSubmitting}
-                                loading={this.props.isLoadingSchools}
-                                allowClear={true}
-                                showSearch={true}
-                                filterOption={true}
-                                optionFilterProp="children"
-                            >
-                                {this.props.schools.map(this.renderSchoolSelectOption)}
-                            </Select>,
-                        )}
-                    </FormItem>
-                    <FormItem label="Opleiding">
-                        {getFieldDecorator<Student>("educationId", {
-                            validateTrigger: this.state.formValidateTrigger,
-                        })(
-                            <Select
-                                disabled={this.state.isSubmitting}
-                                loading={this.props.isLoadingEducations}
-                                allowClear={true}
-                                showSearch={true}
-                                filterOption={true}
-                                optionFilterProp="children"
-                            >
-                                {this.props.educations.map(this.renderEducationSelectOption)}
-                            </Select>,
-                        )}
-                    </FormItem>
-                    <FormItem label="Bevestiging">
-                        {getFieldDecorator<Student>("isConfirmed", {
-                            validateTrigger: this.state.formValidateTrigger,
-                            valuePropName: "checked",
-                        })(
-                            <Checkbox disabled={this.state.isSubmitting}>Student is bevestigd door de school</Checkbox>,
-                        )}
-                    </FormItem>
-                </Form>
-            </Modal>
+            <div onKeyDown={this.handleKeyDown}>
+                <Modal
+                    visible={this.props.isVisible}
+                    title={this.props.title}
+                    onCancel={this.handleClose}
+                    onOk={this.handleOk}
+                    okText={this.props.okText}
+                    confirmLoading={this.state.isSubmitting}
+                    destroyOnClose={true}
+                >
+                    <Form layout="horizontal">
+                        <FormItem label="Voornaam">
+                            {getFieldDecorator<Student>("firstName", {
+                                validateTrigger: this.state.formValidateTrigger,
+                                rules: [
+                                    { required: true, message: "Voornaam mag niet leeg zijn" },
+                                ],
+                            })(
+                                <Input
+                                    autoFocus={true}
+                                    disabled={this.state.isSubmitting}
+                                />,
+                            )}
+                        </FormItem>
+                        <FormItem label="Familienaam">
+                            {getFieldDecorator<Student>("lastName", {
+                                validateTrigger: this.state.formValidateTrigger,
+                            })(
+                                <Input
+                                    disabled={this.state.isSubmitting}
+                                />,
+                            )}
+                        </FormItem>
+                        <FormItem label="School">
+                            {getFieldDecorator<Student>("schoolId", {
+                                validateTrigger: this.state.formValidateTrigger,
+                            })(
+                                <Select
+                                    disabled={this.state.isSubmitting}
+                                    loading={this.props.isLoadingSchools}
+                                    allowClear={true}
+                                    showSearch={true}
+                                    filterOption={true}
+                                    optionFilterProp="children"
+                                >
+                                    {this.props.schools.map(this.renderSchoolSelectOption)}
+                                </Select>,
+                            )}
+                        </FormItem>
+                        <FormItem label="Opleiding">
+                            {getFieldDecorator<Student>("educationId", {
+                                validateTrigger: this.state.formValidateTrigger,
+                            })(
+                                <Select
+                                    disabled={this.state.isSubmitting}
+                                    loading={this.props.isLoadingEducations}
+                                    allowClear={true}
+                                    showSearch={true}
+                                    filterOption={true}
+                                    optionFilterProp="children"
+                                >
+                                    {this.props.educations.map(this.renderEducationSelectOption)}
+                                </Select>,
+                            )}
+                        </FormItem>
+                        <FormItem label="Bevestiging">
+                            {getFieldDecorator<Student>("isConfirmed", {
+                                validateTrigger: this.state.formValidateTrigger,
+                                valuePropName: "checked",
+                            })(
+                                <Checkbox disabled={this.state.isSubmitting}>Student is bevestigd door de school</Checkbox>,
+                            )}
+                        </FormItem>
+                    </Form>
+                </Modal>
+            </div>
         );
     }
 
@@ -167,6 +170,12 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
         return (
             <Select.Option key={education.id} value={education.id}>{education.name}</Select.Option>
         );
+    }
+
+    private handleKeyDown(event: React.KeyboardEvent): void {
+        if (event.key === "Enter") {
+            this.handleOk();
+        }
     }
 
     private handleClose(): void {

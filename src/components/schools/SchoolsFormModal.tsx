@@ -32,6 +32,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
             formValidateTrigger: "",
         };
 
+        this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleOk = this.handleOk.bind(this);
     }
@@ -53,32 +54,40 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <Modal
-                visible={this.props.isVisible}
-                title={this.props.title}
-                onCancel={this.handleClose}
-                onOk={this.handleOk}
-                okText={this.props.okText}
-                confirmLoading={this.state.isSubmitting}
-                destroyOnClose={true}
-            >
-                <Form>
-                    <FormItem label="Naam">
-                        {getFieldDecorator<School>("name", {
-                            validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                { required: true, message: "Naam mag niet leeg zijn" },
-                            ],
-                        })(
-                            <Input
-                                autoFocus={true}
-                                disabled={this.state.isSubmitting}
-                            />,
-                        )}
-                    </FormItem>
-                </Form>
-            </Modal>
+            <div onKeyDown={this.handleKeyDown}>
+                <Modal
+                    visible={this.props.isVisible}
+                    title={this.props.title}
+                    onCancel={this.handleClose}
+                    onOk={this.handleOk}
+                    okText={this.props.okText}
+                    confirmLoading={this.state.isSubmitting}
+                    destroyOnClose={true}
+                >
+                    <Form>
+                        <FormItem label="Naam">
+                            {getFieldDecorator<School>("name", {
+                                validateTrigger: this.state.formValidateTrigger,
+                                rules: [
+                                    { required: true, message: "Naam mag niet leeg zijn" },
+                                ],
+                            })(
+                                <Input
+                                    autoFocus={true}
+                                    disabled={this.state.isSubmitting}
+                                />,
+                            )}
+                        </FormItem>
+                    </Form>
+                </Modal>
+            </div>
         );
+    }
+
+    private handleKeyDown(event: React.KeyboardEvent): void {
+        if (event.key === "Enter") {
+            this.handleOk();
+        }
     }
 
     private handleClose(): void {

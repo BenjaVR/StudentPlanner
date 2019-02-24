@@ -43,6 +43,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
         };
 
         this.renderDepartmentSelectOption = this.renderDepartmentSelectOption.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -79,113 +80,115 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <Modal
-                visible={this.props.isVisible}
-                title={this.props.title}
-                onCancel={this.handleClose}
-                onOk={this.handleOk}
-                okText={this.props.okText}
-                confirmLoading={this.state.isSubmitting}
-                destroyOnClose={true}
-                afterClose={this.handleFormClosed}
-            >
-                <Form>
-                    <Row type="flex" align="middle" gutter={4}>
-                        <Col span={10}>
-                            <FormItem label="Start datum">
-                                {getFieldDecorator<IStudentInternship>("startDate", {
-                                    validateTrigger: this.state.formValidateTrigger,
-                                    rules: [
-                                        { required: true, message: "Start datum mag niet leeg zijn" },
-                                    ],
-                                })(
-                                    <DatePicker
-                                        format="DD/MM/YYYY"
-                                        allowClear={true}
-                                        disabled={this.state.isSubmitting}
-                                        onChange={this.handleStartDateChange}
-                                    />,
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={10}>
-                            <FormItem label="Eind datum">
-                                {getFieldDecorator<IStudentInternship>("endDate", {
-                                    validateTrigger: this.state.formValidateTrigger,
-                                    validateFirst: true,
-                                    rules: [
-                                        { required: true, message: "Eind datum mag niet leeg zijn" },
-                                        {
-                                            validator: (_, endDate: moment.Moment | undefined, callback) => {
-                                                const startDate = this.props.form.getFieldValue(nameof<IStudentInternship>("startDate"));
-                                                if (isMomentDayAfterOrTheSameAsOtherDay(endDate, startDate)) {
-                                                    return callback();
-                                                }
-                                                return callback(false);
+            <div onKeyDown={this.handleKeyDown}>
+                <Modal
+                    visible={this.props.isVisible}
+                    title={this.props.title}
+                    onCancel={this.handleClose}
+                    onOk={this.handleOk}
+                    okText={this.props.okText}
+                    confirmLoading={this.state.isSubmitting}
+                    destroyOnClose={true}
+                    afterClose={this.handleFormClosed}
+                >
+                    <Form onKeyDown={this.handleKeyDown}>
+                        <Row type="flex" align="middle" gutter={4}>
+                            <Col span={10}>
+                                <FormItem label="Start datum">
+                                    {getFieldDecorator<IStudentInternship>("startDate", {
+                                        validateTrigger: this.state.formValidateTrigger,
+                                        rules: [
+                                            { required: true, message: "Start datum mag niet leeg zijn" },
+                                        ],
+                                    })(
+                                        <DatePicker
+                                            format="DD/MM/YYYY"
+                                            allowClear={true}
+                                            disabled={this.state.isSubmitting}
+                                            onChange={this.handleStartDateChange}
+                                        />,
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={10}>
+                                <FormItem label="Eind datum">
+                                    {getFieldDecorator<IStudentInternship>("endDate", {
+                                        validateTrigger: this.state.formValidateTrigger,
+                                        validateFirst: true,
+                                        rules: [
+                                            { required: true, message: "Eind datum mag niet leeg zijn" },
+                                            {
+                                                validator: (_, endDate: moment.Moment | undefined, callback) => {
+                                                    const startDate = this.props.form.getFieldValue(nameof<IStudentInternship>("startDate"));
+                                                    if (isMomentDayAfterOrTheSameAsOtherDay(endDate, startDate)) {
+                                                        return callback();
+                                                    }
+                                                    return callback(false);
+                                                },
+                                                message: "Eind datum mag niet voor de start datum liggen",
                                             },
-                                            message: "Eind datum mag niet voor de start datum liggen",
+                                        ],
+                                    })(
+                                        <DatePicker
+                                            format="DD/MM/YYYY"
+                                            allowClear={true}
+                                            disabled={this.state.isSubmitting}
+                                            onChange={this.handleEndDateChange}
+                                        />,
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={4}>
+                                <p className={styles.amountOfDaysText}>{this.state.selectedStartDate !== null && this.state.selectedEndDate !== null &&
+                                    `${this.state.selectedEndDate.diff(this.state.selectedStartDate, "days") + 1} dag(en)` // +1 to include both start and end date.
+                                }</p>
+                            </Col>
+                        </Row>
+                        <FormItem label="Stage uren">
+                            {getFieldDecorator<IStudentInternship>("hours", {
+                                validateTrigger: this.state.formValidateTrigger,
+                                rules: [
+                                    { required: true, message: "Geef een aantal stage uren in" },
+                                ],
+                            })(
+                                <InputNumber
+                                    style={{ width: "100%" }}
+                                    disabled={this.state.isSubmitting}
+                                    min={0}
+                                />,
+                            )}
+                        </FormItem>
+                        <FormItem label="Afdeling">
+                            {getFieldDecorator<IStudentInternship>("departmentId", {
+                                validateTrigger: this.state.formValidateTrigger,
+                                rules: [
+                                    {
+                                        required: true,
+                                        validator: (_, departmentId, callback) => {
+                                            if (departmentId === undefined || departmentId === "") {
+                                                callback(false);
+                                            }
+                                            callback();
                                         },
-                                    ],
-                                })(
-                                    <DatePicker
-                                        format="DD/MM/YYYY"
-                                        allowClear={true}
-                                        disabled={this.state.isSubmitting}
-                                        onChange={this.handleEndDateChange}
-                                    />,
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={4}>
-                            <p className={styles.amountOfDaysText}>{this.state.selectedStartDate !== null && this.state.selectedEndDate !== null &&
-                                `${this.state.selectedEndDate.diff(this.state.selectedStartDate, "days") + 1} dag(en)` // +1 to include both start and end date.
-                            }</p>
-                        </Col>
-                    </Row>
-                    <FormItem label="Stage uren">
-                        {getFieldDecorator<IStudentInternship>("hours", {
-                            validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                { required: true, message: "Geef een aantal stage uren in" },
-                            ],
-                        })(
-                            <InputNumber
-                                style={{ width: "100%" }}
-                                disabled={this.state.isSubmitting}
-                                min={0}
-                            />,
-                        )}
-                    </FormItem>
-                    <FormItem label="Afdeling">
-                        {getFieldDecorator<IStudentInternship>("departmentId", {
-                            validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                {
-                                    required: true,
-                                    validator: (_, departmentId, callback) => {
-                                        if (departmentId === undefined || departmentId === "") {
-                                            callback(false);
-                                        }
-                                        callback();
+                                        message: "Kies een afdeling",
                                     },
-                                    message: "Kies een afdeling",
-                                },
-                            ],
-                        })(
-                            <Select
-                                disabled={this.state.isSubmitting}
-                                loading={this.props.areDepartmentsLoading}
-                                allowClear={true}
-                                showSearch={true}
-                                filterOption={true}
-                                optionFilterProp="children"
-                            >
-                                {this.props.departments.map(this.renderDepartmentSelectOption)}
-                            </Select>,
-                        )}
-                    </FormItem>
-                </Form>
-            </Modal>
+                                ],
+                            })(
+                                <Select
+                                    disabled={this.state.isSubmitting}
+                                    loading={this.props.areDepartmentsLoading}
+                                    allowClear={true}
+                                    showSearch={true}
+                                    filterOption={true}
+                                    optionFilterProp="children"
+                                >
+                                    {this.props.departments.map(this.renderDepartmentSelectOption)}
+                                </Select>,
+                            )}
+                        </FormItem>
+                    </Form>
+                </Modal>
+            </div>
         );
     }
 
@@ -193,6 +196,12 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
         return (
             <Select.Option key={department.id} value={department.id}>{department.name}</Select.Option>
         );
+    }
+
+    private handleKeyDown(event: React.KeyboardEvent): void {
+        if (event.key === "Enter") {
+            this.handleOk();
+        }
     }
 
     private handleStartDateChange(date: moment.Moment, _: string): void {
