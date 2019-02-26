@@ -34,6 +34,7 @@ interface IPlanningsPageState {
     isPlanningsDetailVisible: boolean;
     studentsForPlanningsDetail: Student[];
     selectedDateForPlanningDetail: moment.Moment | undefined;
+    userIsTouching: boolean;
 }
 
 class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageState> {
@@ -66,6 +67,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             isPlanningsDetailVisible: false,
             studentsForPlanningsDetail: [],
             selectedDateForPlanningDetail: undefined,
+            userIsTouching: false,
         };
 
         this.unsubscribeFromPlannedStudents = () => {
@@ -86,6 +88,9 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.handleToday = this.handleToday.bind(this);
         this.handleEditInternship = this.handleEditInternship.bind(this);
         this.handleDeleteInternship = this.handleDeleteInternship.bind(this);
+        this.handleContextMenu = this.handleContextMenu.bind(this);
+        this.handleTouchStart = this.handleTouchStart.bind(this);
+        this.handleTouchEnd = this.handleTouchEnd.bind(this);
         this.addInternshipForStudent = this.addInternshipForStudent.bind(this);
         this.editInternshipForStudent = this.editInternshipForStudent.bind(this);
         this.closeAddInternshipModal = this.closeAddInternshipModal.bind(this);
@@ -255,8 +260,9 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                 title={<b>Capaciteiten</b>}
                 content={this.renderDepartmentPopoverContent(plannedStudentsToday)}
                 mouseEnterDelay={0.5}
+                trigger={this.state.userIsTouching ? "contextMenu" : "hover"}
             >
-                <div className={styles.calendarCellContainer}>
+                <div className={styles.calendarCellContainer} onContextMenu={this.handleContextMenu} onTouchStart={this.handleTouchStart} onTouchEnd={this.handleTouchEnd}>
                     {departmentsRows}
                 </div>
             </Popover>
@@ -300,6 +306,20 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             );
         });
         return departmentsRows;
+    }
+
+    private handleContextMenu(event: React.SyntheticEvent): void {
+        event.preventDefault();
+    }
+
+    private handleTouchStart(_: React.TouchEvent): void {
+        this.setState({ userIsTouching: true });
+    }
+
+    private handleTouchEnd(_: React.TouchEvent): void {
+        window.setTimeout(() => {
+            this.setState({ userIsTouching: false });
+        }, 100);
     }
 
     private handlePlanningsDetailClose(): void {
