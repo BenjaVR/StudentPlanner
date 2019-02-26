@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 .title {
     font-weight: 400;
 
@@ -18,14 +20,20 @@
     margin: 2px !important;
 }
 
+.studentCol {
+    @media screen and (max-width: $breakpoint_sm) {
+        text-align: center;
+    }
+}
+
 .studentName {
     font-weight: bold;
 }
 
-.studentDateRangeCol {
-    text-align: right;
-}
-
 .internshipDays {
     font-style: italic;
+}
+
+.actionButton {
+    margin: 0 4px;
 }

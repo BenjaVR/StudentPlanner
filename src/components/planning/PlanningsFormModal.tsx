@@ -4,7 +4,7 @@ import FormItem from "antd/lib/form/FormItem";
 import moment from "moment";
 import React from "react";
 import { isMomentDayAfterOrTheSameAsOtherDay } from "../../helpers/comparers";
-import { studentsPlannedFullyInRange, studentsPlannedPartiallyInRange, studentsPlannedInDay } from "../../helpers/filters";
+import { studentsPlannedFullyInRange, studentsPlannedInDay, studentsPlannedPartiallyInRange } from "../../helpers/filters";
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
 import { Department } from "../../models/Department";
@@ -19,6 +19,7 @@ interface IPlanningsFormModalProps {
     studentToPlan: Student | undefined;
     departments: Department[];
     areDepartmentsLoading: boolean;
+    isEdit: boolean;
     onCloseRequest: () => void;
     submitInternship(internship: IStudentInternship): Promise<void>;
 }
@@ -248,7 +249,13 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                 StudentsRepository.getPlannedStudentsWithDepartment(department)
                     .then((studentsWithDepartment) => {
                         const students = studentsPlannedFullyInRange(studentsWithDepartment, internship.startDate, internship.endDate)
-                            .concat(studentsPlannedPartiallyInRange(studentsWithDepartment, internship.startDate, internship.endDate));
+                            .concat(studentsPlannedPartiallyInRange(studentsWithDepartment, internship.startDate, internship.endDate))
+                            .filter((student) => {
+                                if (this.props.isEdit === false || this.props.studentToPlan === undefined) {
+                                    return true;
+                                }
+                                return student.id !== this.props.studentToPlan.id;
+                            });
 
                         const isCrossingTheCapacityLimits = department.totalCapacity <= department.getUsedCapacity(students);
 

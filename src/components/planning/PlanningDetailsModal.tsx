@@ -1,4 +1,4 @@
-import { Card, Col, Modal, Row } from "antd";
+import { Button, Card, Col, Modal, Popconfirm, Row, Tooltip } from "antd";
 import moment from "moment";
 import React from "react";
 import { studentsPlannedInDay } from "../../helpers/filters";
@@ -16,6 +16,8 @@ interface IPlanningDetailsModalProps {
     selectedDate: moment.Moment | undefined;
     isVisible: boolean;
     onCloseRequested: () => void;
+    handleEditInternship: (student: Student) => void;
+    handleDeleteInternship: (student: Student) => void;
 }
 
 interface IPlanningDetailsModalState {
@@ -111,19 +113,19 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
 
     private renderStudent(student: Student): React.ReactNode {
         const education = this.getEducationById(student.educationId);
+        const deleteFunc = () => this.props.handleDeleteInternship(student);
+        const editFunc = () => this.props.handleEditInternship(student);
         return (
             <Card key={student.id} className={styles.studentCard} bodyStyle={{ padding: 12 }}>
                 <Row type="flex" justify="space-between" align="middle">
-                    <Col>
-                        <React.Fragment>
-                            <span className={styles.studentName}>{student.fullName}</span>
-                            &nbsp;
+                    <Col span={24} sm={10} className={styles.studentCol}>
+                        <span className={styles.studentName}>{student.fullName}</span>
+                        &nbsp;
                             {education !== undefined &&
-                                <span>({education.name})</span>
-                            }
-                        </React.Fragment>
+                            <span>({education.name})</span>
+                        }
                     </Col>
-                    <Col className={styles.studentDateRangeCol}>
+                    <Col span={24} sm={10} className={styles.studentCol}>
                         {student.internship !== undefined &&
                             <React.Fragment>
                                 <span>{student.internship.startDate.format("DD/MM/YY")} - {student.internship.endDate.format("DD/MM/YY")}</span>
@@ -131,6 +133,32 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
                                 <span className={styles.internshipDays}>({student.internshipNumberOfDays} {singleOrPlural(student.internshipNumberOfDays, "dag", "dagen")})</span>
                             </React.Fragment>
                         }
+                    </Col>
+                    <Col span={24} sm={4} className={styles.studentCol}>
+                        <Tooltip title="Bewerken">
+                            <Button
+                                size="small"
+                                icon="edit"
+                                type="primary"
+                                ghost={true}
+                                onClick={editFunc}
+                                className={styles.actionButton}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Verwijderen">
+                            <Popconfirm
+                                title="Weet u zeker dat u deze stage wilt verwijderen?"
+                                onConfirm={deleteFunc}
+                            >
+                                <Button
+                                    size="small"
+                                    icon="delete"
+                                    type="danger"
+                                    ghost={true}
+                                    className={styles.actionButton}
+                                />
+                            </Popconfirm>
+                        </Tooltip>
                     </Col>
                 </Row>
             </Card>

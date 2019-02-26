@@ -105,6 +105,21 @@ export class StudentsRepository {
         await studentDocRef.update(student.getEntity("update"));
     }
 
+    public static async updateInternshipForStudent(internship: IStudentInternship, student: Student): Promise<void> {
+        if (student.isPlanned === false) {
+            return Promise.reject(Error("Student is not planned, so cannot update internship"));
+        }
+        if (student.id === undefined) {
+            return Promise.reject(Error("Student should have an id"));
+        }
+
+        const studentDocRef = FirestoreRefs.getStudentDocRef(student.id);
+
+        student.internship = internship;
+
+        await studentDocRef.update(student.getEntity("update"));
+    }
+
     public static async removeInternshipForStudent(student: Student): Promise<void> {
         if (student.id === undefined) {
             return Promise.reject(Error("Student should have an id"));

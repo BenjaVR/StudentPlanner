@@ -26,6 +26,7 @@ interface IPlanningsPageState {
     showOnlyConfirmedStudents: boolean;
     isCalendarLoading: boolean;
     isAddInternshipModalVisible: boolean;
+    isEditInternshipModalVisible: boolean;
     departments: Department[];
     areDepartmentsLoading: boolean;
     educations: Education[];
@@ -57,6 +58,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             showOnlyConfirmedStudents: true,
             isCalendarLoading: false,
             isAddInternshipModalVisible: false,
+            isEditInternshipModalVisible: false,
             departments: [],
             areDepartmentsLoading: false,
             educations: [],
@@ -82,8 +84,12 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.handleNextMonth = this.handleNextMonth.bind(this);
         this.handlePrevMonth = this.handlePrevMonth.bind(this);
         this.handleToday = this.handleToday.bind(this);
+        this.handleEditInternship = this.handleEditInternship.bind(this);
+        this.handleDeleteInternship = this.handleDeleteInternship.bind(this);
         this.addInternshipForStudent = this.addInternshipForStudent.bind(this);
+        this.editInternshipForStudent = this.editInternshipForStudent.bind(this);
         this.closeAddInternshipModal = this.closeAddInternshipModal.bind(this);
+        this.closeEditInternshipModal = this.closeEditInternshipModal.bind(this);
     }
 
     public componentDidMount(): void {
@@ -154,6 +160,20 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     studentToPlan={this.state.selectedStudentToPlan}
                     departments={this.state.departments}
                     areDepartmentsLoading={this.state.areDepartmentsLoading}
+                    isEdit={false}
+                />
+                <PlanningsFormModal
+                    title={this.state.plannedStudentToEdit === undefined
+                        ? "Stage bewerken"
+                        : `Stage bewerken voor ${this.state.plannedStudentToEdit.fullName}`}
+                    okText="Bewerk"
+                    isVisible={this.state.isEditInternshipModalVisible}
+                    submitInternship={this.editInternshipForStudent}
+                    onCloseRequest={this.closeEditInternshipModal}
+                    studentToPlan={this.state.plannedStudentToEdit}
+                    departments={this.state.departments}
+                    areDepartmentsLoading={this.state.areDepartmentsLoading}
+                    isEdit={true}
                 />
                 <PlanningDetailsModal
                     departments={this.state.departments}
@@ -162,6 +182,8 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     selectedDate={this.state.selectedDateForPlanningDetail}
                     isVisible={this.state.isPlanningsDetailVisible}
                     onCloseRequested={this.handlePlanningsDetailClose}
+                    handleEditInternship={this.handleEditInternship}
+                    handleDeleteInternship={this.handleDeleteInternship}
                 />
             </React.Fragment>
         );
@@ -340,6 +362,23 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
         this.calendarRef.setValue(moment(), "changePanel");
     }
 
+    private handleEditInternship(student: Student): void {
+        this.setState({
+            isEditInternshipModalVisible: true,
+            plannedStudentToEdit: student,
+        });
+    }
+
+    private handleDeleteInternship(student: Student): void {
+        StudentsRepository.removeInternshipForStudent(student)
+            .then(() => {
+                this.loadNotPlannedStudents();
+                notification.success({
+                    message: "Stage succesvol verwijderd",
+                });
+            });
+    }
+
     private openAddInternshipModal(student: Student): void {
         this.setState({
             selectedStudentToPlan: student,
@@ -349,6 +388,10 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
 
     private closeAddInternshipModal(): void {
         this.setState({ isAddInternshipModalVisible: false });
+    }
+
+    private closeEditInternshipModal(): void {
+        this.setState({ isEditInternshipModalVisible: false });
     }
 
     private addInternshipForStudent(internship: IStudentInternship): Promise<void> {
@@ -367,6 +410,27 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                 .catch((error) => {
                     notification.error({
                         message: "Kon stage niet toevoegen",
+                    });
+                    return reject(error);
+                });
+        });
+    }
+
+    private editInternshipForStudent(internship: IStudentInternship): Promise<void> {
+        return new Promise<void>((resolve, reject): void => {
+            if (this.state.plannedStudentToEdit === undefined) {
+                return reject("No student edited");
+            }
+            StudentsRepository.updateInternshipForStudent(internship, this.state.plannedStudentToEdit)
+                .then(() => {
+                    notification.success({
+                        message: "Stage succesvol bewerkt",
+                    });
+                    return resolve();
+                })
+                .catch((error) => {
+                    notification.error({
+                        message: "Kon stage niet bewerken",
                     });
                     return reject(error);
                 });
