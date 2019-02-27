@@ -1,9 +1,10 @@
-import { Avatar, Button, Col, Icon, Layout, notification, Row, Tooltip } from "antd";
+import { Button, Icon, Layout, notification, Tooltip } from "antd";
 import Menu, { SelectParam } from "antd/lib/menu";
 import classNames from "classnames";
 import * as React from "react";
 import Helmet from "react-helmet";
 import { Link, Redirect, Route, Switch } from "react-router-dom";
+import logo from "../../logo.png";
 import { AnyRouteComponentProps, IRoute, routes } from "../../routes";
 import { Firebase } from "../../services/FirebaseInitializer";
 import styles from "./AppContainer.module.scss";
@@ -62,8 +63,11 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
                         collapsed={this.state.isSiderCollapsed}
                     >
                         <div className={classNames(styles.siderContentWrapper, { [styles.siderContentWrapperCollapsed]: this.state.isSiderCollapsed })}>
-                            <div className={styles.logo}>
-                                {this.state.isSiderCollapsed ? "SP" : "Student Planner"}
+                            <div className={styles.logoContainer}>
+                                <img src={logo} alt="Logo" className={styles.logo} />
+                                {!this.state.isSiderCollapsed &&
+                                    <p className={styles.logoText}>Student Planner</p>
+                                }
                             </div>
                             <Menu
                                 theme="dark"

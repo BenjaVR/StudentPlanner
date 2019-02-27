@@ -1,16 +1,26 @@
 @import "../../variables.scss";
 
 .logo {
-    height: 32px;
-    margin: 16px;
+    max-width: 100%;
+    width: auto;
+    max-height: 56px;
+    height: auto;
 
-    // TODO: tijdelijk!
-    background-color: $grayBlue;
-    text-align: center;
-    line-height: 32px;
-    color: rgb(197, 197, 197);
-    white-space: nowrap;
-    overflow: hidden;
+    &Container {
+        margin: 16px;
+        padding: 8px;
+        background-color: $grayBlue;
+        text-align: center;
+        line-height: 32px;
+        color: rgb(197, 197, 197);
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    &Text {
+        margin: 0;
+        text-transform: uppercase;
+    }
 }
 
 .siderContentWrapper {
