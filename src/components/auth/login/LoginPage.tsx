@@ -2,6 +2,7 @@ import { Col, Layout, Row } from "antd";
 import React from "react";
 import Helmet from "react-helmet";
 import { Redirect } from "react-router-dom";
+import logo from "../../../logo.png";
 import { AnyRouteComponentProps, routes } from "../../../routes";
 import { Firebase } from "../../../services/FirebaseInitializer";
 import LoginForm from "./LoginForm";
@@ -30,6 +31,7 @@ class LoginPage extends React.Component<LoginPageProps> {
                     <Row type="flex" justify="space-around" align="middle" className={styles.row}>
                         <Col>
                             <div className={styles.title}>
+                                <img src={logo} alt="Logo" className={styles.logo} />
                                 <h1>Student Planner</h1>
                             </div>
                             <LoginForm loginSuccessfulCallback={this.goToAuthenticatedApp} />
