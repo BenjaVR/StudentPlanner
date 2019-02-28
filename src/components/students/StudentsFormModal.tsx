@@ -90,6 +90,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                     okText={this.props.okText}
                     confirmLoading={this.state.isSubmitting}
                     destroyOnClose={true}
+                    maskClosable={false}
                 >
                     <Form layout="horizontal">
                         <FormItem label="Voornaam">

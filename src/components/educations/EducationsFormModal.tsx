@@ -63,6 +63,7 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
                     okText={this.props.okText}
                     confirmLoading={this.state.isSubmitting}
                     destroyOnClose={true}
+                    maskClosable={false}
                 >
                     <Form>
                         <FormItem label="Naam">

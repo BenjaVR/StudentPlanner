@@ -81,7 +81,7 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                     title={`Stage voor ${selectedStudent !== undefined ? selectedStudent.fullName : ""}`}
                     visible={this.state.isPlanningDetailsOpen}
                     closable={true}
-                    maskClosable={true}
+                    maskClosable={false}
                     onCancel={this.handleClosePlanningDetails}
                     footer={(
                         <div className={specificStyles.studentInternshipModalFooter}>

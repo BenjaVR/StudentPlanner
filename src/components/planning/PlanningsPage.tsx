@@ -166,6 +166,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     departments={this.state.departments}
                     areDepartmentsLoading={this.state.areDepartmentsLoading}
                     isEdit={false}
+                    educations={this.state.educations}
                 />
                 <PlanningsFormModal
                     title={this.state.plannedStudentToEdit === undefined
@@ -179,6 +180,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     departments={this.state.departments}
                     areDepartmentsLoading={this.state.areDepartmentsLoading}
                     isEdit={true}
+                    educations={this.state.educations}
                 />
                 <PlanningDetailsModal
                     departments={this.state.departments}

@@ -40,6 +40,14 @@ export class Department extends ModelBase<IDepartment> {
         }).length;
     }
 
+    public getUsedCapacityForEducation(students: Student[], education: Education): number {
+        return students.filter((student) => {
+            return student.internship !== undefined
+                && student.internship.departmentId === this.id
+                && student.educationId === education.id;
+        }).length;
+    }
+
     public getCapacityForEducation(education: Education): number {
         const educationCapacity = this.capacityPerEducation.find((capacity) => capacity.educationId === education.id);
         return educationCapacity === undefined

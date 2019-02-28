@@ -63,6 +63,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
                     okText={this.props.okText}
                     confirmLoading={this.state.isSubmitting}
                     destroyOnClose={true}
+                    maskClosable={false}
                 >
                     <Form>
                         <FormItem label="Naam">

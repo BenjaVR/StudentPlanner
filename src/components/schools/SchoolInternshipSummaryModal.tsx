@@ -98,7 +98,7 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
                 visible={this.props.isVisible}
                 footer={null}
                 closable={true}
-                maskClosable={true}
+                maskClosable={false}
                 onCancel={this.handleClose}
                 destroyOnClose={true}
                 width={700}

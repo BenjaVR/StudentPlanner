@@ -50,7 +50,7 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
                 onCancel={this.handleClose}
                 width={700}
                 footer={null}
-                maskClosable={true}
+                maskClosable={false}
             >
                 {this.renderTitle(this.props.selectedDate)}
                 {this.renderDepartments(studentsPlannedThisDay)}

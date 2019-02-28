@@ -8,6 +8,7 @@ import { studentsPlannedFullyInRange, studentsPlannedInDay, studentsPlannedParti
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
 import { Department } from "../../models/Department";
+import { Education } from "../../models/Education";
 import { IStudentInternship, Student } from "../../models/Student";
 import { StudentsRepository } from "../../services/repositories/StudentsRepository";
 import styles from "./PlanningsFormModal.module.scss";
@@ -20,6 +21,7 @@ interface IPlanningsFormModalProps {
     departments: Department[];
     areDepartmentsLoading: boolean;
     isEdit: boolean;
+    educations: Education[];
     onCloseRequest: () => void;
     submitInternship(internship: IStudentInternship): Promise<void>;
 }
@@ -92,6 +94,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                     okText={this.props.okText}
                     confirmLoading={this.state.isSubmitting}
                     destroyOnClose={true}
+                    maskClosable={false}
                     afterClose={this.handleFormClosed}
                 >
                     <Form onKeyDown={this.handleKeyDown}>
@@ -257,12 +260,15 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                 return student.id !== this.props.studentToPlan.id;
                             });
 
-                        const isCrossingTheCapacityLimits = department.totalCapacity <= department.getUsedCapacity(students);
+                        const education = this.props.educations.find((edu) => this.props.studentToPlan !== undefined && edu.id === this.props.studentToPlan.educationId);
+                        const isCrossingTheCapacityLimits = education === undefined
+                            ? false
+                            : department.getCapacityForEducation(education) <= department.getUsedCapacityForEducation(students, education);
 
-                        if (isCrossingTheCapacityLimits) {
+                        if (isCrossingTheCapacityLimits && education !== undefined) {
                             const intersectingDates: moment.Moment[] = [];
                             for (const m = moment(internship.startDate); m.diff(internship.endDate, "days") <= 0; m.add(1, "day")) {
-                                if (department.totalCapacity <= department.getUsedCapacity(studentsPlannedInDay(students, m))) {
+                                if (department.totalCapacity <= department.getUsedCapacityForEducation(studentsPlannedInDay(students, m), education)) {
                                     intersectingDates.push(moment(m));
                                 }
                             }
@@ -270,7 +276,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                 title: "Capaciteit overschreden",
                                 content: (
                                     <React.Fragment>
-                                        <p>Er is minstens één geselecteerde dag waar de capaciteit voor <b>{department.name}</b> werd overschreden.</p>
+                                        <p>Er is minstens één geselecteerde dag waar de capaciteit voor <b>{department.name}</b> (opleiding <b>{education.name}</b>) werd overschreden.</p>
                                         <p>Bent u zeker dat u wilt verdergaan?</p>
                                         <ul>
                                             {intersectingDates.map((intersectingDate) => {

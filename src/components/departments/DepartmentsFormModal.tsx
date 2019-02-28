@@ -159,6 +159,7 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                     confirmLoading={this.state.isSubmitting}
                     destroyOnClose={true}
                     afterClose={this.handleAfterClose}
+                    maskClosable={false}
                 >
                     <Form>
                         <FormItem label="Naam">
