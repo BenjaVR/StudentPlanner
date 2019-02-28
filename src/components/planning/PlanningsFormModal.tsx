@@ -268,7 +268,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                         if (isCrossingTheCapacityLimits && education !== undefined) {
                             const intersectingDates: moment.Moment[] = [];
                             for (const m = moment(internship.startDate); m.diff(internship.endDate, "days") <= 0; m.add(1, "day")) {
-                                if (department.totalCapacity <= department.getUsedCapacityForEducation(studentsPlannedInDay(students, m), education)) {
+                                if (department.getCapacityForEducation(education) <= department.getUsedCapacityForEducation(studentsPlannedInDay(students, m), education)) {
                                     intersectingDates.push(moment(m));
                                 }
                             }
