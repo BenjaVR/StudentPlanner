@@ -1,37 +1,21 @@
 {
-    "extends": [
-        "tslint:latest",
-        "tslint-react"
-    ],
+    "extends": ["tslint:latest", "tslint-react", "tslint-config-prettier"],
+    "rulesDirectory": ["tslint-plugin-prettier"],
     "rules": {
-        "whitespace": [
-            true,
-            "check-module"
-        ],
+        "prettier": true,
+        "whitespace": [true, "check-module"],
         "member-ordering": [
             true,
             {
                 "order": "fields-first"
             }
         ],
-        "no-submodule-imports": [
-            true,
-            "moment/locale",
-            "antd/lib",
-            "firebase",
-            "core-js/modules"
-        ],
+        "no-submodule-imports": [true, "moment/locale", "antd/lib", "firebase", "core-js/modules"],
         "max-line-length": false,
         "object-literal-sort-keys": false,
         "no-empty-interface": false,
-        "typedef": [
-            true,
-            "call-signature"
-        ],
-        "no-implicit-dependencies": [
-            true,
-            "dev"
-        ],
+        "typedef": [true, "call-signature"],
+        "no-implicit-dependencies": [true, "dev"],
         "jsx-no-multiline-js": false,
         "jsx-equals-spacing": true,
         "jsx-self-close": true,
