@@ -1,5 +1,6 @@
 {
-    "projects": {
-        "default": "stud-plan"
-    }
+  "projects": {
+    "prod": "stud-plan",
+    "dev": "stud-plan-dev"
+  }
 }
