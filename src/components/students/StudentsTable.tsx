@@ -1,8 +1,9 @@
-import { Button, Col, Modal, notification, Popconfirm, Row, Spin, Table, Tooltip } from "antd";
+import { Button, Col, DatePicker, Modal, notification, Popconfirm, Row, Spin, Table, Tooltip } from "antd";
 import { ColumnFilterItem, ColumnProps } from "antd/lib/table";
+import moment from "moment";
 import React from "react";
 import { emptyFilterOptionValue, exactMatchOrDefaultOptionFilter, hasElementWithId } from "../../helpers/filters";
-import { stringSorter } from "../../helpers/sorters";
+import { dateSorter, stringSorter } from "../../helpers/sorters";
 import { Department } from "../../models/Department";
 import { Education } from "../../models/Education";
 import { School } from "../../models/School";
@@ -47,6 +48,7 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
         this.renderPlannedCell = this.renderPlannedCell.bind(this);
         this.handleClosePlanningDetails = this.handleClosePlanningDetails.bind(this);
         this.handleDeleteInternshipForStudent = this.handleDeleteInternshipForStudent.bind(this);
+        this.handleFilterStudentsByInternshipDate = this.handleFilterStudentsByInternshipDate.bind(this);
     }
 
     public render(): React.ReactNode {
@@ -268,7 +270,7 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
             {
                 title: "Bevestigd",
                 key: "isConfirmed",
-                render: (record: Student) => (record.isConfirmed ? "Ja" : "Nee"),
+                render: (record: Student) => (record.isConfirmed ? "Ja" : "-"),
                 filters: [{ text: "Bevestigd", value: "1" }, { text: "Niet bevestigd", value: "0" }],
                 onFilter: (value, record: Student) =>
                     exactMatchOrDefaultOptionFilter(value, record.isConfirmed ? "1" : "0"),
@@ -277,9 +279,62 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                 title: "Ingepland",
                 key: "isPlanned",
                 render: (record: Student) => this.renderPlannedCell(record),
-                filters: [{ text: "Ingepland", value: "1" }, { text: "Niet ingepland", value: "0" }],
-                onFilter: (value, record: Student) =>
-                    exactMatchOrDefaultOptionFilter(value, record.isPlanned ? "1" : "0"),
+                sorter: (a, b) => {
+                    if (a.internship === undefined) {
+                        if (b.internship === undefined) {
+                            return 0;
+                        }
+                        return -1;
+                    }
+                    if (b.internship === undefined) {
+                        return 1;
+                    }
+                    return dateSorter(a.internship.startDate, b.internship.startDate);
+                },
+                filterDropdown: ({
+                    confirm,
+                    selectedKeys,
+                    setSelectedKeys,
+                    clearFilters,
+                }: {
+                    confirm: () => void;
+                    selectedKeys: any[];
+                    setSelectedKeys: (x: any) => void;
+                    clearFilters: () => void;
+                }) => {
+                    return (
+                        <div className="ant-table-filter-dropdown">
+                            <DatePicker
+                                placeholder="Ingepland vanaf ..."
+                                format="DD/MM/YYYY"
+                                value={selectedKeys[0]}
+                                // tslint:disable-next-line: jsx-no-lambda
+                                onChange={(selectedDate) => {
+                                    setSelectedKeys([selectedDate]);
+                                    if (selectedDate === undefined || selectedDate === null) {
+                                        clearFilters();
+                                    }
+                                }}
+                                style={{ width: 188, padding: "7px 8px", display: "block" }}
+                            />
+                            <div className="ant-table-filter-dropdown-btns">
+                                <a onClick={confirm}>OK</a>
+                                <a style={{ float: "right" }} onClick={clearFilters}>
+                                    Reset
+                                </a>
+                            </div>
+                        </div>
+                    );
+                },
+                onFilter: (value: moment.Moment | undefined | null, record: Student) => {
+                    if (value !== undefined && value !== null) {
+                        return (
+                            record.internship !== undefined &&
+                            record.internship.startDate.startOf("day").isSameOrAfter(value.startOf("day"))
+                        );
+                    }
+                    return true;
+                },
             },
             {
                 title: "Acties",
@@ -292,13 +347,16 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
     }
 
     private renderPlannedCell(student: Student): React.ReactNode {
-        if (!student.isPlanned) {
-            return "Nee";
+        if (!student.isPlanned || student.internship === undefined) {
+            return "-";
         }
         const openPlanningsDetailsFn = () => this.showPlanningDetails(student);
         return (
             <React.Fragment>
-                <span>Ja</span>
+                <span>
+                    {student.internship.startDate.format("DD/MM/YYYY")} -{" "}
+                    {student.internship.endDate.format("DD/MM/YYYY")}
+                </span>
                 &nbsp; (<a onClick={openPlanningsDetailsFn}>details</a>)
             </React.Fragment>
         );
@@ -315,6 +373,10 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
         this.setState({
             isPlanningDetailsOpen: false,
         });
+    }
+
+    private handleFilterStudentsByInternshipDate(): void {
+        // TODO
     }
 
     private getSchoolFilters(): ColumnFilterItem[] {
