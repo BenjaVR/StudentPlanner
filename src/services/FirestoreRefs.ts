@@ -1,15 +1,13 @@
+import firebase from "firebase";
 import { Firebase } from "./FirebaseInitializer";
 
 export class FirestoreRefs {
-
     public static getStudentCollectionRef(): firebase.firestore.CollectionReference {
         return Firebase.firestore().collection("students");
     }
 
     public static getStudentDocRef(docId?: string): firebase.firestore.DocumentReference {
-        return docId === undefined
-            ? this.getStudentCollectionRef().doc()
-            : this.getStudentCollectionRef().doc(docId);
+        return docId === undefined ? this.getStudentCollectionRef().doc() : this.getStudentCollectionRef().doc(docId);
     }
 
     public static getDepartmentCollectionRef(): firebase.firestore.CollectionReference {
@@ -27,9 +25,7 @@ export class FirestoreRefs {
     }
 
     public static getSchoolDocRef(docId?: string): firebase.firestore.DocumentReference {
-        return docId === undefined
-            ? this.getSchoolCollectionRef().doc()
-            : this.getSchoolCollectionRef().doc(docId);
+        return docId === undefined ? this.getSchoolCollectionRef().doc() : this.getSchoolCollectionRef().doc(docId);
     }
 
     public static getEducationCollectionRef(): firebase.firestore.CollectionReference {

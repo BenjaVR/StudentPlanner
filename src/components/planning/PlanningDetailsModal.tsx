@@ -20,11 +20,9 @@ interface IPlanningDetailsModalProps {
     handleDeleteInternship: (student: Student) => void;
 }
 
-interface IPlanningDetailsModalState {
-}
+interface IPlanningDetailsModalState {}
 
 class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, IPlanningDetailsModalState> {
-
     constructor(props: IPlanningDetailsModalProps) {
         super(props);
 
@@ -70,17 +68,15 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
 
     private renderDepartments(todaysStudents: Student[]): React.ReactNode {
         return this.props.departments.map((department) => {
-            const plannedStudentsForDepartment =
-                todaysStudents
-                    .filter((student) => {
-                        return student.internship !== undefined
-                            && student.internship.departmentId === department.id;
-                    })
-                    .sort((a: Student, b: Student) => {
-                        const educationA = this.getEducationById(a.educationId);
-                        const educationB = this.getEducationById(b.educationId);
-                        return sortByProp(educationA, educationB, "name");
-                    });
+            const plannedStudentsForDepartment = todaysStudents
+                .filter((student) => {
+                    return student.internship !== undefined && student.internship.departmentId === department.id;
+                })
+                .sort((a: Student, b: Student) => {
+                    const educationA = this.getEducationById(a.educationId);
+                    const educationB = this.getEducationById(b.educationId);
+                    return sortByProp(educationA, educationB, "name");
+                });
             return (
                 <Card key={department.id} bodyStyle={{ padding: 12 }} className={styles.departmentCard}>
                     <h2>
@@ -97,8 +93,7 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
 
     private renderWithoutDepartment(todaysStudents: Student[]): React.ReactNode {
         const studentsWithoutDepartment = todaysStudents.filter((student) => {
-            return student.internship !== undefined
-                && student.internship.departmentId === undefined;
+            return student.internship !== undefined && student.internship.departmentId === undefined;
         });
         if (studentsWithoutDepartment.length === 0) {
             return null;
@@ -121,18 +116,22 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
                     <Col span={24} sm={10} className={styles.studentCol}>
                         <span className={styles.studentName}>{student.fullName}</span>
                         &nbsp;
-                            {education !== undefined &&
-                            <span>({education.name})</span>
-                        }
+                        {education !== undefined && <span>({education.name})</span>}
                     </Col>
                     <Col span={24} sm={10} className={styles.studentCol}>
-                        {student.internship !== undefined &&
+                        {student.internship !== undefined && (
                             <React.Fragment>
-                                <span>{student.internship.startDate.format("DD/MM/YY")} - {student.internship.endDate.format("DD/MM/YY")}</span>
+                                <span>
+                                    {student.internship.startDate.format("DD/MM/YY")} -{" "}
+                                    {student.internship.endDate.format("DD/MM/YY")}
+                                </span>
                                 &nbsp;
-                                <span className={styles.internshipDays}>({student.internshipNumberOfDays} {singleOrPlural(student.internshipNumberOfDays, "dag", "dagen")})</span>
+                                <span className={styles.internshipDays}>
+                                    ({student.internshipNumberOfDays}{" "}
+                                    {singleOrPlural(student.internshipNumberOfDays, "dag", "dagen")})
+                                </span>
                             </React.Fragment>
-                        }
+                        )}
                     </Col>
                     <Col span={24} sm={4} className={styles.studentCol}>
                         <Tooltip title="Bewerken">
@@ -146,10 +145,7 @@ class PlanningDetailsModal extends React.Component<IPlanningDetailsModalProps, I
                             />
                         </Tooltip>
                         <Tooltip title="Verwijderen">
-                            <Popconfirm
-                                title="Weet u zeker dat u deze stage wilt verwijderen?"
-                                onConfirm={deleteFunc}
-                            >
+                            <Popconfirm title="Weet u zeker dat u deze stage wilt verwijderen?" onConfirm={deleteFunc}>
                                 <Button
                                     size="small"
                                     icon="delete"

@@ -17,7 +17,6 @@ interface IEducationsPageState {
 }
 
 export default class EducationsPage extends React.Component<EducationsPageProps, IEducationsPageState> {
-
     private unsubscribeFromEducations: () => void;
 
     constructor(props: EducationsPageProps) {
@@ -31,7 +30,9 @@ export default class EducationsPage extends React.Component<EducationsPageProps,
             educationToEdit: undefined,
         };
 
-        this.unsubscribeFromEducations = () => { return; };
+        this.unsubscribeFromEducations = () => {
+            return;
+        };
 
         this.openAddEducationModal = this.openAddEducationModal.bind(this);
         this.closeAddEducationModal = this.closeAddEducationModal.bind(this);

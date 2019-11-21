@@ -61,10 +61,13 @@
     }
 
     &LogoutButton {
-        i, span {
+        i,
+        span {
             color: white;
         }
-        &:hover, &:active, &:focus {
+        &:hover,
+        &:active,
+        &:focus {
             border-color: white !important;
         }
     }

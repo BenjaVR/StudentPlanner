@@ -23,9 +23,10 @@ interface ILoginFormState {
 }
 
 class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
-
     public static defaultProps: Partial<LoginFormProps> = {
-        loginSuccessfulCallback: () => { return; },
+        loginSuccessfulCallback: () => {
+            return;
+        },
     };
 
     constructor(props: LoginFormProps) {
@@ -58,23 +59,21 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                                 prefix={<Icon type="user" />}
                                 placeholder="E-mail"
                                 disabled={this.state.isSubmitting}
-                            />,
+                            />
                         )}
                     </FormItem>
 
                     <FormItem>
                         {getFieldDecorator<ILoginDetails>("password", {
                             validateTrigger: this.state.formValidateTrigger,
-                            rules: [
-                                { required: true, message: "Wachtwoord mag niet leeg zijn" },
-                            ],
+                            rules: [{ required: true, message: "Wachtwoord mag niet leeg zijn" }],
                         })(
                             <Input
                                 type="password"
                                 prefix={<Icon type="lock" />}
                                 placeholder="Wachtwoord"
                                 disabled={this.state.isSubmitting}
-                            />,
+                            />
                         )}
                     </FormItem>
 
@@ -113,7 +112,8 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
             });
 
             const loginDetails: ILoginDetails = values;
-            Firebase.auth().signInWithEmailAndPassword(loginDetails.username, loginDetails.password)
+            Firebase.auth()
+                .signInWithEmailAndPassword(loginDetails.username, loginDetails.password)
                 .then(({ user }) => {
                     notification.success({
                         message: "Succesvol ingelogd!",
@@ -139,7 +139,9 @@ class LoginForm extends React.Component<LoginFormProps, ILoginFormState> {
                             });
                             break;
                         default:
-                            notification.error({ message: "Er ging iets fout bij het inloggen, probeer later opnieuw" });
+                            notification.error({
+                                message: "Er ging iets fout bij het inloggen, probeer later opnieuw",
+                            });
                     }
                     this.setState({
                         isSubmitting: false,

@@ -1,6 +1,9 @@
 import moment from "moment";
 
-export function isMomentDayAfterOrTheSameAsOtherDay(date: moment.Moment | undefined, otherDate: moment.Moment | undefined): boolean {
+export function isMomentDayAfterOrTheSameAsOtherDay(
+    date: moment.Moment | undefined,
+    otherDate: moment.Moment | undefined
+): boolean {
     if (date === undefined || otherDate === undefined) {
         return false;
     }

@@ -22,7 +22,6 @@ interface IMenuItem {
 }
 
 class AppContainer extends React.Component<AppContainerProps, IAppContainerState> {
-
     private menuItems: IMenuItem[] = [
         { route: routes.planningsRoute, iconType: "calendar" },
         { route: routes.studentsRoute, iconType: "team" },
@@ -62,12 +61,14 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
                         trigger={null}
                         collapsed={this.state.isSiderCollapsed}
                     >
-                        <div className={classNames(styles.siderContentWrapper, { [styles.siderContentWrapperCollapsed]: this.state.isSiderCollapsed })}>
+                        <div
+                            className={classNames(styles.siderContentWrapper, {
+                                [styles.siderContentWrapperCollapsed]: this.state.isSiderCollapsed,
+                            })}
+                        >
                             <div className={styles.logoContainer}>
                                 <img src={logo} alt="Logo" className={styles.logo} />
-                                {!this.state.isSiderCollapsed &&
-                                    <p className={styles.logoText}>Student Planner</p>
-                                }
+                                {!this.state.isSiderCollapsed && <p className={styles.logoText}>Student Planner</p>}
                             </div>
                             <Menu
                                 theme="dark"
@@ -76,7 +77,11 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
                             >
                                 {this.renderMenuItems()}
                             </Menu>
-                            <div className={classNames(styles.siderFooter, { [styles.siderFooterCollapsed]: this.state.isSiderCollapsed })}>
+                            <div
+                                className={classNames(styles.siderFooter, {
+                                    [styles.siderFooterCollapsed]: this.state.isSiderCollapsed,
+                                })}
+                            >
                                 <Tooltip title={this.getUserEmail()} placement="right">
                                     <p className={styles.siderFooterUsername}>{this.getUserEmail()}</p>
                                 </Tooltip>
@@ -92,27 +97,21 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
                             </div>
                         </div>
                     </Layout.Sider>
-                    <Layout
-                        className={styles.contentLayout}
-                    >
+                    <Layout className={styles.contentLayout}>
                         <Layout.Header className={styles.header}>
                             <Icon
                                 className={classNames("trigger", styles.triggerButton)}
                                 type={this.state.isSiderCollapsed ? "menu-unfold" : "menu-fold"}
                                 onClick={this.handleSiderCollapseToggle}
                             />
-                            <h1 className={styles.title}>
-                                {this.state.activeMenuItem.route.title}
-                            </h1>
+                            <h1 className={styles.title}>{this.state.activeMenuItem.route.title}</h1>
                         </Layout.Header>
                         <Layout.Content className={styles.content}>
-                            <div className={styles.innerContent}>
-                                {this.renderRoutes()}
-                            </div>
+                            <div className={styles.innerContent}>{this.renderRoutes()}</div>
                         </Layout.Content>
                     </Layout>
                 </Layout>
-            </React.Fragment >
+            </React.Fragment>
         );
     }
 
@@ -168,7 +167,8 @@ class AppContainer extends React.Component<AppContainerProps, IAppContainerState
     private handleLogout(event: React.FormEvent): void {
         event.preventDefault();
 
-        Firebase.auth().signOut()
+        Firebase.auth()
+            .signOut()
             .then(() => {
                 notification.success({
                     message: "Succesvol uitgelogd!",

@@ -14,7 +14,6 @@ interface IEducationsTableProps {
 }
 
 class EducationsTable extends React.Component<IEducationsTableProps> {
-
     private columns: Array<ColumnProps<Education>> = [
         {
             title: "Naam",
@@ -70,17 +69,8 @@ class EducationsTable extends React.Component<IEducationsTableProps> {
                     />
                 </Tooltip>
                 <Tooltip title="Verwijderen">
-                    <Popconfirm
-                        title="Weet u zeker dat u deze opleiding wilt verwijderen?"
-                        onConfirm={deleteFunc}
-                    >
-                        <Button
-                            size="small"
-                            icon="delete"
-                            type="danger"
-                            ghost={true}
-                            className={styles.actionButton}
-                        />
+                    <Popconfirm title="Weet u zeker dat u deze opleiding wilt verwijderen?" onConfirm={deleteFunc}>
+                        <Button size="small" icon="delete" type="danger" ghost={true} className={styles.actionButton} />
                     </Popconfirm>
                 </Tooltip>
             </React.Fragment>

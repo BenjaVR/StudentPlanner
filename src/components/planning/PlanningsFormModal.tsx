@@ -4,7 +4,11 @@ import FormItem from "antd/lib/form/FormItem";
 import moment from "moment";
 import React from "react";
 import { isMomentDayAfterOrTheSameAsOtherDay } from "../../helpers/comparers";
-import { studentsPlannedFullyInRange, studentsPlannedInDay, studentsPlannedPartiallyInRange } from "../../helpers/filters";
+import {
+    studentsPlannedFullyInRange,
+    studentsPlannedInDay,
+    studentsPlannedPartiallyInRange,
+} from "../../helpers/filters";
 import { nameof } from "../../helpers/nameof";
 import { FormValidationTrigger } from "../../helpers/types";
 import { Department } from "../../models/Department";
@@ -36,7 +40,6 @@ interface IPlanningsFormModalState {
 }
 
 class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlanningsFormModalState> {
-
     constructor(props: PlanningsFormModalProps) {
         super(props);
 
@@ -57,10 +60,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
     }
 
     public componentDidUpdate(prevProps: PlanningsFormModalProps): void {
-        if (this.props.isVisible === true
-            && prevProps.isVisible === false
-            && this.props.studentToPlan !== undefined) {
-
+        if (this.props.isVisible === true && prevProps.isVisible === false && this.props.studentToPlan !== undefined) {
             const internship = this.props.studentToPlan.internship;
             if (internship === undefined) {
                 return;
@@ -103,16 +103,14 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                 <FormItem label="Start datum">
                                     {getFieldDecorator<IStudentInternship>("startDate", {
                                         validateTrigger: this.state.formValidateTrigger,
-                                        rules: [
-                                            { required: true, message: "Start datum mag niet leeg zijn" },
-                                        ],
+                                        rules: [{ required: true, message: "Start datum mag niet leeg zijn" }],
                                     })(
                                         <DatePicker
                                             format="DD/MM/YYYY"
                                             allowClear={true}
                                             disabled={this.state.isSubmitting}
                                             onChange={this.handleStartDateChange}
-                                        />,
+                                        />
                                     )}
                                 </FormItem>
                             </Col>
@@ -125,7 +123,9 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                             { required: true, message: "Eind datum mag niet leeg zijn" },
                                             {
                                                 validator: (_, endDate: moment.Moment | undefined, callback) => {
-                                                    const startDate = this.props.form.getFieldValue(nameof<IStudentInternship>("startDate"));
+                                                    const startDate = this.props.form.getFieldValue(
+                                                        nameof<IStudentInternship>("startDate")
+                                                    );
                                                     if (isMomentDayAfterOrTheSameAsOtherDay(endDate, startDate)) {
                                                         return callback();
                                                     }
@@ -140,29 +140,25 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                             allowClear={true}
                                             disabled={this.state.isSubmitting}
                                             onChange={this.handleEndDateChange}
-                                        />,
+                                        />
                                     )}
                                 </FormItem>
                             </Col>
                             <Col span={4}>
-                                <p className={styles.amountOfDaysText}>{this.state.selectedStartDate !== null && this.state.selectedEndDate !== null &&
-                                    `${this.state.selectedEndDate.diff(this.state.selectedStartDate, "days") + 1} dag(en)` // +1 to include both start and end date.
-                                }</p>
+                                <p className={styles.amountOfDaysText}>
+                                    {this.state.selectedStartDate !== null &&
+                                        this.state.selectedEndDate !== null &&
+                                        `${this.state.selectedEndDate.diff(this.state.selectedStartDate, "days") +
+                                            1} dag(en)` // +1 to include both start and end date.
+                                    }
+                                </p>
                             </Col>
                         </Row>
                         <FormItem label="Stage uren">
                             {getFieldDecorator<IStudentInternship>("hours", {
                                 validateTrigger: this.state.formValidateTrigger,
-                                rules: [
-                                    { required: true, message: "Geef een aantal stage uren in" },
-                                ],
-                            })(
-                                <InputNumber
-                                    style={{ width: "100%" }}
-                                    disabled={this.state.isSubmitting}
-                                    min={0}
-                                />,
-                            )}
+                                rules: [{ required: true, message: "Geef een aantal stage uren in" }],
+                            })(<InputNumber style={{ width: "100%" }} disabled={this.state.isSubmitting} min={0} />)}
                         </FormItem>
                         <FormItem label="Afdeling">
                             {getFieldDecorator<IStudentInternship>("departmentId", {
@@ -189,7 +185,7 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                     optionFilterProp="children"
                                 >
                                     {this.props.departments.map(this.renderDepartmentSelectOption)}
-                                </Select>,
+                                </Select>
                             )}
                         </FormItem>
                     </Form>
@@ -200,7 +196,9 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
 
     private renderDepartmentSelectOption(department: Department): React.ReactNode {
         return (
-            <Select.Option key={department.id} value={department.id}>{department.name}</Select.Option>
+            <Select.Option key={department.id} value={department.id}>
+                {department.name}
+            </Select.Option>
         );
     }
 
@@ -251,8 +249,18 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                 });
                 StudentsRepository.getPlannedStudentsWithDepartment(department)
                     .then((studentsWithDepartment) => {
-                        const students = studentsPlannedFullyInRange(studentsWithDepartment, internship.startDate, internship.endDate)
-                            .concat(studentsPlannedPartiallyInRange(studentsWithDepartment, internship.startDate, internship.endDate))
+                        const students = studentsPlannedFullyInRange(
+                            studentsWithDepartment,
+                            internship.startDate,
+                            internship.endDate
+                        )
+                            .concat(
+                                studentsPlannedPartiallyInRange(
+                                    studentsWithDepartment,
+                                    internship.startDate,
+                                    internship.endDate
+                                )
+                            )
                             .filter((student) => {
                                 if (this.props.isEdit === false || this.props.studentToPlan === undefined) {
                                     return true;
@@ -260,15 +268,28 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                 return student.id !== this.props.studentToPlan.id;
                             });
 
-                        const education = this.props.educations.find((edu) => this.props.studentToPlan !== undefined && edu.id === this.props.studentToPlan.educationId);
-                        const isCrossingTheCapacityLimits = education === undefined
-                            ? false
-                            : department.getCapacityForEducation(education) <= department.getUsedCapacityForEducation(students, education);
+                        const education = this.props.educations.find(
+                            (edu) =>
+                                this.props.studentToPlan !== undefined &&
+                                edu.id === this.props.studentToPlan.educationId
+                        );
+                        const isCrossingTheCapacityLimits =
+                            education === undefined
+                                ? false
+                                : department.getCapacityForEducation(education) <=
+                                  department.getUsedCapacityForEducation(students, education);
 
                         if (isCrossingTheCapacityLimits && education !== undefined) {
                             const intersectingDates: moment.Moment[] = [];
-                            for (const m = moment(internship.startDate); m.diff(internship.endDate, "days") <= 0; m.add(1, "day")) {
-                                if (department.getCapacityForEducation(education) <= department.getUsedCapacityForEducation(studentsPlannedInDay(students, m), education)) {
+                            for (
+                                const m = moment(internship.startDate);
+                                m.diff(internship.endDate, "days") <= 0;
+                                m.add(1, "day")
+                            ) {
+                                if (
+                                    department.getCapacityForEducation(education) <=
+                                    department.getUsedCapacityForEducation(studentsPlannedInDay(students, m), education)
+                                ) {
                                     intersectingDates.push(moment(m));
                                 }
                             }
@@ -276,11 +297,19 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
                                 title: "Capaciteit overschreden",
                                 content: (
                                     <React.Fragment>
-                                        <p>Er is minstens één geselecteerde dag waar de capaciteit voor <b>{department.name}</b> (opleiding <b>{education.name}</b>) werd overschreden.</p>
+                                        <p>
+                                            Er is minstens één geselecteerde dag waar de capaciteit voor{" "}
+                                            <b>{department.name}</b> (opleiding <b>{education.name}</b>) werd
+                                            overschreden.
+                                        </p>
                                         <p>Bent u zeker dat u wilt verdergaan?</p>
                                         <ul>
                                             {intersectingDates.map((intersectingDate) => {
-                                                return <li key={intersectingDate.unix()}>{intersectingDate.format("DD MMMM YYYY")}</li>;
+                                                return (
+                                                    <li key={intersectingDate.unix()}>
+                                                        {intersectingDate.format("DD MMMM YYYY")}
+                                                    </li>
+                                                );
                                             })}
                                         </ul>
                                     </React.Fragment>
@@ -317,7 +346,8 @@ class PlanningsFormModal extends React.Component<PlanningsFormModalProps, IPlann
     }
 
     private async doSubmit(internship: IStudentInternship): Promise<void> {
-        return this.props.submitInternship(internship)
+        return this.props
+            .submitInternship(internship)
             .then(() => {
                 this.handleClose();
             })

@@ -23,7 +23,6 @@ interface ISchoolsPageState {
 }
 
 export default class SchoolsPage extends React.Component<SchoolsPageProps, ISchoolsPageState> {
-
     private unsubscribeFromSchool: () => void;
 
     constructor(props: SchoolsPageProps) {
@@ -39,7 +38,9 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
             schoolToEdit: undefined,
         };
 
-        this.unsubscribeFromSchool = () => { return; };
+        this.unsubscribeFromSchool = () => {
+            return;
+        };
 
         this.openAddSchoolModal = this.openAddSchoolModal.bind(this);
         this.closeAddSchoolModal = this.closeAddSchoolModal.bind(this);
@@ -57,14 +58,12 @@ export default class SchoolsPage extends React.Component<SchoolsPageProps, IScho
                 schools,
             });
         });
-        EducationsRepository.getEducationsByName()
-            .then((educations) => {
-                this.setState({ educations });
-            });
-        DepartmentsRepository.getDepartmentsByName()
-            .then((departments) => {
-                this.setState({ departments });
-            });
+        EducationsRepository.getEducationsByName().then((educations) => {
+            this.setState({ educations });
+        });
+        DepartmentsRepository.getDepartmentsByName().then((departments) => {
+            this.setState({ departments });
+        });
     }
 
     public componentWillUnmount(): void {

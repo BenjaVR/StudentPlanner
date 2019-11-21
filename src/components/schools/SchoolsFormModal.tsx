@@ -23,7 +23,6 @@ interface ISchoolsFormModalState {
 }
 
 class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFormModalState> {
-
     constructor(props: SchoolFormModalProps) {
         super(props);
 
@@ -39,10 +38,7 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
 
     public componentDidUpdate(prevProps: SchoolFormModalProps): void {
         // Populate the form if it is just opened and if a school to edit is passed.
-        if (this.props.schoolToEdit !== undefined
-            && this.props.isVisible === true
-            && prevProps.isVisible === false) {
-
+        if (this.props.schoolToEdit !== undefined && this.props.isVisible === true && prevProps.isVisible === false) {
             const schoolFields: Partial<School> = {
                 name: this.props.schoolToEdit.name,
             };
@@ -69,15 +65,8 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
                         <FormItem label="Naam">
                             {getFieldDecorator<School>("name", {
                                 validateTrigger: this.state.formValidateTrigger,
-                                rules: [
-                                    { required: true, message: "Naam mag niet leeg zijn" },
-                                ],
-                            })(
-                                <Input
-                                    autoFocus={true}
-                                    disabled={this.state.isSubmitting}
-                                />,
-                            )}
+                                rules: [{ required: true, message: "Naam mag niet leeg zijn" }],
+                            })(<Input autoFocus={true} disabled={this.state.isSubmitting} />)}
                         </FormItem>
                     </Form>
                 </Modal>
@@ -108,11 +97,10 @@ class SchoolsFormModal extends React.Component<SchoolFormModalProps, ISchoolsFor
                     isSubmitting: true,
                 });
 
-                const school = new School(
-                    values[nameof<School>("name")],
-                );
+                const school = new School(values[nameof<School>("name")]);
 
-                this.props.submitSchool(school)
+                this.props
+                    .submitSchool(school)
                     .then(() => {
                         this.handleClose();
                     })

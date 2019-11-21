@@ -29,8 +29,10 @@ interface ISchoolInternshipSummaryModalState {
     selectedEndDate: moment.Moment | undefined;
 }
 
-class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSummaryModalProps, ISchoolInternshipSummaryModalState> {
-
+class SchoolInternshipSummaryModal extends React.Component<
+    SchoolInternshipSummaryModalProps,
+    ISchoolInternshipSummaryModalState
+> {
     constructor(props: SchoolInternshipSummaryModalProps) {
         super(props);
 
@@ -61,34 +63,49 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
 
             // Remember the last searched date, to be able to quickly check the same period for multiple schools.
             if (this.state.selectedStartDate !== undefined && this.state.selectedEndDate) {
-                this.props.form.getFieldDecorator(nameof<ISchoolInternshipSummaryModalState>("selectedStartDate"), { initialValue: this.state.selectedStartDate });
-                this.props.form.getFieldDecorator(nameof<ISchoolInternshipSummaryModalState>("selectedEndDate"), { initialValue: this.state.selectedEndDate });
+                this.props.form.getFieldDecorator(nameof<ISchoolInternshipSummaryModalState>("selectedStartDate"), {
+                    initialValue: this.state.selectedStartDate,
+                });
+                this.props.form.getFieldDecorator(nameof<ISchoolInternshipSummaryModalState>("selectedEndDate"), {
+                    initialValue: this.state.selectedEndDate,
+                });
             }
 
             if (nextProps.selectedSchool !== undefined) {
                 this.setState({ areStudentsLoading: true });
-                StudentsRepository.getPlannedStudentsForSchool(nextProps.selectedSchool)
-                    .then((students) => {
-                        this.setState({
-                            studentsWithInternship: students,
-                            areStudentsLoading: false,
-                        });
+                StudentsRepository.getPlannedStudentsForSchool(nextProps.selectedSchool).then((students) => {
+                    this.setState({
+                        studentsWithInternship: students,
+                        areStudentsLoading: false,
                     });
+                });
             }
         }
     }
 
     public render(): React.ReactNode {
-        const studentsFullyInPeriod = studentsPlannedFullyInRange(this.state.studentsWithInternship, this.state.selectedStartDate, this.state.selectedEndDate);
-        const studentsPartiallyInPeriod = studentsPlannedPartiallyInRange(this.state.studentsWithInternship, this.state.selectedStartDate, this.state.selectedEndDate);
+        const studentsFullyInPeriod = studentsPlannedFullyInRange(
+            this.state.studentsWithInternship,
+            this.state.selectedStartDate,
+            this.state.selectedEndDate
+        );
+        const studentsPartiallyInPeriod = studentsPlannedPartiallyInRange(
+            this.state.studentsWithInternship,
+            this.state.selectedStartDate,
+            this.state.selectedEndDate
+        );
 
         const totalStudentsCount = studentsFullyInPeriod.length + studentsPartiallyInPeriod.length;
         const totalInternshipDaysCount = [...studentsFullyInPeriod, ...studentsPartiallyInPeriod]
-            .map((student) => student.getInternshipNumberOfDaysInRange(this.state.selectedStartDate, this.state.selectedEndDate))
+            .map((student) =>
+                student.getInternshipNumberOfDaysInRange(this.state.selectedStartDate, this.state.selectedEndDate)
+            )
             .reduce((sum, days) => sum + days, 0);
 
         const totalInternshipHoursCount = [...studentsFullyInPeriod, ...studentsPartiallyInPeriod]
-            .map((student) => student.getInternshipNumberOfHoursInRange(this.state.selectedStartDate, this.state.selectedEndDate))
+            .map((student) =>
+                student.getInternshipNumberOfHoursInRange(this.state.selectedStartDate, this.state.selectedEndDate)
+            )
             .reduce((sum, hours) => sum + hours, 0);
 
         const { getFieldDecorator } = this.props.form;
@@ -115,7 +132,7 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
                                             style={{ width: "100%" }}
                                             allowClear={true}
                                             onChange={this.handleStartDateChange}
-                                        />,
+                                        />
                                     )}
                                 </FormItem>
                             </Col>
@@ -126,13 +143,20 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
                                         rules: [
                                             {
                                                 validator: (_, endDate: moment.Moment | null, callback) => {
-                                                    const startDate = this.props.form.getFieldValue(nameof<ISchoolInternshipSummaryModalState>("selectedStartDate"));
-                                                    if (isMomentDayAfterOrTheSameAsOtherDay(endDate || undefined, startDate)) {
+                                                    const startDate = this.props.form.getFieldValue(
+                                                        nameof<ISchoolInternshipSummaryModalState>("selectedStartDate")
+                                                    );
+                                                    if (
+                                                        isMomentDayAfterOrTheSameAsOtherDay(
+                                                            endDate || undefined,
+                                                            startDate
+                                                        )
+                                                    ) {
                                                         return callback();
                                                     }
                                                     return callback(false);
                                                 },
-                                                message: "Deze datum mag niet eerder dan de \"van\" datum zijn",
+                                                message: 'Deze datum mag niet eerder dan de "van" datum zijn',
                                             },
                                         ],
                                     })(
@@ -141,35 +165,40 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
                                             style={{ width: "100%" }}
                                             allowClear={true}
                                             onChange={this.handleEndDateChange}
-                                        />,
+                                        />
                                     )}
                                 </FormItem>
                             </Col>
                         </Row>
                     </Form>
-                    {this.state.selectedStartDate !== undefined && this.state.selectedEndDate !== undefined && this.state.selectedEndDate.isSameOrAfter(this.state.selectedStartDate) &&
-                        <React.Fragment>
-                            <Card>
-                                <p>
-                                    <b>Totalen voor geselecteerde periode</b>:
-                                </p>
-                                <p>
-                                    <b>{totalStudentsCount}</b> {totalStudentsCount === 1 ? "student" : "studenten"},&nbsp;
-                                    <b>{totalInternshipDaysCount}</b> {totalInternshipDaysCount === 1 ? "stage dag" : "stage dagen"},&nbsp;
-                                    <b>{totalInternshipHoursCount}</b> {totalInternshipHoursCount === 1 ? "stage uur" : "stage uren "}
-                                    <Tooltip title={this.renderHoursInformationalTooltip()} mouseEnterDelay={0.5}>
-                                        <Icon type="question-circle" />
-                                    </Tooltip>
-                                </p>
-                            </Card>
-                            <br />
-                            <Card>
-                                {this.renderStudentsFullyInPeriod(studentsFullyInPeriod)}
+                    {this.state.selectedStartDate !== undefined &&
+                        this.state.selectedEndDate !== undefined &&
+                        this.state.selectedEndDate.isSameOrAfter(this.state.selectedStartDate) && (
+                            <React.Fragment>
+                                <Card>
+                                    <p>
+                                        <b>Totalen voor geselecteerde periode</b>:
+                                    </p>
+                                    <p>
+                                        <b>{totalStudentsCount}</b> {totalStudentsCount === 1 ? "student" : "studenten"}
+                                        ,&nbsp;
+                                        <b>{totalInternshipDaysCount}</b>{" "}
+                                        {totalInternshipDaysCount === 1 ? "stage dag" : "stage dagen"},&nbsp;
+                                        <b>{totalInternshipHoursCount}</b>{" "}
+                                        {totalInternshipHoursCount === 1 ? "stage uur" : "stage uren "}
+                                        <Tooltip title={this.renderHoursInformationalTooltip()} mouseEnterDelay={0.5}>
+                                            <Icon type="question-circle" />
+                                        </Tooltip>
+                                    </p>
+                                </Card>
                                 <br />
-                                {this.renderStudentsNotFullyInPeriod(studentsPartiallyInPeriod)}
-                            </Card>
-                        </React.Fragment>
-                    }
+                                <Card>
+                                    {this.renderStudentsFullyInPeriod(studentsFullyInPeriod)}
+                                    <br />
+                                    {this.renderStudentsNotFullyInPeriod(studentsPartiallyInPeriod)}
+                                </Card>
+                            </React.Fragment>
+                        )}
                 </Spin>
             </Modal>
         );
@@ -202,8 +231,14 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
     }
 
     private renderStudentFullyInPeriod(student: Student): React.ReactNode {
-        const internshipDays = student.getInternshipNumberOfDaysInRange(this.state.selectedStartDate, this.state.selectedEndDate);
-        const internshipHours = student.getInternshipNumberOfHoursInRange(this.state.selectedStartDate, this.state.selectedEndDate);
+        const internshipDays = student.getInternshipNumberOfDaysInRange(
+            this.state.selectedStartDate,
+            this.state.selectedEndDate
+        );
+        const internshipHours = student.getInternshipNumberOfHoursInRange(
+            this.state.selectedStartDate,
+            this.state.selectedEndDate
+        );
         return (
             <List.Item>
                 <Row type="flex" align="middle" justify="space-between" style={{ width: "100%" }}>
@@ -211,12 +246,12 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
                         {student.fullName}
                     </Col>
                     <Col span={8} style={{ textAlign: "center" }}>
-                        {student.internship!.startDate.format("DD/MM/YY")} - {student.internship!.endDate.format("DD/MM/YY")}
+                        {student.internship!.startDate.format("DD/MM/YY")} -{" "}
+                        {student.internship!.endDate.format("DD/MM/YY")}
                     </Col>
                     <Col span={8} style={{ textAlign: "right" }}>
                         <b>{internshipDays}</b> {internshipDays === 1 ? "dag" : "dagen"}
-                        &nbsp;
-                        (<b>{internshipHours}</b> {internshipHours === 1 ? "uur" : "uren"})
+                        &nbsp; (<b>{internshipHours}</b> {internshipHours === 1 ? "uur" : "uren"})
                     </Col>
                 </Row>
             </List.Item>
@@ -224,8 +259,14 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
     }
 
     private renderStudentNotFullyInPeriod(student: Student): React.ReactNode {
-        const internshipDays = student.getInternshipNumberOfDaysInRange(this.state.selectedStartDate, this.state.selectedEndDate);
-        const internshipHours = student.getInternshipNumberOfHoursInRange(this.state.selectedStartDate, this.state.selectedEndDate);
+        const internshipDays = student.getInternshipNumberOfDaysInRange(
+            this.state.selectedStartDate,
+            this.state.selectedEndDate
+        );
+        const internshipHours = student.getInternshipNumberOfHoursInRange(
+            this.state.selectedStartDate,
+            this.state.selectedEndDate
+        );
         return (
             <List.Item>
                 <Row type="flex" align="middle" justify="space-between" style={{ width: "100%" }}>
@@ -233,12 +274,14 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
                         {student.fullName}
                     </Col>
                     <Col span={8} style={{ textAlign: "center" }}>
-                        {student.internship!.startDate.format("DD/MM/YY")} - {student.internship!.endDate.format("DD/MM/YY")}
+                        {student.internship!.startDate.format("DD/MM/YY")} -{" "}
+                        {student.internship!.endDate.format("DD/MM/YY")}
                     </Col>
                     <Col span={8} style={{ textAlign: "right" }}>
-                        <b>{internshipDays}</b>/{student.internshipNumberOfDays} {internshipDays === 1 ? "dag" : "dagen"}
-                        &nbsp;
-                        (<b>{internshipHours}</b>/{student.internship!.hours} {internshipHours === 1 ? "uur" : "uren"})
+                        <b>{internshipDays}</b>/{student.internshipNumberOfDays}{" "}
+                        {internshipDays === 1 ? "dag" : "dagen"}
+                        &nbsp; (<b>{internshipHours}</b>/{student.internship!.hours}{" "}
+                        {internshipHours === 1 ? "uur" : "uren"})
                     </Col>
                 </Row>
             </List.Item>
@@ -248,8 +291,9 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
     private renderHoursInformationalTooltip(): React.ReactNode {
         return (
             <i>
-                Voor studenten die gedeeltelijk in de geselecteerde periode zitten, werden niet alle ingegeven uren meegeteld!
-                Stel een stage van 10 dagen (50 uren in totaal) die voor 5 dagen in de gekozen periode zit, dan zal deze maar voor 25 uren worden meegeteld.
+                Voor studenten die gedeeltelijk in de geselecteerde periode zitten, werden niet alle ingegeven uren
+                meegeteld! Stel een stage van 10 dagen (50 uren in totaal) die voor 5 dagen in de gekozen periode zit,
+                dan zal deze maar voor 25 uren worden meegeteld.
             </i>
         );
     }
@@ -265,11 +309,17 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
     }
 
     private handleDateChanged(): void {
-        if (this.state.selectedStartDate === undefined || this.state.selectedEndDate === undefined || this.state.selectedStartDate.isSameOrBefore(this.state.selectedEndDate)) {
+        if (
+            this.state.selectedStartDate === undefined ||
+            this.state.selectedEndDate === undefined ||
+            this.state.selectedStartDate.isSameOrBefore(this.state.selectedEndDate)
+        ) {
             // Reset validation messages
             this.props.form.setFields({
                 [nameof<ISchoolInternshipSummaryModalState>("selectedStartDate")]: {
-                    value: this.props.form.getFieldValue(nameof<ISchoolInternshipSummaryModalState>("selectedStartDate")),
+                    value: this.props.form.getFieldValue(
+                        nameof<ISchoolInternshipSummaryModalState>("selectedStartDate")
+                    ),
                     errors: undefined,
                 },
                 [nameof<ISchoolInternshipSummaryModalState>("selectedEndDate")]: {
@@ -279,7 +329,10 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
             });
         } else {
             // Validate input
-            this.props.form.validateFieldsAndScroll([nameof<ISchoolInternshipSummaryModalState>("selectedStartDate"), nameof<ISchoolInternshipSummaryModalState>("selectedEndDate")]);
+            this.props.form.validateFieldsAndScroll([
+                nameof<ISchoolInternshipSummaryModalState>("selectedStartDate"),
+                nameof<ISchoolInternshipSummaryModalState>("selectedEndDate"),
+            ]);
         }
     }
 
@@ -288,5 +341,7 @@ class SchoolInternshipSummaryModal extends React.Component<SchoolInternshipSumma
     }
 }
 
-const WrappedSchoolInternshipSummaryModal = Form.create<SchoolInternshipSummaryModalProps>()(SchoolInternshipSummaryModal);
+const WrappedSchoolInternshipSummaryModal = Form.create<SchoolInternshipSummaryModalProps>()(
+    SchoolInternshipSummaryModal
+);
 export default WrappedSchoolInternshipSummaryModal;

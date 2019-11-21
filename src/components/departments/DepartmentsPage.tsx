@@ -21,7 +21,6 @@ interface IDepartmentsPageState {
 }
 
 export default class DepartmentsPage extends React.Component<DepartmentsPageProps, IDepartmentsPageState> {
-
     private unsubscribeFromDepartments: () => void;
 
     constructor(props: DepartmentsPageProps) {
@@ -37,7 +36,9 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
             areEducationsFetching: true,
         };
 
-        this.unsubscribeFromDepartments = () => { return; };
+        this.unsubscribeFromDepartments = () => {
+            return;
+        };
 
         this.openAddDepartmentModal = this.openAddDepartmentModal.bind(this);
         this.closeAddDepartmentModal = this.closeAddDepartmentModal.bind(this);
@@ -55,13 +56,12 @@ export default class DepartmentsPage extends React.Component<DepartmentsPageProp
                 departments,
             });
         });
-        EducationsRepository.getEducationsByName()
-            .then((educations) => {
-                this.setState({
-                    areEducationsFetching: false,
-                    educations,
-                });
+        EducationsRepository.getEducationsByName().then((educations) => {
+            this.setState({
+                areEducationsFetching: false,
+                educations,
             });
+        });
     }
 
     public componentWillUnmount(): void {

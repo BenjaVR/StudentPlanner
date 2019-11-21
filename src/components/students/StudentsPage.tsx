@@ -29,7 +29,6 @@ interface IStudentsPageState {
 }
 
 export default class StudentsPage extends React.Component<StudentsPageProps, IStudentsPageState> {
-
     private unsubscribeFromStudents: () => void;
 
     constructor(props: StudentsPageProps) {
@@ -49,7 +48,9 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
             isFetchingDepartments: true,
         };
 
-        this.unsubscribeFromStudents = () => { return; };
+        this.unsubscribeFromStudents = () => {
+            return;
+        };
 
         this.openAddStudentModal = this.openAddStudentModal.bind(this);
         this.closeAddStudentModal = this.closeAddStudentModal.bind(this);
@@ -67,27 +68,24 @@ export default class StudentsPage extends React.Component<StudentsPageProps, ISt
                 students,
             });
         });
-        SchoolsRepository.getSchoolsByName()
-            .then((schools) => {
-                this.setState({
-                    isFetchingSchools: false,
-                    schools,
-                });
+        SchoolsRepository.getSchoolsByName().then((schools) => {
+            this.setState({
+                isFetchingSchools: false,
+                schools,
             });
-        EducationsRepository.getEducationsByName()
-            .then((educations) => {
-                this.setState({
-                    isFetchingEducations: false,
-                    educations,
-                });
+        });
+        EducationsRepository.getEducationsByName().then((educations) => {
+            this.setState({
+                isFetchingEducations: false,
+                educations,
             });
-        DepartmentsRepository.getDepartmentsByName()
-            .then((departments) => {
-                this.setState({
-                    isFetchingDepartments: false,
-                    departments,
-                });
+        });
+        DepartmentsRepository.getDepartmentsByName().then((departments) => {
+            this.setState({
+                isFetchingDepartments: false,
+                departments,
             });
+        });
     }
 
     public componentWillUnmount(): void {

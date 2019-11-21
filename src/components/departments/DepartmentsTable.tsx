@@ -14,7 +14,6 @@ interface IDepartmentsTableProps {
 }
 
 class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
-
     private columns: Array<ColumnProps<Department>> = [
         {
             title: "",
@@ -91,17 +90,8 @@ class DepartmentsTable extends React.Component<IDepartmentsTableProps> {
                     />
                 </Tooltip>
                 <Tooltip title="Verwijderen">
-                    <Popconfirm
-                        title="Weet u zeker dat u deze afdeling wilt verwijderen?"
-                        onConfirm={deleteFunc}
-                    >
-                        <Button
-                            size="small"
-                            icon="delete"
-                            type="danger"
-                            ghost={true}
-                            className={styles.actionButton}
-                        />
+                    <Popconfirm title="Weet u zeker dat u deze afdeling wilt verwijderen?" onConfirm={deleteFunc}>
+                        <Button size="small" icon="delete" type="danger" ghost={true} className={styles.actionButton} />
                     </Popconfirm>
                 </Tooltip>
             </React.Fragment>

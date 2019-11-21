@@ -1,8 +1,10 @@
+import firebase from "firebase";
 import { IFirestoreEntityBase } from "../entities/IFirestoreEntityBase";
 
 export class FirebaseModelMapper {
-
-    public static mapDocsToObjects<T extends IFirestoreEntityBase>(docSnaps: firebase.firestore.DocumentSnapshot[]): T[] {
+    public static mapDocsToObjects<T extends IFirestoreEntityBase>(
+        docSnaps: firebase.firestore.DocumentSnapshot[]
+    ): T[] {
         return docSnaps.map((docSnap) => FirebaseModelMapper.mapDocToObject<T>(docSnap));
     }
 
@@ -14,7 +16,9 @@ export class FirebaseModelMapper {
         return obj as T;
     }
 
-    private static nullToUndefined(data: firebase.firestore.DocumentData | undefined): firebase.firestore.DocumentData | undefined {
+    private static nullToUndefined(
+        data: firebase.firestore.DocumentData | undefined
+    ): firebase.firestore.DocumentData | undefined {
         if (data === undefined) {
             return undefined;
         }

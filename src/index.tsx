@@ -27,5 +27,5 @@ ReactDOM.render(
     <LocaleProvider locale={nlBE}>
         <Root />
     </LocaleProvider>,
-    document.getElementById("root"),
+    document.getElementById("root")
 );

@@ -31,7 +31,6 @@ interface IDepartmentFormModalState {
 }
 
 class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDepartmentFormModalState> {
-
     private capacityKeysId = 0;
     private capacityPerEducationFieldName: keyof Department = "capacityPerEducation";
     private educationIdFieldName: keyof IDepartmentEducationCapacity = "educationId";
@@ -59,9 +58,11 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
 
     public componentDidUpdate(prevProps: DepartmentFormModalProps): void {
         // Populate the form if it is just opened and if a department to edit is passed.
-        if (this.props.departmentToEdit !== undefined
-            && this.props.isVisible === true
-            && prevProps.isVisible === false) {
+        if (
+            this.props.departmentToEdit !== undefined &&
+            this.props.isVisible === true &&
+            prevProps.isVisible === false
+        ) {
             const { departmentToEdit } = this.props;
             const idCount = (departmentToEdit.capacityPerEducation || []).length;
             this.capacityKeysId = idCount;
@@ -76,12 +77,18 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
             this.setState({ selectedColor: departmentToEdit.color });
             this.props.form.setFieldsValue(fields);
             capacityFieldIds.forEach((capacityFieldId) => {
-                this.props.form.getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.educationIdFieldName}`, {
-                    initialValue: departmentToEdit.capacityPerEducation[capacityFieldId].educationId,
-                });
-                this.props.form.getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.capacityFieldName}`, {
-                    initialValue: departmentToEdit.capacityPerEducation[capacityFieldId].capacity,
-                });
+                this.props.form.getFieldDecorator(
+                    `${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.educationIdFieldName}`,
+                    {
+                        initialValue: departmentToEdit.capacityPerEducation[capacityFieldId].educationId,
+                    }
+                );
+                this.props.form.getFieldDecorator(
+                    `${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.capacityFieldName}`,
+                    {
+                        initialValue: departmentToEdit.capacityPerEducation[capacityFieldId].capacity,
+                    }
+                );
             });
         }
     }
@@ -97,12 +104,13 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                 <Row key={capacityFieldId} gutter={8} type="flex" justify="space-between" align="bottom">
                     <Col span={14}>
                         <FormItem label="Opleiding">
-                            {getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.educationIdFieldName}`, {
-                                validateTrigger: this.state.formValidateTrigger,
-                                rules: [
-                                    { required: true, message: "Kies een opleiding" },
-                                ],
-                            })(
+                            {getFieldDecorator(
+                                `${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.educationIdFieldName}`,
+                                {
+                                    validateTrigger: this.state.formValidateTrigger,
+                                    rules: [{ required: true, message: "Kies een opleiding" }],
+                                }
+                            )(
                                 <Select
                                     disabled={this.state.isSubmitting}
                                     loading={this.props.isEducationsLoading}
@@ -112,35 +120,31 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                                     optionFilterProp="children"
                                 >
                                     {educationSelectOptions}
-                                </Select>,
+                                </Select>
                             )}
                         </FormItem>
                     </Col>
                     <Col span={7}>
                         <FormItem label="Capaciteit">
-                            {getFieldDecorator(`${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.capacityFieldName}`, {
-                                validateTrigger: this.state.formValidateTrigger,
-                                rules: [
-                                    { required: true, message: "Vul een capaciteit in" },
-                                ],
-                            })(
+                            {getFieldDecorator(
+                                `${this.capacityPerEducationFieldName}[${capacityFieldId}].${this.capacityFieldName}`,
+                                {
+                                    validateTrigger: this.state.formValidateTrigger,
+                                    rules: [{ required: true, message: "Vul een capaciteit in" }],
+                                }
+                            )(
                                 <InputNumber
                                     className={styles.fullWidthInputField}
                                     disabled={this.state.isSubmitting}
                                     min={1}
-                                />,
+                                />
                             )}
                         </FormItem>
                     </Col>
                     <Col span={3}>
                         <FormItem>
                             <Tooltip title="Verwijderen">
-                                <Button
-                                    icon="delete"
-                                    type="danger"
-                                    ghost={true}
-                                    onClick={deleletCapacityFunc}
-                                />
+                                <Button icon="delete" type="danger" ghost={true} onClick={deleletCapacityFunc} />
                             </Tooltip>
                         </FormItem>
                     </Col>
@@ -165,33 +169,26 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                         <FormItem label="Naam">
                             {getFieldDecorator<Department>("name", {
                                 validateTrigger: this.state.formValidateTrigger,
-                                rules: [
-                                    { required: true, message: "Naam mag niet leeg zijn" },
-                                ],
-                            })(
-                                <Input
-                                    autoFocus={true}
-                                    disabled={this.state.isSubmitting}
-                                />,
-                            )}
+                                rules: [{ required: true, message: "Naam mag niet leeg zijn" }],
+                            })(<Input autoFocus={true} disabled={this.state.isSubmitting} />)}
                         </FormItem>
                         <FormItem label="Kleur">
                             {getFieldDecorator<Department>("color", {
                                 validateTrigger: this.state.formValidateTrigger,
-                                rules: [
-                                    { required: true, message: "Kies een kleur" },
-                                ],
-                            })(
-                                <CirclePicker color={this.state.selectedColor} onChange={this.handleColorChange} />,
-                            )}
+                                rules: [{ required: true, message: "Kies een kleur" }],
+                            })(<CirclePicker color={this.state.selectedColor} onChange={this.handleColorChange} />)}
                         </FormItem>
 
                         <h4>Capaciteit per opleiding</h4>
                         <p>Max. aantal studenten per opleiding voor deze afdeling</p>
                         {capacitiesFormItems}
-                        <Button type="dashed" onClick={this.handleAddCapacityField} className={styles.fullWidthInputField}>
+                        <Button
+                            type="dashed"
+                            onClick={this.handleAddCapacityField}
+                            className={styles.fullWidthInputField}
+                        >
                             Voeg capaciteit toe
-                    </Button>
+                        </Button>
                     </Form>
                 </Modal>
             </div>
@@ -200,7 +197,9 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
 
     private renderEducationSelectOption(education: Education): React.ReactNode {
         return (
-            <Select.Option key={education.id} value={education.id}>{education.name}</Select.Option>
+            <Select.Option key={education.id} value={education.id}>
+                {education.name}
+            </Select.Option>
         );
     }
 
@@ -242,10 +241,11 @@ class DepartmentFormModal extends React.Component<DepartmentFormModalProps, IDep
                 const department = new Department(
                     values[nameof<Department>("name")],
                     color.hex === undefined ? color : color.hex,
-                    values[nameof<Department>("capacityPerEducation")],
+                    values[nameof<Department>("capacityPerEducation")]
                 );
 
-                this.props.submitDepartment(department)
+                this.props
+                    .submitDepartment(department)
                     .then(() => {
                         this.handleClose();
                     })

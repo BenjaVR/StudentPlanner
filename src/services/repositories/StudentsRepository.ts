@@ -8,7 +8,6 @@ import { FirebaseModelMapper } from "../FirebaseModelMapper";
 import { FirestoreRefs } from "../FirestoreRefs";
 
 export class StudentsRepository {
-
     public static subscribeToStudents(onListen: (students: Student[]) => void): () => void {
         return FirestoreRefs.getStudentCollectionRef()
             .orderBy(nameof<IStudent>("createdTimestamp"), "desc")
@@ -38,8 +37,7 @@ export class StudentsRepository {
             .get();
 
         const studentEntities = FirebaseModelMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
-        const students = studentEntities.map((entity) => Student.fromEntity(entity));
-        return students;
+        return studentEntities.map((entity) => Student.fromEntity(entity));
     }
 
     public static async getStudentsWithEducation(education: Education): Promise<Student[]> {
@@ -48,8 +46,7 @@ export class StudentsRepository {
             .get();
 
         const studentEntities = FirebaseModelMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
-        const students = studentEntities.map((entity) => Student.fromEntity(entity));
-        return students;
+        return studentEntities.map((entity) => Student.fromEntity(entity));
     }
 
     public static async getStudentsWithSchool(school: School): Promise<Student[]> {
@@ -58,8 +55,7 @@ export class StudentsRepository {
             .get();
 
         const studentEntities = FirebaseModelMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
-        const students = studentEntities.map((entity) => Student.fromEntity(entity));
-        return students;
+        return studentEntities.map((entity) => Student.fromEntity(entity));
     }
 
     public static async getPlannedStudentsWithDepartment(department: Department): Promise<Student[]> {
@@ -68,8 +64,7 @@ export class StudentsRepository {
             .get();
 
         const studentEntities = FirebaseModelMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
-        const students = studentEntities.map((entity) => Student.fromEntity(entity));
-        return students;
+        return studentEntities.map((entity) => Student.fromEntity(entity));
     }
 
     public static async getPlannedStudentsForSchool(school: School): Promise<Student[]> {
@@ -80,17 +75,15 @@ export class StudentsRepository {
             .get();
 
         const studentEntities = FirebaseModelMapper.mapDocsToObjects<IStudent>(querySnapshot.docs);
-        const students = studentEntities.map((entity) => Student.fromEntity(entity));
-        return students;
+        return studentEntities.map((entity) => Student.fromEntity(entity));
     }
 
     public static async addStudent(student: Student): Promise<void> {
-        await FirestoreRefs.getStudentCollectionRef()
-            .add(student.getEntity("new"));
+        await FirestoreRefs.getStudentCollectionRef().add(student.getEntity("new"));
     }
 
     public static async addInternshipForStudent(internship: IStudentInternship, student: Student): Promise<void> {
-        if (student.isPlanned === true) {
+        if (student.isPlanned) {
             return Promise.reject(Error("Student is already planned"));
         }
         if (student.id === undefined) {
@@ -106,7 +99,7 @@ export class StudentsRepository {
     }
 
     public static async updateInternshipForStudent(internship: IStudentInternship, student: Student): Promise<void> {
-        if (student.isPlanned === false) {
+        if (!student.isPlanned) {
             return Promise.reject(Error("Student is not planned, so cannot update internship"));
         }
         if (student.id === undefined) {
@@ -137,15 +130,15 @@ export class StudentsRepository {
         if (student.id === undefined) {
             return Promise.reject(Error("Student should have an id"));
         }
-        await FirestoreRefs.getStudentDocRef(student.id)
-            .update(student.getEntity(doNotUpdateTimestamp ? "updateWithoutTime" : "update"));
+        await FirestoreRefs.getStudentDocRef(student.id).update(
+            student.getEntity(doNotUpdateTimestamp ? "updateWithoutTime" : "update")
+        );
     }
 
     public static async deleteStudent(student: Student): Promise<void> {
         if (student.id === undefined) {
             return Promise.reject(Error("Student should have an id"));
         }
-        await FirestoreRefs.getStudentDocRef(student.id)
-            .delete();
+        await FirestoreRefs.getStudentDocRef(student.id).delete();
     }
 }

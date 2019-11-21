@@ -38,7 +38,6 @@ interface IPlanningsPageState {
 }
 
 class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageState> {
-
     private calendarRef: Calendar | null = null;
     private unsubscribeFromPlannedStudents: () => void;
 
@@ -127,7 +126,7 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                             <Spin spinning={this.state.arePlannedStudentsLoading}>
                                 <Calendar
                                     mode="month"
-                                    ref={(ref) => this.calendarRef = ref}
+                                    ref={(ref) => (this.calendarRef = ref)}
                                     dateCellRender={this.renderDateCell}
                                     onSelect={this.handleDateCellSelect}
                                 />
@@ -155,9 +154,11 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     </Col>
                 </Row>
                 <PlanningsFormModal
-                    title={this.state.selectedStudentToPlan === undefined
-                        ? "Nieuwe stage toevoegen"
-                        : `Nieuwe stage toevoegen voor ${this.state.selectedStudentToPlan.fullName}`}
+                    title={
+                        this.state.selectedStudentToPlan === undefined
+                            ? "Nieuwe stage toevoegen"
+                            : `Nieuwe stage toevoegen voor ${this.state.selectedStudentToPlan.fullName}`
+                    }
                     okText="Voeg toe"
                     isVisible={this.state.isAddInternshipModalVisible}
                     submitInternship={this.addInternshipForStudent}
@@ -169,9 +170,11 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     educations={this.state.educations}
                 />
                 <PlanningsFormModal
-                    title={this.state.plannedStudentToEdit === undefined
-                        ? "Stage bewerken"
-                        : `Stage bewerken voor ${this.state.plannedStudentToEdit.fullName}`}
+                    title={
+                        this.state.plannedStudentToEdit === undefined
+                            ? "Stage bewerken"
+                            : `Stage bewerken voor ${this.state.plannedStudentToEdit.fullName}`
+                    }
                     okText="Bewerk"
                     isVisible={this.state.isEditInternshipModalVisible}
                     submitInternship={this.editInternshipForStudent}
@@ -197,31 +200,33 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
     }
 
     private renderStudentListHeader(): React.ReactNode {
-        return (
-            <h2>In te plannen studenten</h2>
-        );
+        return <h2>In te plannen studenten</h2>;
     }
 
     private renderStudentListItem(student: Student): React.ReactNode {
         const onListItemClickFn = () => this.handlePlanStudent(student);
         const onConfirmStudentClickFn = () => this.handleConfirmStudent(student);
         return (
-            <List.Item actions={[<a key={0} onClick={onListItemClickFn}>Inplannen</a>]}>
+            <List.Item
+                actions={[
+                    <a key={0} onClick={onListItemClickFn}>
+                        Inplannen
+                    </a>,
+                ]}
+            >
                 {student.fullName}
                 &nbsp;
-                {!student.isConfirmed &&
+                {!student.isConfirmed && (
                     <Popconfirm title="Deze student bevestigen?" onConfirm={onConfirmStudentClickFn}>
                         <Tag color="volcano">Niet bevestigd</Tag>
                     </Popconfirm>
-                }
+                )}
             </List.Item>
         );
     }
 
     private renderDepartmentsHeader(): React.ReactNode {
-        return (
-            <h2>Afdelingen</h2>
-        );
+        return <h2>Afdelingen</h2>;
     }
 
     private renderDepartmentsListItem(department: Department): React.ReactNode {
@@ -233,7 +238,9 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                         <span>{department.name}</span>
                     </Col>
                     <Col>
-                        <span>(<b>{department.totalCapacity}</b> totale capaciteit)</span>
+                        <span>
+                            (<b>{department.totalCapacity}</b> totale capaciteit)
+                        </span>
                     </Col>
                 </Row>
             </Card>
@@ -250,9 +257,13 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                     <Tag
                         color={department.color}
                         style={{ border: `2px solid ${department.color}` }}
-                        className={classNames(styles.notClickableTag, styles.calendarTag, { [styles.calendarTagOutline]: usedCapacity < totalCapacity })}
+                        className={classNames(styles.notClickableTag, styles.calendarTag, {
+                            [styles.calendarTagOutline]: usedCapacity < totalCapacity,
+                        })}
                     />
-                    <span className={styles.calendarTagText}>{usedCapacity} / {totalCapacity}</span>
+                    <span className={styles.calendarTagText}>
+                        {usedCapacity} / {totalCapacity}
+                    </span>
                 </div>
             );
         });
@@ -264,7 +275,12 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                 mouseEnterDelay={0.5}
                 trigger={this.state.userIsTouching ? "contextMenu" : "hover"}
             >
-                <div className={styles.calendarCellContainer} onContextMenu={this.handleContextMenu} onTouchStart={this.handleTouchStart} onTouchEnd={this.handleTouchEnd}>
+                <div
+                    className={styles.calendarCellContainer}
+                    onContextMenu={this.handleContextMenu}
+                    onTouchStart={this.handleTouchStart}
+                    onTouchEnd={this.handleTouchEnd}
+                >
                     {departmentsRows}
                 </div>
             </Popover>
@@ -272,18 +288,19 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
     }
 
     private renderDepartmentPopoverContent(students: Student[]): React.ReactNode {
-        const departmentsRows = this.state.departments.map((department) => {
+        return this.state.departments.map((department) => {
             const totalCapacity = department.totalCapacity;
             const studentsWithDepartment = students.filter((student) => {
-                return student.internship !== undefined
-                    && student.internship.departmentId === department.id;
+                return student.internship !== undefined && student.internship.departmentId === department.id;
             });
             const usedCapacity = studentsWithDepartment.length;
             const departmentLine = (
                 <span className={styles.calendarPopoverSpanLine}>
                     <b>{department.name}</b>
                     &nbsp;
-                    <span>({usedCapacity}/{totalCapacity})</span>
+                    <span>
+                        ({usedCapacity}/{totalCapacity})
+                    </span>
                 </span>
             );
             const educationLines = this.state.educations.map((education) => {
@@ -307,7 +324,6 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
                 </div>
             );
         });
-        return departmentsRows;
     }
 
     private handleContextMenu(event: React.SyntheticEvent): void {
@@ -392,13 +408,12 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
     }
 
     private handleDeleteInternship(student: Student): void {
-        StudentsRepository.removeInternshipForStudent(student)
-            .then(() => {
-                this.loadNotPlannedStudents();
-                notification.success({
-                    message: "Stage succesvol verwijderd",
-                });
+        StudentsRepository.removeInternshipForStudent(student).then(() => {
+            this.loadNotPlannedStudents();
+            notification.success({
+                message: "Stage succesvol verwijderd",
             });
+        });
     }
 
     private openAddInternshipModal(student: Student): void {
@@ -529,10 +544,6 @@ class PlanningsPage extends React.Component<PlanningsPageProps, IPlanningsPageSt
             .finally(() => {
                 this.setState({ areEducationsLoading: false });
             });
-    }
-
-    private getEducationById(educationId: string): Education | undefined {
-        return this.state.educations.find((education) => education.id === educationId);
     }
 }
 

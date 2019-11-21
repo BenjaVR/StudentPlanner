@@ -23,7 +23,6 @@ interface IEducationFormModalState {
 }
 
 class EducationFormModal extends React.Component<EducationFormModalProps, IEducationFormModalState> {
-
     constructor(props: EducationFormModalProps) {
         super(props);
 
@@ -39,10 +38,7 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
 
     public componentDidUpdate(prevProps: EducationFormModalProps): void {
         // Populate the form if it is just opened and if a education to edit is passed.
-        if (this.props.educationToEdit !== undefined
-            && this.props.isVisible === true
-            && prevProps.isVisible === false) {
-
+        if (this.props.educationToEdit !== undefined && this.props.isVisible && !prevProps.isVisible) {
             const educationFields: Partial<Education> = {
                 name: this.props.educationToEdit.name,
             };
@@ -69,15 +65,8 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
                         <FormItem label="Naam">
                             {getFieldDecorator<Education>("name", {
                                 validateTrigger: this.state.formValidateTrigger,
-                                rules: [
-                                    { required: true, message: "Naam mag niet leeg zijn" },
-                                ],
-                            })(
-                                <Input
-                                    autoFocus={true}
-                                    disabled={this.state.isSubmitting}
-                                />,
-                            )}
+                                rules: [{ required: true, message: "Naam mag niet leeg zijn" }],
+                            })(<Input autoFocus={true} disabled={this.state.isSubmitting} />)}
                         </FormItem>
                     </Form>
                 </Modal>
@@ -108,11 +97,10 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
                     isSubmitting: true,
                 });
 
-                const education = new Education(
-                    values[nameof<Education>("name")],
-                );
+                const education = new Education(values[nameof<Education>("name")]);
 
-                this.props.submitEducation(education)
+                this.props
+                    .submitEducation(education)
                     .then(() => {
                         this.handleClose();
                     })
@@ -126,5 +114,5 @@ class EducationFormModal extends React.Component<EducationFormModalProps, IEduca
     }
 }
 
-const WrappedEducationFormModal = Form.create<IEducationFormModalProps>()(EducationFormModal);
+const WrappedEducationFormModal = Form.create<EducationFormModalProps>()(EducationFormModal);
 export default WrappedEducationFormModal;

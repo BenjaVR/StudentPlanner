@@ -24,7 +24,6 @@ interface ISchoolsTableState {
 }
 
 class SchoolsTable extends React.Component<ISchoolsTableProps, ISchoolsTableState> {
-
     private columns: Array<ColumnProps<School>> = [
         {
             title: "Naam",
@@ -88,9 +87,7 @@ class SchoolsTable extends React.Component<ISchoolsTableProps, ISchoolsTableStat
 
     private renderInternshipsAction(school: School): React.ReactNode {
         const handleOpenInternshipSummaryFn = () => this.handleOpenInternshipSummary(school);
-        return (
-            <a onClick={handleOpenInternshipSummaryFn}>Bekijk stages</a>
-        );
+        return <a onClick={handleOpenInternshipSummaryFn}>Bekijk stages</a>;
     }
 
     private renderActions(school: School): React.ReactNode {
@@ -109,17 +106,8 @@ class SchoolsTable extends React.Component<ISchoolsTableProps, ISchoolsTableStat
                     />
                 </Tooltip>
                 <Tooltip title="Verwijderen">
-                    <Popconfirm
-                        title="Weet u zeker dat u deze school wilt verwijderen?"
-                        onConfirm={deleteFunc}
-                    >
-                        <Button
-                            size="small"
-                            icon="delete"
-                            type="danger"
-                            ghost={true}
-                            className={styles.actionButton}
-                        />
+                    <Popconfirm title="Weet u zeker dat u deze school wilt verwijderen?" onConfirm={deleteFunc}>
+                        <Button size="small" icon="delete" type="danger" ghost={true} className={styles.actionButton} />
                     </Popconfirm>
                 </Tooltip>
             </React.Fragment>

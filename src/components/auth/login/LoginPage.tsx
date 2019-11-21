@@ -11,7 +11,6 @@ import styles from "./LoginPage.module.scss";
 type LoginPageProps = AnyRouteComponentProps;
 
 class LoginPage extends React.Component<LoginPageProps> {
-
     constructor(props: LoginPageProps) {
         super(props);
 

@@ -1,3 +1,4 @@
+import firebase from "firebase";
 import moment from "moment";
 import { IFirestoreEntityBase } from "../entities/IFirestoreEntityBase";
 import { Firebase } from "../services/FirebaseInitializer";
@@ -5,7 +6,6 @@ import { Firebase } from "../services/FirebaseInitializer";
 type DatabaseAction = "new" | "update" | "updateWithoutTime";
 
 export abstract class ModelBase<T extends IFirestoreEntityBase> {
-
     public id: string | undefined;
     public createdDate: moment.Moment | undefined;
     public updatedDate: moment.Moment | undefined;
@@ -13,12 +13,14 @@ export abstract class ModelBase<T extends IFirestoreEntityBase> {
     public getEntity(databaseAction: DatabaseAction): T {
         const entity: T = {
             id: this.id,
-            createdTimestamp: this.createdDate === undefined
-                ? null
-                : Firebase.firestore.Timestamp.fromDate(this.createdDate.toDate()),
-            updatedTimestamp: this.updatedDate === undefined
-                ? null
-                : Firebase.firestore.Timestamp.fromDate(this.updatedDate.toDate()),
+            createdTimestamp:
+                this.createdDate === undefined
+                    ? null
+                    : Firebase.firestore.Timestamp.fromDate(this.createdDate.toDate()),
+            updatedTimestamp:
+                this.updatedDate === undefined
+                    ? null
+                    : Firebase.firestore.Timestamp.fromDate(this.updatedDate.toDate()),
             ...this.getEntityInternal(),
         };
 
@@ -62,12 +64,8 @@ export abstract class ModelBase<T extends IFirestoreEntityBase> {
 
     protected fillBaseFields(entity: T): void {
         this.id = entity.id;
-        this.createdDate = entity.createdTimestamp === undefined
-            ? undefined
-            : moment(entity.createdTimestamp.toDate());
-        this.updatedDate = entity.updatedTimestamp === undefined
-            ? undefined
-            : moment(entity.updatedTimestamp.toDate());
+        this.createdDate = entity.createdTimestamp === undefined ? undefined : moment(entity.createdTimestamp.toDate());
+        this.updatedDate = entity.updatedTimestamp === undefined ? undefined : moment(entity.updatedTimestamp.toDate());
     }
 
     protected abstract getEntityInternal(): T;

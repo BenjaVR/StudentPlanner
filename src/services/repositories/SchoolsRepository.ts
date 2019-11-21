@@ -6,7 +6,6 @@ import { FirestoreRefs } from "../FirestoreRefs";
 import { StudentsRepository } from "./StudentsRepository";
 
 export class SchoolsRepository {
-
     public static subscribeToSchools(onListen: (schools: School[]) => void): () => void {
         return FirestoreRefs.getSchoolCollectionRef()
             .orderBy(nameof<ISchool>("createdTimestamp"), "desc")
@@ -23,35 +22,31 @@ export class SchoolsRepository {
             .get();
 
         const schoolEntities = FirebaseModelMapper.mapDocsToObjects<ISchool>(querySnapshot.docs);
-        const schools = schoolEntities.map((entity) => School.fromEntity(entity));
-        return schools;
+        return schoolEntities.map((entity) => School.fromEntity(entity));
     }
 
     public static async addSchool(school: School): Promise<void> {
-        await FirestoreRefs.getSchoolCollectionRef()
-            .add(school.getEntity("new"));
+        await FirestoreRefs.getSchoolCollectionRef().add(school.getEntity("new"));
     }
 
     public static async updateSchool(school: School): Promise<void> {
         if (school.id === undefined) {
             return Promise.reject(Error("School should have an id"));
         }
-        await FirestoreRefs.getSchoolDocRef(school.id)
-            .update(school.getEntity("update"));
+        await FirestoreRefs.getSchoolDocRef(school.id).update(school.getEntity("update"));
     }
 
     public static async deleteSchool(school: School): Promise<void> {
         if (school.id === undefined) {
             return Promise.reject(Error("School should have an id"));
         }
-        await FirestoreRefs.getSchoolDocRef(school.id)
-            .delete();
+        await FirestoreRefs.getSchoolDocRef(school.id).delete();
 
         // Delete relations on students
         const students = await StudentsRepository.getStudentsWithSchool(school);
-        students.forEach(async (student) => {
+        for (const student of students) {
             student.schoolId = undefined;
             await StudentsRepository.updateStudent(student, true);
-        });
+        }
     }
 }

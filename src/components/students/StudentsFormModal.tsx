@@ -210,5 +210,5 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
     }
 }
 
-const WrappedStudentsFormModal = Form.create<IStudentsFormModalProps>()(StudentsFormModal);
+const WrappedStudentsFormModal = Form.create<StudentFormModalProps>()(StudentsFormModal);
 export default WrappedStudentsFormModal;
