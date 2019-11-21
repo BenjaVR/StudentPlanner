@@ -29,7 +29,6 @@ interface IStudentsFormModalState {
 }
 
 class StudentsFormModal extends React.Component<StudentFormModalProps, IStudentsFormModalState> {
-
     constructor(props: StudentFormModalProps) {
         super(props);
 
@@ -45,16 +44,11 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
 
     public componentDidUpdate(prevProps: StudentFormModalProps): void {
         // Populate the form if it is just opened and if a student to edit is passed.
-        if (this.props.studentToEdit !== undefined
-            && this.props.isVisible === true
-            && prevProps.isVisible === false) {
-
+        if (this.props.studentToEdit !== undefined && this.props.isVisible && !prevProps.isVisible) {
             let schoolId;
             const studentSchoolId = this.props.studentToEdit.schoolId;
             if (studentSchoolId !== undefined) {
-                schoolId = this.props.schools.some((s) => s.id === studentSchoolId)
-                    ? studentSchoolId
-                    : undefined;
+                schoolId = this.props.schools.some((s) => s.id === studentSchoolId) ? studentSchoolId : undefined;
             }
 
             let educationId;
@@ -96,24 +90,13 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                         <FormItem label="Voornaam">
                             {getFieldDecorator<Student>("firstName", {
                                 validateTrigger: this.state.formValidateTrigger,
-                                rules: [
-                                    { required: true, message: "Voornaam mag niet leeg zijn" },
-                                ],
-                            })(
-                                <Input
-                                    autoFocus={true}
-                                    disabled={this.state.isSubmitting}
-                                />,
-                            )}
+                                rules: [{ required: true, message: "Voornaam mag niet leeg zijn" }],
+                            })(<Input autoFocus={true} disabled={this.state.isSubmitting} />)}
                         </FormItem>
                         <FormItem label="Familienaam">
                             {getFieldDecorator<Student>("lastName", {
                                 validateTrigger: this.state.formValidateTrigger,
-                            })(
-                                <Input
-                                    disabled={this.state.isSubmitting}
-                                />,
-                            )}
+                            })(<Input disabled={this.state.isSubmitting} />)}
                         </FormItem>
                         <FormItem label="School">
                             {getFieldDecorator<Student>("schoolId", {
@@ -128,7 +111,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                                     optionFilterProp="children"
                                 >
                                     {this.props.schools.map(this.renderSchoolSelectOption)}
-                                </Select>,
+                                </Select>
                             )}
                         </FormItem>
                         <FormItem label="Opleiding">
@@ -144,7 +127,7 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                                     optionFilterProp="children"
                                 >
                                     {this.props.educations.map(this.renderEducationSelectOption)}
-                                </Select>,
+                                </Select>
                             )}
                         </FormItem>
                         <FormItem label="Bevestiging">
@@ -152,7 +135,9 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                                 validateTrigger: this.state.formValidateTrigger,
                                 valuePropName: "checked",
                             })(
-                                <Checkbox disabled={this.state.isSubmitting}>Student is bevestigd door de school</Checkbox>,
+                                <Checkbox disabled={this.state.isSubmitting}>
+                                    Student is bevestigd door de school
+                                </Checkbox>
                             )}
                         </FormItem>
                     </Form>
@@ -163,13 +148,17 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
 
     private renderSchoolSelectOption(school: School): React.ReactNode {
         return (
-            <Select.Option key={school.id} value={school.id}>{school.name}</Select.Option>
+            <Select.Option key={school.id} value={school.id}>
+                {school.name}
+            </Select.Option>
         );
     }
 
     private renderEducationSelectOption(education: Education): React.ReactNode {
         return (
-            <Select.Option key={education.id} value={education.id}>{education.name}</Select.Option>
+            <Select.Option key={education.id} value={education.id}>
+                {education.name}
+            </Select.Option>
         );
     }
 
@@ -203,10 +192,11 @@ class StudentsFormModal extends React.Component<StudentFormModalProps, IStudents
                     values[nameof<Student>("schoolId")],
                     values[nameof<Student>("educationId")],
                     this.props.studentToEdit !== undefined ? this.props.studentToEdit.isPlanned : false,
-                    this.props.studentToEdit !== undefined ? this.props.studentToEdit.internship : undefined,
+                    this.props.studentToEdit !== undefined ? this.props.studentToEdit.internship : undefined
                 );
 
-                this.props.submitStudent(student)
+                this.props
+                    .submitStudent(student)
                     .then(() => {
                         this.handleClose();
                     })
