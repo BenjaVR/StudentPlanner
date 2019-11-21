@@ -3,15 +3,13 @@ import React from "react";
 import { Firebase } from "../../services/FirebaseInitializer";
 import styles from "./AuthChecker.module.scss";
 
-interface IAuthCheckerProps {
-}
+interface IAuthCheckerProps {}
 
 interface IAuthCheckerState {
     initialCheckDone: boolean;
 }
 
 class AuthChecker extends React.Component<IAuthCheckerProps, IAuthCheckerState> {
-
     /**
      * This is to check if the user is refreshing the page, or actually opening it again in an new browser session.
      */
@@ -49,11 +47,7 @@ class AuthChecker extends React.Component<IAuthCheckerProps, IAuthCheckerState> 
     public render(): React.ReactNode {
         return (
             <Spin spinning={!this.state.initialCheckDone} size="large" className={styles.spinner}>
-                <React.Fragment>
-                    {this.state.initialCheckDone &&
-                        this.props.children
-                    }
-                </React.Fragment>
+                <React.Fragment>{this.state.initialCheckDone && this.props.children}</React.Fragment>
             </Spin>
         );
     }

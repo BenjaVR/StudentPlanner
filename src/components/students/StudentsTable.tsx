@@ -32,7 +32,6 @@ interface IStudentTableState {
 }
 
 class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableState> {
-
     constructor(props: IStudentsTableProps) {
         super(props);
 
@@ -52,17 +51,24 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
 
     public render(): React.ReactNode {
         const selectedStudent = this.state.selectedStudentPlanningDetails;
-        const deleteStudentFn = () => selectedStudent !== undefined
-            ? this.handleDeleteInternshipForStudent(selectedStudent)
-            : {};
-        const departmentsNameForStudent = selectedStudent !== undefined
-            ? this.getDepartmentNameForStudent(selectedStudent)
-            : undefined;
+        const deleteStudentFn = () =>
+            selectedStudent !== undefined ? this.handleDeleteInternshipForStudent(selectedStudent) : {};
+        const departmentsNameForStudent =
+            selectedStudent !== undefined ? this.getDepartmentNameForStudent(selectedStudent) : undefined;
         const columns = this.getTableColumns();
-        const startDate = selectedStudent !== undefined && selectedStudent.internship !== undefined ? selectedStudent.internship.startDate.format("DD/MM/YYYY") : "";
-        const endDate = selectedStudent !== undefined && selectedStudent.internship !== undefined ? selectedStudent.internship.endDate.format("DD/MM/YYYY") : "";
+        const startDate =
+            selectedStudent !== undefined && selectedStudent.internship !== undefined
+                ? selectedStudent.internship.startDate.format("DD/MM/YYYY")
+                : "";
+        const endDate =
+            selectedStudent !== undefined && selectedStudent.internship !== undefined
+                ? selectedStudent.internship.endDate.format("DD/MM/YYYY")
+                : "";
         const internshipNumberOfDays = selectedStudent !== undefined ? selectedStudent.internshipNumberOfDays : 0;
-        const internshipNumberOfHours = selectedStudent !== undefined && selectedStudent.internship !== undefined ? selectedStudent.internship.hours : 0;
+        const internshipNumberOfHours =
+            selectedStudent !== undefined && selectedStudent.internship !== undefined
+                ? selectedStudent.internship.hours
+                : 0;
         return (
             <React.Fragment>
                 <Table
@@ -83,26 +89,32 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                     closable={true}
                     maskClosable={false}
                     onCancel={this.handleClosePlanningDetails}
-                    footer={(
+                    footer={
                         <div className={specificStyles.studentInternshipModalFooter}>
-                            <Popconfirm title="Weet u zeker dat u deze stage wilt verwijderen?" onConfirm={deleteStudentFn}>
-                                <Button type="danger" ghost={true} loading={this.state.isDeletingInternship}>Stage verwijderen</Button>
+                            <Popconfirm
+                                title="Weet u zeker dat u deze stage wilt verwijderen?"
+                                onConfirm={deleteStudentFn}
+                            >
+                                <Button type="danger" ghost={true} loading={this.state.isDeletingInternship}>
+                                    Stage verwijderen
+                                </Button>
                             </Popconfirm>
                         </div>
-                    )}
+                    }
                     destroyOnClose={true}
                 >
                     <p>
                         Van <b>{startDate}</b> tot en met <b>{endDate}</b>
-                        {departmentsNameForStudent !== undefined &&
+                        {departmentsNameForStudent !== undefined && (
                             <React.Fragment>
                                 &nbsp;in <b>{departmentsNameForStudent}</b>
                             </React.Fragment>
-                        }
+                        )}
                         .
                     </p>
                     <p>
-                        <b>{internshipNumberOfDays}</b> {internshipNumberOfDays === 1 ? "dag" : "dagen"} (<b>{internshipNumberOfHours}</b> {internshipNumberOfHours === 1 ? "uur" : "uren"}).
+                        <b>{internshipNumberOfDays}</b> {internshipNumberOfDays === 1 ? "dag" : "dagen"} (
+                        <b>{internshipNumberOfHours}</b> {internshipNumberOfHours === 1 ? "uur" : "uren"}).
                     </p>
                 </Modal>
             </React.Fragment>
@@ -149,17 +161,8 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                     />
                 </Tooltip>
                 <Tooltip title="Verwijderen">
-                    <Popconfirm
-                        title="Weet u zeker dat u deze student wilt verwijderen?"
-                        onConfirm={deleteFunc}
-                    >
-                        <Button
-                            size="small"
-                            icon="delete"
-                            type="danger"
-                            ghost={true}
-                            className={styles.actionButton}
-                        />
+                    <Popconfirm title="Weet u zeker dat u deze student wilt verwijderen?" onConfirm={deleteFunc}>
+                        <Button size="small" icon="delete" type="danger" ghost={true} className={styles.actionButton} />
                     </Popconfirm>
                 </Tooltip>
             </React.Fragment>
@@ -207,7 +210,9 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
     }
 
     private getEducationNameForStudent(student: Student): string {
-        const education = this.props.educations.find((e) => student.educationId !== undefined && student.educationId === e.id);
+        const education = this.props.educations.find(
+            (e) => student.educationId !== undefined && student.educationId === e.id
+        );
         if (education === undefined) {
             return "";
         }
@@ -241,10 +246,10 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                 sorter: (a, b) => stringSorter(this.getSchoolNameForStudent(a), this.getSchoolNameForStudent(b)),
                 filters: this.getSchoolFilters(),
                 onFilter: (value, record: Student) => {
-                    return exactMatchOrDefaultOptionFilter(value,
-                        hasElementWithId(this.props.schools, record.schoolId)
-                            ? record.schoolId
-                            : undefined);
+                    return exactMatchOrDefaultOptionFilter(
+                        value,
+                        hasElementWithId(this.props.schools, record.schoolId) ? record.schoolId : undefined
+                    );
                 },
             },
             {
@@ -254,25 +259,27 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
                 sorter: (a, b) => stringSorter(this.getEducationNameForStudent(a), this.getEducationNameForStudent(b)),
                 filters: this.getEducationFilters(),
                 onFilter: (value, record: Student) => {
-                    return exactMatchOrDefaultOptionFilter(value,
-                        hasElementWithId(this.props.educations, record.educationId)
-                            ? record.educationId
-                            : undefined);
+                    return exactMatchOrDefaultOptionFilter(
+                        value,
+                        hasElementWithId(this.props.educations, record.educationId) ? record.educationId : undefined
+                    );
                 },
             },
             {
                 title: "Bevestigd",
                 key: "isConfirmed",
-                render: (record: Student) => record.isConfirmed ? "Ja" : "",
+                render: (record: Student) => (record.isConfirmed ? "Ja" : ""),
                 filters: [{ text: "Bevestigd", value: "1" }, { text: "Niet bevestigd", value: "0" }],
-                onFilter: (value, record: Student) => exactMatchOrDefaultOptionFilter(value, record.isConfirmed ? "1" : "0"),
+                onFilter: (value, record: Student) =>
+                    exactMatchOrDefaultOptionFilter(value, record.isConfirmed ? "1" : "0"),
             },
             {
                 title: "Ingepland",
                 key: "isPlanned",
                 render: (record: Student) => this.renderPlannedCell(record),
                 filters: [{ text: "Ingepland", value: "1" }, { text: "Niet ingepland", value: "0" }],
-                onFilter: (value, record: Student) => exactMatchOrDefaultOptionFilter(value, record.isPlanned ? "1" : "0"),
+                onFilter: (value, record: Student) =>
+                    exactMatchOrDefaultOptionFilter(value, record.isPlanned ? "1" : "0"),
             },
             {
                 title: "Acties",
@@ -292,8 +299,7 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
         return (
             <React.Fragment>
                 <span>Ja</span>
-                &nbsp;
-                (<a onClick={openPlanningsDetailsFn}>details</a>)
+                &nbsp; (<a onClick={openPlanningsDetailsFn}>details</a>)
             </React.Fragment>
         );
     }
