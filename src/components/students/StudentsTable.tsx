@@ -293,7 +293,7 @@ class StudentsTable extends React.Component<IStudentsTableProps, IStudentTableSt
 
     private renderPlannedCell(student: Student): React.ReactNode {
         if (!student.isPlanned) {
-            return null;
+            return "Nee";
         }
         const openPlanningsDetailsFn = () => this.showPlanningDetails(student);
         return (
