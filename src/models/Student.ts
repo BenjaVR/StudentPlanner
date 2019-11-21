@@ -11,7 +11,6 @@ export interface IStudentInternship {
 }
 
 export class Student extends ModelBase<IStudent> {
-
     public get fullName(): string {
         if (this.lastName === undefined) {
             return this.firstName;
@@ -20,9 +19,7 @@ export class Student extends ModelBase<IStudent> {
     }
 
     public get internshipNumberOfDays(): number {
-        return this.internship !== undefined
-            ? this.internship.endDate.diff(this.internship.startDate, "days") + 1
-            : 0;
+        return this.internship !== undefined ? this.internship.endDate.diff(this.internship.startDate, "days") + 1 : 0;
     }
 
     constructor(
@@ -32,7 +29,7 @@ export class Student extends ModelBase<IStudent> {
         public schoolId: string | undefined,
         public educationId: string | undefined,
         public isPlanned: boolean,
-        public internship: IStudentInternship | undefined,
+        public internship: IStudentInternship | undefined
     ) {
         super();
     }
@@ -48,11 +45,11 @@ export class Student extends ModelBase<IStudent> {
             entity.internship === undefined
                 ? undefined
                 : {
-                    startDate: moment(entity.internship.startDate.toDate()),
-                    endDate: moment(entity.internship.endDate.toDate()),
-                    hours: entity.internship.hours,
-                    departmentId: entity.internship.departmentId,
-                },
+                      startDate: moment(entity.internship.startDate.toDate()),
+                      endDate: moment(entity.internship.endDate.toDate()),
+                      hours: entity.internship.hours,
+                      departmentId: entity.internship.departmentId,
+                  }
         );
         student.fillBaseFields(entity);
         return student;
@@ -75,7 +72,10 @@ export class Student extends ModelBase<IStudent> {
         return days;
     }
 
-    public getInternshipNumberOfHoursInRange(from: moment.Moment | undefined, until: moment.Moment | undefined): number {
+    public getInternshipNumberOfHoursInRange(
+        from: moment.Moment | undefined,
+        until: moment.Moment | undefined
+    ): number {
         const totalDays = this.internshipNumberOfDays;
         if (totalDays === 0 || this.internship === undefined) {
             return 0;
@@ -94,18 +94,19 @@ export class Student extends ModelBase<IStudent> {
             schoolId: this.schoolId,
             educationId: this.educationId,
             isPlanned: this.isPlanned,
-            internship: this.internship === undefined
-                ? undefined
-                : {
-                    startDate: Firebase.firestore.Timestamp.fromDate(
-                        this.internship.startDate.startOf("day").toDate(),
-                    ),
-                    endDate: Firebase.firestore.Timestamp.fromDate(
-                        this.internship.endDate.startOf("day").toDate(),
-                    ),
-                    hours: this.internship.hours,
-                    departmentId: this.internship.departmentId,
-                },
+            internship:
+                this.internship === undefined
+                    ? undefined
+                    : {
+                          startDate: Firebase.firestore.Timestamp.fromDate(
+                              this.internship.startDate.startOf("day").toDate()
+                          ),
+                          endDate: Firebase.firestore.Timestamp.fromDate(
+                              this.internship.endDate.startOf("day").toDate()
+                          ),
+                          hours: this.internship.hours,
+                          departmentId: this.internship.departmentId,
+                      },
         };
     }
 }
